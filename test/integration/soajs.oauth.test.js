@@ -3,6 +3,7 @@ var assert = require('assert');
 var request = require("request");
 var soajs = require('soajs');
 var controller = require("soajs.controller");
+var shell = require('shelljs');
 
 var helper = require("../helper.js");
 var oauthService = null;
@@ -71,6 +72,24 @@ function executeMyRequest(params, apiPath, method, cb) {
 	}
 }
 
+describe("importing sample data", function() {
+	it("do import", function(done) {
+
+		shell.pushd(__dirname + '/../../tools/');
+		shell.exec('./soajs.mongo.sh', function(code, output) {
+			console.log('test data imported.');
+			shell.popd();
+			done();
+		});
+
+	});
+
+	after(function(done) {
+		setTimeout(function() {
+			done();
+		}, 1000);
+	});
+});
 
 describe("OAUTH TESTS", function() {
 	before(function(done) {
