@@ -10,6 +10,7 @@
     "type": "git",
     "url": "git@github.com:soajs/soajs.oauth.git"
   },
+  "license" : "Apache-2.0",
   "engines": {
     "node": "*"
   },
