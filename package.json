@@ -10,6 +10,7 @@
     "type": "git",
     "url": "git@github.com:soajs/soajs.oauth.git"
   },
+  "license" : "Apache-2.0",
   "engines": {
     "node": "*"
   },
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "soajs.controller": "0.0.*",
+    "soajs.mongodb.data" : "0.0.*",
     "grunt":"0.4.5",
     "grunt-contrib-jshint":"0.10.0",
     "grunt-jsdoc" : "*",

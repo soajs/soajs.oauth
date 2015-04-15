@@ -77,7 +77,7 @@ module.exports = function (grunt) {
           "after": false,
           "afterEach": false
         },
-        ignores: ['tools/data/**/*.js', 'test/coverage/**/*.js']
+        ignores: ['test/coverage/**/*.js']
       },
       files: {
         src: ['**/*.js']
@@ -182,7 +182,7 @@ module.exports = function (grunt) {
   grunt.registerTask("integration", ['env:mochaTest','mochaTest:integration']);
   grunt.registerTask("unit", ['env:mochaTest','mochaTest:unit']);
   grunt.registerTask("test", ['integration','unit']);
-  grunt.registerTask("coverage", ['clean', 'env:coverage', 'instrument', 'mochaTest:integration', 'storeCoverage', 'makeReport','coveralls']);
+  grunt.registerTask("coverage", ['clean', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'storeCoverage', 'makeReport','coveralls']);
   //grunt.registerTask("coverage", ['clean', 'env:coverage', 'instrument', 'mochaTest:unit', 'mochaTest:integration', 'storeCoverage', 'makeReport']);
 
 };
