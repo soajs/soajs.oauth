@@ -2,6 +2,8 @@
 
 module.exports = {
 	"serviceName": "oauth",
+    servicePort: 402,
+    extKeyRequired: true,
 	"hashIterations": 1024,
 	"seedLength": 32,
 	"errors": {
