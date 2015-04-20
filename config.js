@@ -2,8 +2,8 @@
 
 module.exports = {
 	"serviceName": "oauth",
-    servicePort: 4002,
-    extKeyRequired: true,
+	"servicePort": 4002,
+	"extKeyRequired": true,
 	"hashIterations": 1024,
 	"seedLength": 32,
 	"errors": {
@@ -14,36 +14,42 @@ module.exports = {
 	},
 	"schema": {
 		"/token": {
-				"username": {
-					"source": ['body.username'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"grant_type": {
-					"source": ['body.grant_type'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
-				},
-				"password": {
-					"source": ['body.password'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
+			"_apiInfo": {
+				"l": "Create Token"
+			},
+			"username": {
+				"source": ['body.username'],
+				"required": true,
+				"validation": {
+					"type": "string"
 				}
+			},
+			"grant_type": {
+				"source": ['body.grant_type'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			},
+			"password": {
+				"source": ['body.password'],
+				"required": true,
+				"validation": {
+					"type": "string"
+				}
+			}
 		},
 		"/kill": {
-				"access_token": {
-					"source": ['query.access_token'],
-					"required": true,
-					"validation": {
-						"type": "string"
-					}
+			"_apiInfo": {
+				"l": "Kill Token"
+			},
+			"access_token": {
+				"source": ['query.access_token'],
+				"required": true,
+				"validation": {
+					"type": "string"
 				}
+			}
 		}
 	}
 };
