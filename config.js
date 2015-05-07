@@ -3,6 +3,8 @@
 module.exports = {
 	"serviceName": "oauth",
 	"servicePort": 4002,
+	"requestTimeout": 30,
+	"requestTimeoutRenewal": 5,
 	"extKeyRequired": true,
 	"hashIterations": 1024,
 	"seedLength": 32,
