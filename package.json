@@ -1,7 +1,7 @@
 {
   "name": "soajs.oauth",
   "description": "soajs oauth service",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -35,7 +35,9 @@
     "shelljs":"*"
   },
   "dependencies": {
-    "soajs": "0.1.*",
     "bcrypt": "*"
+  },
+  "peerDependencies": {
+    "soajs": "0.2.*"
   }
 }
