@@ -2,6 +2,7 @@
 
 module.exports = {
 	"serviceName": "oauth",
+	"serviceGroup": "SOAJS Core Services",
 	"servicePort": 4002,
 	"requestTimeout": 30,
 	"requestTimeoutRenewal": 5,
