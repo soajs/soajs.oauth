@@ -13,7 +13,8 @@ module.exports = {
 		400: "Problem with the provided password.",
 		401: "Unable to log in the user. User not found.",
 		402: "User does not have access to this product",
-		403: "User does not have access to this tenant"
+		403: "User does not have access to this tenant",
+		404: "Error executing operation"
 	},
 	"schema": {
 		"/token": {

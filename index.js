@@ -106,8 +106,12 @@ service.init(function () {
     service.get("/kill", function (req, res) {
         checkForMongo(req);
         var criteria = {"oauthAccessToken.accessToken": req.soajs.inputmaskData.access_token};
-        mongo.remove(tokenCollectionName, criteria, function (err, data) {
-            return res.jsonp(req.soajs.buildResponse(null, "kill token happened"));
+        mongo.remove(tokenCollectionName, criteria, function (err) {
+	        if(err){
+		        req.soajs.log.error(err);
+		        return res.jsonp(req.soajs.buildResponse({code: 400, msg: config.errors[404]}));
+	        }
+            return res.jsonp(req.soajs.buildResponse(null, true));
         });
     });
 
