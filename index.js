@@ -83,6 +83,9 @@ service.init(function () {
                         callback(false);
                     } else {
                         mongo.insert(tokenCollectionName, tokenRecord, function (err, data) {
+	                        if(err){
+		                        req.soajs.log.error(err);
+	                        }
                             callback(false);
                         });
                     }
@@ -95,6 +98,9 @@ service.init(function () {
                         expires: expires
                     };
                     mongo.insert(tokenCollectionName, tokenRecord, function (err, data) {
+	                    if(err){
+		                    req.soajs.log.error(err);
+	                    }
                         callback(false);
                     });
                 };
