@@ -1,12 +1,23 @@
 'use strict';
 
 module.exports = {
+	type: 'service',
+	prerequisites: {
+		cpu: '',
+		memory: ''
+	},
+	"serviceVersion": 1,
 	"serviceName": "oauth",
 	"serviceGroup": "SOAJS Core Services",
 	"servicePort": 4002,
 	"requestTimeout": 30,
 	"requestTimeoutRenewal": 5,
 	"extKeyRequired": true,
+	"oauth": true,
+	"oauthService" : {
+		"name" : config.serviceName,
+		"tokenApi" : "/token"
+	},
 	"hashIterations": 1024,
 	"seedLength": 32,
 	"errors": {

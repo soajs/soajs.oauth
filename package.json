@@ -1,7 +1,7 @@
 {
   "name": "soajs.oauth",
   "description": "soajs oauth service",
-  "version": "0.1.2",
+  "version": "0.2.1",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -19,14 +19,14 @@
   },
   "devDependencies": {
     "soajs.mongodb.data" : "0.1.*",
-    "soajs.controller": "0.1.*",
-    "grunt":"0.4.5",
-    "grunt-contrib-jshint":"0.10.0",
+    "soajs.controller": "0.2.*",
+    "grunt":"*",
+    "grunt-contrib-jshint":"*",
     "grunt-jsdoc" : "*",
     "grunt-contrib-clean" : "*",
     "grunt-mocha-test" : "*",
     "grunt-env" : "*",
-    "grunt-istanbul" : "0.3.0",
+    "grunt-istanbul" : "*",
     "grunt-coveralls" : "*",
     "jshint" : "*",
     "lodash": "*",
@@ -35,9 +35,7 @@
     "shelljs":"*"
   },
   "dependencies": {
-    "bcrypt": "*"
-  },
-  "peerDependencies": {
-    "soajs": "0.2.*"
+    "bcrypt": "*",
+    "soajs": "0.3.*"
   }
 }

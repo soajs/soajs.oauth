@@ -9,15 +9,7 @@ var tokenCollectionName = "oauth_token";
 var Mongo = soajs.mongo;
 var mongo = null;
 
-var service = new soajs.server.service({
-	"oauth": true,
-    "security": true,
-    "oauthService" : {
-        "name" : config.serviceName,
-        "tokenApi" : "/token"
-    },
-	"config": config
-});
+var service = new soajs.server.service(config);
 
 service.init(function () {
     function checkForMongo(req) {
