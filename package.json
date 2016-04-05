@@ -36,6 +36,6 @@
   },
   "dependencies": {
     "bcrypt": "*",
-    "soajs": "0.3.*"
+    "soajs": "https://github.com/soajs/soajs.git#develop"
   }
 }
