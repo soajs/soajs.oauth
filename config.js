@@ -15,7 +15,7 @@ module.exports = {
 	"extKeyRequired": true,
 	"oauth": true,
 	"oauthService" : {
-		"name" : config.serviceName,
+		"name" : "oauth",
 		"tokenApi" : "/token"
 	},
 	"hashIterations": 1024,
