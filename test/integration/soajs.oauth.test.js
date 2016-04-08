@@ -129,7 +129,7 @@ describe("OAUTH TESTS", function() {
 			executeMyRequest(params, 'kill', 'get', function(body) {
 				console.log(body);
 				assert.ok(body);
-				assert.equal(body.data, 'kill token happened');
+				assert.equal(body.data, true);
 				done();
 			});
 		});
