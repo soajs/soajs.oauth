@@ -8,10 +8,11 @@ var config = null;
 
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 var Authorization = 'Basic MTBkMmNiNWZjMDRjZTUxZTA2MDAwMDAxOnNoaGggdGhpcyBpcyBhIHNlY3JldA==';
+
 var oAuthParams = {
 	url: 'http://127.0.0.1:4000/oauth/token',
 	method: "POST",
-	body: 'username=oauthuser&password=oauthpassword&grant_type=password',
+	body: 'username=oauthTestUser&password=oauthpassword&grant_type=password',
 	json: true,
 	headers: {
 		'accept': '*/*',
@@ -80,9 +81,40 @@ describe("OAUTH TESTS", function() {
 
 			request(oAuthParams, callback);
 		});
+
+		it('fail - invaid user', function(done) {
+			var params = oAuthParams;
+			params.body = 'username=test&password=oauthpass&grant_type=password';
+			function callback(error, response, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				assert.ok(body.errors);
+				console.log(body);
+				assert.deepEqual(body.errors.details[0], {"code": 401, "message": "Unable to log in the user. User not found."});
+				done();
+			}
+
+			request(oAuthParams, callback);
+		});
+
+		it('Fail - wrong username', function(done) {
+			var params = oAuthParams;
+			params.body = 'username=oauthus&password=oauthpassword&grant_type=password';
+
+			function callback(error, response, body) {
+				assert.ifError(error);
+				assert.ok(body);
+				console.log(body);
+				assert.equal(body.errors.details[0].code, 401);
+				done();
+			}
+
+			request(oAuthParams, callback);
+		});
+
 		it('fail - missing params', function(done) {
 			var params = oAuthParams;
-			params.body = 'username=oauthuser';
+			params.body = 'username=oauthTestUser';
 			function callback(error, response, body) {
 				assert.ok(body);
 				assert.ok(body.errors);
@@ -95,7 +127,7 @@ describe("OAUTH TESTS", function() {
 		});
 		it('fail - wrong password', function(done) {
 			var params = oAuthParams;
-			params.body = 'username=oauthuser&password=oauthpass&grant_type=password';
+			params.body = 'username=oauthTestUser&password=oauthpass&grant_type=password';
 			function callback(error, response, body) {
 				assert.ifError(error);
 				assert.ok(body);
