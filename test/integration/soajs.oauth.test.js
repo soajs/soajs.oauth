@@ -7,6 +7,7 @@ var helper = require("../helper.js");
 var config = null;
 
 var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
+// Authorization: an encrypted- base 64- value, generated from (tenantId:secret_phrase)
 var Authorization = 'Basic MTBkMmNiNWZjMDRjZTUxZTA2MDAwMDAxOnNoaGggdGhpcyBpcyBhIHNlY3JldA==';
 
 var oAuthParams = {
@@ -24,7 +25,7 @@ var oAuthParams = {
 var token = null;
 
 function executeMyRequest(params, apiPath, method, cb) {
-	requester(apiPath, method, params, function(error, body) {
+	requester(apiPath, method, params, function (error, body) {
 		assert.ifError(error);
 		assert.ok(body);
 		return cb(body);
@@ -40,22 +41,22 @@ function executeMyRequest(params, apiPath, method, cb) {
 			json: true
 		};
 
-		if(params.headers) {
-			for(var h in params.headers) {
-				if(Object.hasOwnProperty.call(params.headers, h)) {
+		if (params.headers) {
+			for (var h in params.headers) {
+				if (Object.hasOwnProperty.call(params.headers, h)) {
 					options.headers[h] = params.headers.h;
 				}
 			}
 		}
 
-		if(params.form) {
+		if (params.form) {
 			options.body = params.form;
 		}
 
-		if(params.qs) {
+		if (params.qs) {
 			options.qs = params.qs;
 		}
-		request[method](options, function(error, response, body) {
+		request[method](options, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
 			return cb(null, body);
@@ -63,14 +64,14 @@ function executeMyRequest(params, apiPath, method, cb) {
 	}
 }
 
-describe("OAUTH TESTS", function() {
+describe("OAUTH TESTS", function () {
 
-	before(function(done) {
+	before(function (done) {
 		console.log('starting tests ....');
 		done();
 	});
-	describe("get Token tests", function() {
-		it('success - login', function(done) {
+	describe("get Token tests", function () {
+		it('success - login', function (done) {
 			function callback(error, response, body) {
 				assert.ifError(error);
 				assert.ok(body);
@@ -82,7 +83,7 @@ describe("OAUTH TESTS", function() {
 			request(oAuthParams, callback);
 		});
 
-		it('fail - invaid user', function(done) {
+		it('fail - invaid user', function (done) {
 			var params = oAuthParams;
 			params.body = 'username=test&password=oauthpass&grant_type=password';
 			function callback(error, response, body) {
@@ -90,14 +91,17 @@ describe("OAUTH TESTS", function() {
 				assert.ok(body);
 				assert.ok(body.errors);
 				console.log(body);
-				assert.deepEqual(body.errors.details[0], {"code": 401, "message": "Unable to log in the user. User not found."});
+				assert.deepEqual(body.errors.details[0], {
+					"code": 401,
+					"message": "Unable to log in the user. User not found."
+				});
 				done();
 			}
 
 			request(oAuthParams, callback);
 		});
 
-		it('Fail - wrong username', function(done) {
+		it('Fail - wrong username', function (done) {
 			var params = oAuthParams;
 			params.body = 'username=oauthus&password=oauthpassword&grant_type=password';
 
@@ -112,7 +116,7 @@ describe("OAUTH TESTS", function() {
 			request(oAuthParams, callback);
 		});
 
-		it('fail - missing params', function(done) {
+		it('fail - missing params', function (done) {
 			var params = oAuthParams;
 			params.body = 'username=oauthTestUser';
 			function callback(error, response, body) {
@@ -125,7 +129,7 @@ describe("OAUTH TESTS", function() {
 
 			request(oAuthParams, callback);
 		});
-		it('fail - wrong password', function(done) {
+		it('fail - wrong password', function (done) {
 			var params = oAuthParams;
 			params.body = 'username=oauthTestUser&password=oauthpass&grant_type=password';
 			function callback(error, response, body) {
@@ -133,7 +137,10 @@ describe("OAUTH TESTS", function() {
 				assert.ok(body);
 				assert.ok(body.errors);
 				console.log(body);
-				assert.deepEqual(body.errors.details[0], {"code": 401, "message": "Unable to log in the user. User not found."});
+				assert.deepEqual(body.errors.details[0], {
+					"code": 401,
+					"message": "Unable to log in the user. User not found."
+				});
 				done();
 			}
 
@@ -142,23 +149,26 @@ describe("OAUTH TESTS", function() {
 
 	});
 
-	describe("kill token tests", function() {
-		it('fail - missing params', function(done) {
+	describe("kill token tests", function () {
+		it('fail - missing params', function (done) {
 			var params = {
 				qs: {}
 			};
-			executeMyRequest(params, 'kill', 'get', function(body) {
-				assert.deepEqual(body.errors.details[0], {"code": 172, "message": "Missing required field: access_token"});
+			executeMyRequest(params, 'kill', 'get', function (body) {
+				assert.deepEqual(body.errors.details[0], {
+					"code": 172,
+					"message": "Missing required field: access_token"
+				});
 				done();
 			});
 		});
-		it('success ', function(done) {
+		it('success ', function (done) {
 			var params = {
 				qs: {
 					"access_token": token
 				}
 			};
-			executeMyRequest(params, 'kill', 'get', function(body) {
+			executeMyRequest(params, 'kill', 'get', function (body) {
 				console.log(body);
 				assert.ok(body);
 				assert.equal(body.data, true);
