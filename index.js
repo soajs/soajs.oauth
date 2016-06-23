@@ -53,65 +53,54 @@ service.init(function () {
     }
 
     service.post("/token", function (req, res, next) {
-        login(req, function (err, record) {
-            if (err) {
-                return res.jsonp(req.soajs.buildResponse({"code": err, "msg": config.errors[err]}));
-            }
-            else {
-                var tokenRecord = {};
-                checkForMongo(req);
-                service.oauth.model["getUser"] = function (username, password, callback) {
-                    callback(false, {"id": record._id.toString()});
-                };
-                service.oauth.model["saveAccessToken"] = function (accessToken, clientId, expires, userId, callback) {
-                    tokenRecord.oauthAccessToken = {
-                        accessToken: accessToken,
-                        clientId: clientId,
-                        userId: userId,
-                        expires: expires
-                    };
-
-                    if (req.soajs.registry.serviceConfig.oauth.grants.indexOf('refresh_token') >= 0) {
-                        callback(false);
-                    } else {
-                        mongo.insert(tokenCollectionName, tokenRecord, function (err, data) {
-	                        if(err){
-		                        req.soajs.log.error(err);
-	                        }
-                            callback(false);
-                        });
-                    }
-                };
-                service.oauth.model["saveRefreshToken"] = function (refreshToken, clientId, expires, userId, callback) {
-                    tokenRecord.oauthRefreshToken = {
-                        refreshToken: refreshToken,
-                        clientId: clientId,
-                        userId: userId,
-                        expires: expires
-                    };
-                    mongo.insert(tokenCollectionName, tokenRecord, function (err, data) {
-	                    if(err){
-		                    req.soajs.log.error(err);
-	                    }
-                        callback(false);
-                    });
-                };
-                return next();
-            }
-        });
+        service.oauth.model["getUser"] = function (username, password, callback) {
+            login(req, function (errCode, record) {
+                if (errCode) {
+                    var error = new Error(config.errors[errCode])
+                    return callback(error);
+                }
+                else {
+                    return callback(false, {"id": record._id.toString()});
+                }
+            });
+        };
+        next();
     }, service.oauth.grant());
 
-    service.get("/kill", function (req, res) {
+    service.delete("/accessToken/:token", function (req, res) {
         checkForMongo(req);
-        var criteria = {"oauthAccessToken.accessToken": req.soajs.inputmaskData.access_token};
-        mongo.remove(tokenCollectionName, criteria, function (err) {
-	        if(err){
-		        req.soajs.log.error(err);
-		        return res.jsonp(req.soajs.buildResponse({code: 400, msg: config.errors[404]}));
-	        }
-            return res.jsonp(req.soajs.buildResponse(null, true));
+        var criteria = {"token": req.soajs.inputmaskData.token, "type": "accessToken"}
+        mongo.remove(tokenCollectionName, criteria, function (err, result) {
+            if (err) {
+                req.soajs.log.error(err);
+                return res.jsonp(req.soajs.buildResponse({code: 400, msg: config.errors[404]}));
+            }
+            return res.jsonp(req.soajs.buildResponse(null, result.result));
+        });
+    });
+    service.delete("/refreshToken/:token", function (req, res) {
+        checkForMongo(req);
+        var criteria = {"token": req.soajs.inputmaskData.token, "type": "refreshToken"}
+        mongo.remove(tokenCollectionName, criteria, function (err, result) {
+            if (err) {
+                req.soajs.log.error(err);
+                return res.jsonp(req.soajs.buildResponse({code: 400, msg: config.errors[404]}));
+            }
+            return res.jsonp(req.soajs.buildResponse(null, result.result));
+        });
+    });
+    service.delete("/tokens/:client", function (req, res) {
+        checkForMongo(req);
+        var criteria = {"clientId": req.soajs.inputmaskData.client};
+        mongo.remove(tokenCollectionName, criteria, function (err, result) {
+            if (err) {
+                req.soajs.log.error(err);
+                return res.jsonp(req.soajs.buildResponse({code: 400, msg: config.errors[404]}));
+            }
+            return res.jsonp(req.soajs.buildResponse(null, result.result));
         });
     });
 
     service.start();
-});
+})
+;
