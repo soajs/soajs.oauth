@@ -20,10 +20,12 @@ $ node .
 ---
 
 ##Features
-Once Installed and running, the oAuth service offers 2 APIs:
+Once Installed and running, the oAuth service offers 4 APIs:
 
-1. Token
-2. Kill
+1. Create Token: /token
+2. Delete Access Token: /accessToken/:token
+3. Delete Refresh Token: /refreshToken/:token
+4. Delete all Tokens for a client: /tokens/:client
 
 Login to oAuth and provide the credentials needed, then copy the access_token from the returned response.<br>
 ```bash
