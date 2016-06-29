@@ -23,6 +23,7 @@ var oAuthParams = {
 	}
 };
 var token = null;
+var refreshToken = null;
 var clientId = null;
 var clientTokenCount = null;
 var tokenCollectionName = "oauth_token";
@@ -179,7 +180,7 @@ describe("OAUTH TESTS", function () {
 						"access_token": '00000'
 					}
 				};
-				executeMyRequest(params, 'accessToken/00000', 'del', function (body) {
+				executeMyRequest(params, 'accessToken/' + token, 'del', function (body) {
 					assert.deepEqual(body.errors.details[0], {
 						"code": 401,
 						"message": 'The access token provided is invalid.'
@@ -204,7 +205,7 @@ describe("OAUTH TESTS", function () {
 
 		describe("refresh token tests", function () {
 
-			before ('Get a new token', function (done) {
+			before ('Get a new token and refresh token', function (done) {
 				var params = oAuthParams;
 				params.body = 'username=oauthTestUser&password=oauthpassword&grant_type=password';
 				function callback(error, response, body) {
@@ -212,19 +213,16 @@ describe("OAUTH TESTS", function () {
 					assert.ok(body);
 					assert.ok(body.access_token);
 					token = body.access_token;
+					refreshToken = body.refresh_token;
+
 					done();
 				}
 
 				request(oAuthParams, callback);
 			});
 
-			it("fail - refresh token not found", function (done) {
-				var params = {
-					qs: {
-						"access_token": '00000'
-					}
-				};
-				executeMyRequest({}, 'refreshToken/00000', 'del', function (body) {
+			it("fail - access token not found", function (done) {
+				executeMyRequest({}, 'refreshToken/' + refreshToken, 'del', function (body) {
 					assert.deepEqual(body.errors.details[0], {
 						"code": 400,
 						"message": 'The access token was not found'
@@ -239,11 +237,24 @@ describe("OAUTH TESTS", function () {
 						"access_token": '00000'
 					}
 				};
-				executeMyRequest(params, 'refreshToken/00000', 'del', function (body) {
+				executeMyRequest(params, 'refreshToken/' + refreshToken, 'del', function (body) {
 					assert.deepEqual(body.errors.details[0], {
 						"code": 401,
 						"message": 'The access token provided is invalid.'
 					});
+					done();
+				});
+			});
+
+			it("fail - invalid refresh token provided, no records removed from mongo", function (done) {
+				var params = {
+					qs: {
+						"access_token": token
+					}
+				};
+				executeMyRequest(params, 'refreshToken/0000000', 'del', function (body) {
+					assert.ok(body.result);
+					assert.deepEqual(body.data, {ok: 1, n: 0});
 					done();
 				});
 			});
@@ -254,9 +265,9 @@ describe("OAUTH TESTS", function () {
 						"access_token": token
 					}
 				};
-				executeMyRequest(params, 'refreshToken/' + token, 'del', function (body) {
+				executeMyRequest(params, 'refreshToken/' + refreshToken, 'del', function (body) {
 					assert.ok(body);
-					// assert.deepEqual(body.data, {ok: 1, n: 1});
+					assert.deepEqual(body.data, {ok: 1, n: 1});
 					done();
 				});
 			});
@@ -282,7 +293,7 @@ describe("OAUTH TESTS", function () {
 			});
 		});
 
-		it ("fail - wrong client id provided", function (done) {
+		it ("fail - wrong access token provided", function (done) {
 			var params = {
 				qs: {
 					"access_token": '1234567890'
