@@ -18,6 +18,18 @@ service.init(function () {
         }
     }
 
+    function checkIfError(soajs, res, data, cb) {
+    	if (data.error) {
+    		if (typeof (data.error) === 'object' && data.error.message) {
+    			soajs.log.error(data.error);
+    		}
+
+    		return res.jsonp(soajs.buildResponse({"code": data.code, "msg": data.config.errors[data.code]}));
+    	} else {
+    		if (cb) return cb();
+    	}
+    }
+
     function login(req, cb) {
         checkForMongo(req);
         mongo.findOne(userCollectionName, {'userId': req.soajs.inputmaskData['username']}, function (err, record) {
@@ -71,36 +83,29 @@ service.init(function () {
         checkForMongo(req);
         var criteria = {"token": req.soajs.inputmaskData.token, "type": "accessToken"}
         mongo.remove(tokenCollectionName, criteria, function (err, result) {
-            if (err) {
-                req.soajs.log.error(err);
-                return res.jsonp(req.soajs.buildResponse({code: 400, msg: config.errors[404]}));
-            }
-            return res.jsonp(req.soajs.buildResponse(null, result.result));
+            checkIfError(req.soajs, res, {config: config, error: err, code: 404}, function () {
+                return res.jsonp(req.soajs.buildResponse(null, result.result));
+            });
         });
     });
     service.delete("/refreshToken/:token", function (req, res) {
         checkForMongo(req);
         var criteria = {"token": req.soajs.inputmaskData.token, "type": "refreshToken"}
         mongo.remove(tokenCollectionName, criteria, function (err, result) {
-            if (err) {
-                req.soajs.log.error(err);
-                return res.jsonp(req.soajs.buildResponse({code: 400, msg: config.errors[404]}));
-            }
-            return res.jsonp(req.soajs.buildResponse(null, result.result));
+            checkIfError(req.soajs, res, {config: config, error: err, code: 404}, function () {
+                return res.jsonp(req.soajs.buildResponse(null, result.result));
+            });
         });
     });
     service.delete("/tokens/:client", function (req, res) {
         checkForMongo(req);
         var criteria = {"clientId": req.soajs.inputmaskData.client};
         mongo.remove(tokenCollectionName, criteria, function (err, result) {
-            if (err) {
-                req.soajs.log.error(err);
-                return res.jsonp(req.soajs.buildResponse({code: 400, msg: config.errors[404]}));
-            }
-            return res.jsonp(req.soajs.buildResponse(null, result.result));
+            checkIfError(req.soajs, res, {config: config, error: err, code: 404}, function () {
+                return res.jsonp(req.soajs.buildResponse(null, result.result));
+            });
         });
     });
 
     service.start();
-})
-;
+});

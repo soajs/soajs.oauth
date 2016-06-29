@@ -23,6 +23,16 @@ var oAuthParams = {
 	}
 };
 var token = null;
+var clientId = null;
+var clientTokenCount = null;
+var tokenCollectionName = "oauth_token";
+
+var Mongo = soajs.mongo;
+var dbConfig = require("./db.config.test.js");
+
+var oauthConfig = dbConfig();
+oauthConfig.name = "core_provision";
+var mongo = new Mongo(oauthConfig);
 
 function executeMyRequest(params, apiPath, method, cb) {
 	requester(apiPath, method, params, function (error, body) {
@@ -83,7 +93,7 @@ describe("OAUTH TESTS", function () {
 			request(oAuthParams, callback);
 		});
 
-		it('fail - invaid user', function (done) {
+		it('fail - invalid user', function (done) {
 			var params = oAuthParams;
 			params.body = 'username=test&password=oauthpass&grant_type=password';
 			function callback(error, response, body) {
@@ -148,34 +158,170 @@ describe("OAUTH TESTS", function () {
 		});
 
 	});
-/*
+
 	describe("kill token tests", function () {
-		it('fail - missing params', function (done) {
+
+		describe("access token tests", function () {
+
+			it('fail - access token not found', function (done) {
+				executeMyRequest({}, 'accessToken/00000', 'del', function (body) {
+					assert.deepEqual(body.errors.details[0], {
+						"code": 400,
+						"message": 'The access token was not found'
+					});
+					done();
+				});
+			});
+
+			it ('fail - invalid access token provided', function (done) {
+				var params = {
+					qs: {
+						"access_token": '00000'
+					}
+				};
+				executeMyRequest(params, 'accessToken/00000', 'del', function (body) {
+					assert.deepEqual(body.errors.details[0], {
+						"code": 401,
+						"message": 'The access token provided is invalid.'
+					});
+					done();
+				});
+			});
+
+			it('success - access token found and deleted', function (done) {
+				var params = {
+					qs: {
+						"access_token": token
+					}
+				};
+				executeMyRequest(params, 'accessToken/' + token, 'del', function (body) {
+					assert.ok(body);
+					assert.deepEqual(body.data, {ok: 1, n: 1});
+					done();
+				});
+			});
+		});
+
+		describe("refresh token tests", function () {
+
+			before ('Get a new token', function (done) {
+				var params = oAuthParams;
+				params.body = 'username=oauthTestUser&password=oauthpassword&grant_type=password';
+				function callback(error, response, body) {
+					assert.ifError(error);
+					assert.ok(body);
+					assert.ok(body.access_token);
+					token = body.access_token;
+					done();
+				}
+
+				request(oAuthParams, callback);
+			});
+
+			it("fail - refresh token not found", function (done) {
+				var params = {
+					qs: {
+						"access_token": '00000'
+					}
+				};
+				executeMyRequest({}, 'refreshToken/00000', 'del', function (body) {
+					assert.deepEqual(body.errors.details[0], {
+						"code": 400,
+						"message": 'The access token was not found'
+					});
+					done();
+				});
+			});
+
+			it("fail - invalid access token provided", function (done) {
+				var params = {
+					qs: {
+						"access_token": '00000'
+					}
+				};
+				executeMyRequest(params, 'refreshToken/00000', 'del', function (body) {
+					assert.deepEqual(body.errors.details[0], {
+						"code": 401,
+						"message": 'The access token provided is invalid.'
+					});
+					done();
+				});
+			});
+
+			it("success - refresh token found and deleted", function (done) {
+				var params = {
+					qs: {
+						"access_token": token
+					}
+				};
+				executeMyRequest(params, 'refreshToken/' + token, 'del', function (body) {
+					assert.ok(body);
+					// assert.deepEqual(body.data, {ok: 1, n: 1});
+					done();
+				});
+			});
+
+		});
+	});
+
+	describe("Remove client tokens tests", function () {
+
+		before("Get client id based on token and count total number of this client's tokens", function (done) {
+			var criteria = {token: token};
+			mongo.findOne(tokenCollectionName, criteria, function (error, record) {
+				assert.ifError(error);
+				assert.ok(record);
+				clientId = record.clientId;
+
+				criteria = {clientId: clientId};
+				mongo.count(tokenCollectionName, clientId, function (error, count) {
+					assert.ifError(error);
+					clientTokenCount = count;
+					done();
+				});
+			});
+		});
+
+		it ("fail - wrong client id provided", function (done) {
 			var params = {
-				qs: {}
+				qs: {
+					"access_token": '1234567890'
+				}
 			};
-			executeMyRequest(params, 'kill', 'get', function (body) {
+			executeMyRequest(params, 'tokens/' + clientId, 'del', function (body) {
 				assert.deepEqual(body.errors.details[0], {
-					"code": 172,
-					"message": "Missing required field: access_token"
+					"code": 401,
+					"message": 'The access token provided is invalid.'
 				});
 				done();
 			});
 		});
-		it('success ', function (done) {
+
+		it ("fail - wrong client id provided, no records removed from mongo", function (done) {
 			var params = {
 				qs: {
 					"access_token": token
 				}
 			};
-			executeMyRequest(params, 'kill', 'get', function (body) {
-				console.log(body);
-				assert.ok(body);
-				assert.equal(body.data, true);
+			executeMyRequest(params, 'tokens/0011234', 'del', function (body) {
+				assert.ok (body.result);
+				assert.deepEqual(body.data, {ok: 1, n: 0});
 				done();
 			});
 		});
 
+		it ("success - will remove client tokens", function (done) {
+			var params = {
+				qs: {
+					"access_token": token
+				}
+			};
+			executeMyRequest(params, 'tokens/' + clientId, 'del', function (body) {
+				assert.ok(body);
+				assert.ok(body.result, true);
+				assert.equal(body.data.n, clientTokenCount);
+				done();
+			});
+		});
 	});
-*/
 });
