@@ -12,7 +12,7 @@ module.exports = {
     "servicePort": 4002,
     "requestTimeout": 30,
     "requestTimeoutRenewal": 5,
-    "extKeyRequired": true,
+    "extKeyRequired": false,
     "oauth": true,
     "oauthService": {
         "name": "oauth",
