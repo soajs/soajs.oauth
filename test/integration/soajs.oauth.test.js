@@ -6,6 +6,7 @@ var soajs = require('soajs');
 var helper = require("../helper.js");
 var config = require("../../config.js");
 
+var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 // Authorization: an encrypted- base 64- value, generated from (tenantId:secret_phrase)
 var Authorization = 'Basic MTBkMmNiNWZjMDRjZTUxZTA2MDAwMDAxOnNoaGggdGhpcyBpcyBhIHNlY3JldA==';
 
@@ -17,9 +18,11 @@ var oAuthParams = {
 	headers: {
 		'accept': '*/*',
 		'content-type': 'application/x-www-form-urlencoded',
-		"Authorization": Authorization
+		"Authorization": Authorization,
+		'key': extKey
 	}
 };
+
 var token = null;
 var refreshToken = null;
 var clientId = null;
@@ -44,7 +47,8 @@ function executeMyRequest(params, apiPath, method, cb) {
 		var options = {
 			uri: 'http://127.0.0.1:4000/oauth/' + apiName,
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				'key': extKey
 			},
 			json: true
 		};
@@ -257,6 +261,19 @@ describe("OAUTH TESTS", function () {
 				});
 			});
 
+			it("success - get new refresh token", function (done) {
+				var params = oAuthParams;
+				params.body = 'refresh_token=' + refreshToken + '&grant_type=refresh_token';
+				function callback(error, response, body) {
+					assert.ifError(error);
+					assert.ok(body);
+					assert.ok(body.refresh_token);
+					done();
+				}
+
+				request(oAuthParams, callback);
+			});
+
 			it("success - refresh token found and deleted", function (done) {
 				var params = {
 					qs: {
@@ -269,7 +286,6 @@ describe("OAUTH TESTS", function () {
 					done();
 				});
 			});
-
 		});
 	});
 
