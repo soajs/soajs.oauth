@@ -4,9 +4,8 @@ var request = require("request");
 var soajs = require('soajs');
 
 var helper = require("../helper.js");
-var config = null;
+var config = require("../../config.js");
 
-var extKey = 'aa39b5490c4a4ed0e56d7ec1232a428f771e8bb83cfcee16de14f735d0f5da587d5968ec4f785e38570902fd24e0b522b46cb171872d1ea038e88328e7d973ff47d9392f72b2d49566209eb88eb60aed8534a965cf30072c39565bd8d72f68ac';
 // Authorization: an encrypted- base 64- value, generated from (tenantId:secret_phrase)
 var Authorization = 'Basic MTBkMmNiNWZjMDRjZTUxZTA2MDAwMDAxOnNoaGggdGhpcyBpcyBhIHNlY3JldA==';
 
@@ -18,8 +17,7 @@ var oAuthParams = {
 	headers: {
 		'accept': '*/*',
 		'content-type': 'application/x-www-form-urlencoded',
-		"Authorization": Authorization,
-		'key': extKey
+		"Authorization": Authorization
 	}
 };
 var token = null;
@@ -46,8 +44,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		var options = {
 			uri: 'http://127.0.0.1:4000/oauth/' + apiName,
 			headers: {
-				'Content-Type': 'application/json',
-				key: extKey
+				'Content-Type': 'application/json'
 			},
 			json: true
 		};
@@ -78,9 +75,10 @@ function executeMyRequest(params, apiPath, method, cb) {
 describe("OAUTH TESTS", function () {
 
 	before(function (done) {
-		console.log('starting tests ....');
+		console.log('Starting tests ...');
 		done();
 	});
+
 	describe("get Token tests", function () {
 		it('success - login', function (done) {
 			function callback(error, response, body) {

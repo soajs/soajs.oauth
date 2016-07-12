@@ -49,7 +49,7 @@ service.init(function () {
                     }
 
                     delete record.password;
-                    if (record.tId) {
+                    if (record.tId && req.soajs.tenant) {
                         if (record.tId.toString() !== req.soajs.tenant.id) {
                             return cb(403);
                         }
@@ -68,7 +68,7 @@ service.init(function () {
         service.oauth.model["getUser"] = function (username, password, callback) {
             login(req, function (errCode, record) {
                 if (errCode) {
-                    var error = new Error(config.errors[errCode])
+                    var error = new Error(config.errors[errCode]);
                     return callback(error);
                 }
                 else {
@@ -81,7 +81,7 @@ service.init(function () {
 
     service.delete("/accessToken/:token", function (req, res) {
         checkForMongo(req);
-        var criteria = {"token": req.soajs.inputmaskData.token, "type": "accessToken"}
+        var criteria = {"token": req.soajs.inputmaskData.token, "type": "accessToken"};
         mongo.remove(tokenCollectionName, criteria, function (err, result) {
             checkIfError(req.soajs, res, {config: config, error: err, code: 404}, function () {
                 return res.jsonp(req.soajs.buildResponse(null, result.result));
@@ -90,7 +90,7 @@ service.init(function () {
     });
     service.delete("/refreshToken/:token", function (req, res) {
         checkForMongo(req);
-        var criteria = {"token": req.soajs.inputmaskData.token, "type": "refreshToken"}
+        var criteria = {"token": req.soajs.inputmaskData.token, "type": "refreshToken"};
         mongo.remove(tokenCollectionName, criteria, function (err, result) {
             checkIfError(req.soajs, res, {config: config, error: err, code: 404}, function () {
                 return res.jsonp(req.soajs.buildResponse(null, result.result));
