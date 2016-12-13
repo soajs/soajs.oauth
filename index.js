@@ -1,15 +1,14 @@
 'use strict';
-var soajs = require('soajs');
-
+var soajsCore = require('soajs');
 var config = require('./config.js');
-var Hasher = require("./hasher.js");
+var coreHasher = soajsCore.hasher;
 
 var userCollectionName = "oauth_urac";
 var tokenCollectionName = "oauth_token";
-var Mongo = soajs.mongo;
+var Mongo = soajsCore.mongo;
 var mongo = null;
 
-var service = new soajs.server.service(config);
+var service = new soajsCore.server.service(config);
 
 service.init(function () {
 	function checkForMongo(req) {
@@ -23,10 +22,12 @@ service.init(function () {
 			if (typeof (data.error) === 'object' && data.error.message) {
 				soajs.log.error(data.error);
 			}
-			
 			return res.jsonp(soajs.buildResponse({"code": data.code, "msg": data.config.errors[data.code]}));
-		} else {
-			if (cb) return cb();
+		}
+		else {
+			if (cb) {
+				return cb();
+			}
 		}
 	}
 	
@@ -39,7 +40,7 @@ service.init(function () {
 					"seedLength": config.seedLength
 				};
 				
-				if (req.soajs.registry.serviceConfig.oauth) {
+				if (req.soajs.registry.serviceConfig && req.soajs.registry.serviceConfig.oauth) {
 					if (req.soajs.registry.serviceConfig.oauth.hashIterations && req.soajs.registry.serviceConfig.oauth.seedLength) {
 						hashConfig = {
 							"hashIterations": req.soajs.registry.serviceConfig.oauth.hashIterations,
@@ -47,16 +48,14 @@ service.init(function () {
 						};
 					}
 				}
-				var hasher = new Hasher(hashConfig);
-				hasher.compare(req.soajs.inputmaskData.password, record.password, function (err, result) {
+				coreHasher.init(hashConfig);
+				coreHasher.compare(req.soajs.inputmaskData.password, record.password, function (err, result) {
 					if (err) {
 						return cb(400);
 					}
-					
 					if (!result) {
 						return cb(401);
 					}
-					
 					delete record.password;
 					if (record.tId && req.soajs.tenant) {
 						if (record.tId.toString() !== req.soajs.tenant.id) {
