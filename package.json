@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git@github.com:soajs/soajs.oauth.git"
   },
-  "license" : "Apache-2.0",
+  "license": "Apache-2.0",
   "engines": {
     "node": "*"
   },
@@ -18,24 +18,23 @@
     "test": "grunt test"
   },
   "devDependencies": {
-    "soajs.mongodb.data" : "0.2.*",
+    "soajs.mongodb.data": "0.2.*",
     "soajs.controller": "0.2.*",
-    "grunt":"0.4.5",
-    "grunt-contrib-jshint":"*",
-    "grunt-jsdoc" : "*",
-    "grunt-contrib-clean" : "*",
-    "grunt-mocha-test" : "*",
-    "grunt-env" : "*",
-    "grunt-istanbul" : "*",
-    "grunt-coveralls" : "*",
-    "jshint" : "*",
+    "grunt": "0.4.5",
+    "grunt-contrib-jshint": "*",
+    "grunt-jsdoc": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-mocha-test": "*",
+    "grunt-env": "*",
+    "grunt-istanbul": "*",
+    "grunt-coveralls": "*",
+    "jshint": "*",
     "lodash": "*",
-    "mocha" : "*",
-    "request" : "*",
-    "shelljs":"*"
+    "mocha": "*",
+    "request": "*",
+    "shelljs": "*"
   },
   "dependencies": {
-    "bcrypt": "*",
     "soajs": "0.4.*"
   }
 }

@@ -20,11 +20,13 @@ module.exports = {
     },
     "hashIterations": 1024,
     "seedLength": 32,
+	"model": 'mongo',
     "errors": {
         400: "Problem with the provided password.",
         401: "Unable to log in the user. User not found.",
         403: "User does not have access to this tenant",
-        404: "Error executing operation"
+        404: "Error executing operation",
+	    601: "Model not found"
     },
     "schema": {
         "post": {

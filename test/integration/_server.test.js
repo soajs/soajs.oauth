@@ -28,7 +28,7 @@ describe("importing sample data", function () {
 			setTimeout(function () {
 				require("./soajs.oauth.test.js");
 				done();
-			}, 1000);
+			}, 1500);
 		}, 1000);
 	});
 });

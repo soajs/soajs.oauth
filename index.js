@@ -1,116 +1,74 @@
 'use strict';
 var soajsCore = require('soajs');
 var config = require('./config.js');
-var coreHasher = soajsCore.hasher;
-
-var userCollectionName = "oauth_urac";
-var tokenCollectionName = "oauth_token";
-var Mongo = soajsCore.mongo;
-var mongo = null;
-
 var service = new soajsCore.server.service(config);
 
-service.init(function () {
-	function checkForMongo(req) {
-		if (!mongo) {
-			mongo = new Mongo(req.soajs.registry.coreDB.provision);
-		}
+var BLModule = require('./lib/oauth.js');
+
+function initBLModel(req, res, cb) {
+	var modelName = config.model;
+	if (req.soajs.servicesConfig && req.soajs.servicesConfig.model) {
+		modelName = req.soajs.servicesConfig.model
 	}
-	
-	function checkIfError(soajs, res, data, cb) {
-		if (data.error) {
-			if (typeof (data.error) === 'object' && data.error.message) {
-				soajs.log.error(data.error);
-			}
-			return res.jsonp(soajs.buildResponse({"code": data.code, "msg": data.config.errors[data.code]}));
+	if (process.env.SOAJS_TEST && req.soajs.inputmaskData.model) {
+		modelName = req.soajs.inputmaskData.model;
+	}
+	BLModule.init(modelName, function (error, BL) {
+		if (error) {
+			req.soajs.log.error(error);
+			return res.json(req.soajs.buildResponse({"code": 601, "msg": config.errors[601]}));
 		}
 		else {
-			if (cb) {
-				return cb();
-			}
+			return cb(BL);
 		}
-	}
-	
-	function login(req, cb) {
-		checkForMongo(req);
-		mongo.findOne(userCollectionName, {'userId': req.soajs.inputmaskData['username']}, function (err, record) {
-			if (record) {
-				var hashConfig = {
-					"hashIterations": config.hashIterations,
-					"seedLength": config.seedLength
-				};
-				
-				if (req.soajs.registry.serviceConfig && req.soajs.registry.serviceConfig.oauth) {
-					if (req.soajs.registry.serviceConfig.oauth.hashIterations && req.soajs.registry.serviceConfig.oauth.seedLength) {
-						hashConfig = {
-							"hashIterations": req.soajs.registry.serviceConfig.oauth.hashIterations,
-							"seedLength": req.soajs.registry.serviceConfig.oauth.seedLength
-						};
-					}
-				}
-				coreHasher.init(hashConfig);
-				coreHasher.compare(req.soajs.inputmaskData.password, record.password, function (err, result) {
-					if (err) {
-						return cb(400);
-					}
-					if (!result) {
-						return cb(401);
-					}
-					delete record.password;
-					if (record.tId && req.soajs.tenant) {
-						if (record.tId.toString() !== req.soajs.tenant.id) {
-							return cb(403);
-						}
-					}
-					//TODO: keys here
-					return cb(null, record);
-				});
-			}
-			else {
-				return cb(401);
-			}
-		});
-	}
-	
+	});
+}
+
+
+service.init(function () {
+
 	service.post("/token", function (req, res, next) {
-		service.oauth.model["getUser"] = function (username, password, callback) {
-			login(req, function (errCode, record) {
-				if (errCode) {
-					var error = new Error(config.errors[errCode]);
-					return callback(error);
-				}
-				else {
-					return callback(false, {"id": record._id.toString()});
-				}
-			});
-		};
-		next();
+		initBLModel(req, res, function (BLInstance) {
+			req.soajs.config = config;
+			service.oauth.model["getUser"] = function (username, password, callback) {
+				BLInstance.createToken(req, function (errCode, record) {
+					if (errCode) {
+						var error = new Error(config.errors[errCode]);
+						return callback(error);
+					}
+					else {
+						return callback(false, {"id": record._id.toString()});
+					}
+				});
+			};
+			next();
+		});
+
 	}, service.oauth.grant());
 	
 	service.delete("/accessToken/:token", function (req, res) {
-		checkForMongo(req);
-		var criteria = {"token": req.soajs.inputmaskData.token, "type": "accessToken"};
-		mongo.remove(tokenCollectionName, criteria, function (err, result) {
-			checkIfError(req.soajs, res, {config: config, error: err, code: 404}, function () {
-				return res.jsonp(req.soajs.buildResponse(null, result.result));
+		initBLModel(req, res, function (BLInstance) {
+			req.soajs.config = config;
+			BLInstance.deleteAccessToken(req, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
 	});
+	
 	service.delete("/refreshToken/:token", function (req, res) {
-		checkForMongo(req);
-		var criteria = {"token": req.soajs.inputmaskData.token, "type": "refreshToken"};
-		mongo.remove(tokenCollectionName, criteria, function (err, result) {
-			checkIfError(req.soajs, res, {config: config, error: err, code: 404}, function () {
-				return res.jsonp(req.soajs.buildResponse(null, result.result));
+		initBLModel(req, res, function (BLInstance) {
+			req.soajs.config = config;
+			BLInstance.deleteRefreshToken(req, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
 	});
+	
 	service.delete("/tokens/:client", function (req, res) {
-		checkForMongo(req);
-		var criteria = {"clientId": req.soajs.inputmaskData.client};
-		mongo.remove(tokenCollectionName, criteria, function (err, result) {
-			checkIfError(req.soajs, res, {config: config, error: err, code: 404}, function () {
-				return res.jsonp(req.soajs.buildResponse(null, result.result));
+		initBLModel(req, res, function (BLInstance) {
+			req.soajs.config = config;
+			BLInstance.deleteAllTokens(req, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
 	});

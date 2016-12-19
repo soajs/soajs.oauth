@@ -2,7 +2,6 @@
 var assert = require('assert');
 var request = require("request");
 var soajs = require('soajs');
-
 var helper = require("../helper.js");
 var config = require("../../config.js");
 
@@ -142,6 +141,7 @@ describe("OAUTH TESTS", function () {
 			
 			request(oAuthParams, callback);
 		});
+		
 		it('fail - wrong password', function (done) {
 			var params = oAuthParams;
 			params.body = 'username=oauthTestUser&password=oauthpass&grant_type=password';
@@ -216,7 +216,6 @@ describe("OAUTH TESTS", function () {
 					assert.ok(body.access_token);
 					token = body.access_token;
 					refreshToken = body.refresh_token;
-					
 					done();
 				}
 				

@@ -104,6 +104,7 @@ module.exports = function (grunt) {
 				SOAJS_SRVIP: '127.0.0.1'
 			},
 			coverage: {
+				// SOAJS_PROFILE: '',
 				SOAJS_ENV: 'dev',
 				// APP_DIR: process.cwd(),
 				APP_DIR_FOR_CODE_COVERAGE: '../test/coverage/instrument/',
@@ -121,8 +122,7 @@ module.exports = function (grunt) {
 		},
 		
 		instrument: {
-			//files: ['example01/*.js', 'example02/*.js', 'example03/*.js' ],
-			files: ['index.js', 'config.js'],
+			files: ['index.js', 'config.js', '**/*.js'],
 			//files: ['**/*.js'],
 			options: {
 				lazy: false,
