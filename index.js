@@ -26,7 +26,16 @@ function initBLModel(req, res, cb) {
 
 
 service.init(function () {
-
+	
+	service.get("/generateBasicOauth", function (req, res) {
+		initBLModel(req, res, function (BLInstance) {
+			req.soajs.config = config;
+			BLInstance.generateBasicOauth(req, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+	
 	service.post("/token", function (req, res, next) {
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
@@ -43,7 +52,7 @@ service.init(function () {
 			};
 			next();
 		});
-
+		
 	}, service.oauth.grant());
 	
 	service.delete("/accessToken/:token", function (req, res) {
