@@ -82,6 +82,21 @@ describe("OAUTH TESTS", function () {
 		done();
 	});
 	
+	describe("get Authorization tests", function () {
+
+		it('success - get value', function (done) {
+			var params = {
+				qs: {}
+			};
+			executeMyRequest(params, 'authorization', 'get', function (body) {
+				assert.ok(body);
+				assert.ok(body.data);
+				done();
+			});
+		});
+
+	});
+
 	describe("get Token tests", function () {
 		it('success - login', function (done) {
 			function callback(error, response, body) {

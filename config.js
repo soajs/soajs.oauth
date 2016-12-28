@@ -16,7 +16,8 @@ module.exports = {
 	"oauth": true,
 	"oauthService": {
 		"name": "oauth",
-		"tokenApi": "/token"
+		"tokenApi": "/token",
+		"authorizationApi": "/authorization"
 	},
 	"hashIterations": 1024,
 	"seedLength": 32,
@@ -26,14 +27,15 @@ module.exports = {
 		401: "Unable to log in the user. User not found.",
 		403: "User does not have access to this tenant",
 		404: "Error executing operation",
+		405: "Invalid Tenant id",
 		413: "Problem with the provided password.",
 		601: "Model not found"
 	},
 	"schema": {
 		"get": {
-			"/generateBasicOauth": {
+			"/authorization": {
 				"_apiInfo": {
-					"l": "Generate Basic oAuth"
+					"l": "Get the authorization value"
 				}
 			}
 		},
@@ -74,6 +76,7 @@ module.exports = {
 				}
 			}
 		},
+		
 		"delete": {
 			"/accessToken/:token": {
 				"_apiInfo": {

@@ -27,10 +27,10 @@ function initBLModel(req, res, cb) {
 
 service.init(function () {
 	
-	service.get("/generateBasicOauth", function (req, res) {
+	service.get("/authorization", function (req, res) {
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
-			BLInstance.generateBasicOauth(req, function (error, data) {
+			BLInstance.generateAuthValue(req, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
