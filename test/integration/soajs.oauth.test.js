@@ -83,7 +83,7 @@ describe("OAUTH TESTS", function () {
 	});
 	
 	describe("get Authorization tests", function () {
-
+		
 		it('success - get value', function (done) {
 			var params = {
 				qs: {}
@@ -94,10 +94,11 @@ describe("OAUTH TESTS", function () {
 				done();
 			});
 		});
-
+		
 	});
-
-	describe("get Token tests", function () {
+	
+	describe("get Token tests Using oauth", function () {
+		
 		it('success - login', function (done) {
 			function callback(error, response, body) {
 				assert.ifError(error);
@@ -362,5 +363,33 @@ describe("OAUTH TESTS", function () {
 				done();
 			});
 		});
+	});
+	
+	describe("get Token tests Using urac", function () {
+		var extKey2 = 'aa39b5490c4a4ed0e56d7ec1232a428f7ad78ebb7347db3fc9875cb10c2bce39bbf8aabacf9e00420afb580b15698c04ce10d659d1972ebc53e76b6bbae0c113bee1e23062800bc830e4c329ca913fefebd1f1222295cf2eb5486224044b4d0c';
+		var oAuthParams2 = {
+			url: 'http://127.0.0.1:4000/oauth/token',
+			method: "POST",
+			body: 'username=user1&password=123456&grant_type=password',
+			json: true,
+			headers: {
+				'accept': '*/*',
+				'content-type': 'application/x-www-form-urlencoded',
+				"Authorization": Authorization,
+				'key': extKey2
+			}
+		};
+		it('success - login', function (done) {
+			function callback(error, response, body) {
+				assert.ifError(error);
+				console.log(body);
+				assert.ok(body);
+				assert.ok(body.access_token);
+				done();
+			}
+			
+			request(oAuthParams2, callback);
+		});
+		
 	});
 });
