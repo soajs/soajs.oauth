@@ -40,7 +40,7 @@ service.init(function () {
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
 			service.oauth.model["getUser"] = function (username, password, callback) {
-				BLInstance.createToken(req, function (errCode, record) {
+				BLInstance.getUserRecord(req, function (errCode, record) {
 					if (errCode) {
 						var error = new Error(config.errors[errCode]);
 						return callback(error);
@@ -50,6 +50,7 @@ service.init(function () {
 					}
 				});
 			};
+			
 			next();
 		});
 		

@@ -22,6 +22,7 @@ module.exports = {
 	"hashIterations": 1024,
 	"seedLength": 32,
 	"model": 'mongo',
+	"loginMode": "oauth",
 	"errors": {
 		400: "Problem with the provided password.",
 		401: "Unable to log in the user. User not found.",
