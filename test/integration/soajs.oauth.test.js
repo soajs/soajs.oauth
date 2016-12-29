@@ -113,7 +113,7 @@ describe("OAUTH TESTS", function () {
 		
 		it('fail - invalid user', function (done) {
 			var params = oAuthParams;
-			params.body = 'username=test&password=oauthpass&grant_type=password';
+			params.body = 'username=notFound&password=oauthpass&grant_type=password';
 			function callback(error, response, body) {
 				assert.ifError(error);
 				assert.ok(body);
@@ -168,7 +168,7 @@ describe("OAUTH TESTS", function () {
 				console.log(body);
 				assert.deepEqual(body.errors.details[0], {
 					"code": 503,
-					"message": "Unable to log in the user. User not found."
+					"message": "Problem with the provided password."
 				});
 				done();
 			}
@@ -382,12 +382,25 @@ describe("OAUTH TESTS", function () {
 		it('success - login', function (done) {
 			function callback(error, response, body) {
 				assert.ifError(error);
-				console.log(body);
 				assert.ok(body);
 				assert.ok(body.access_token);
 				done();
 			}
 			
+			request(oAuthParams2, callback);
+		});
+
+		it('fail - wrong password', function (done) {
+			oAuthParams2.body = 'username=user1&password=123456789&grant_type=password';
+			function callback(error, response, body) {
+				assert.ifError(error);
+				assert.deepEqual(body.errors.details[0], {
+					"code": 503,
+					"message": 'Problem with the provided password.'
+				});
+				done();
+			}
+
 			request(oAuthParams2, callback);
 		});
 		
