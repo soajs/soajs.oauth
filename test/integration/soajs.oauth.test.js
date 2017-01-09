@@ -86,11 +86,30 @@ describe("OAUTH TESTS", function () {
 		
 		it('success - get value', function (done) {
 			var params = {
-				qs: {}
+				qs: {
+					model: "mongo"
+				}
 			};
 			executeMyRequest(params, 'authorization', 'get', function (body) {
 				assert.ok(body);
 				assert.ok(body.data);
+				Authorization = body.data;
+				done();
+			});
+		});
+
+		it('fail - no model', function (done) {
+			var params = {
+				qs: {
+					model: "memory"
+				}
+			};
+			executeMyRequest(params, 'authorization', 'get', function (body) {
+				assert.ok(body);
+				assert.deepEqual(body.errors.details[0], {
+					"code": 601,
+					"message": "Model not found"
+				});
 				done();
 			});
 		});

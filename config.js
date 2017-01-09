@@ -33,11 +33,24 @@ module.exports = {
 		601: "Model not found"
 	},
 	"schema": {
+		"commonFields": {
+			"model": {
+				"source": ['query.model'],
+				"required": false,
+				"default": "mongo",
+				"validation": {
+					"type": "string",
+					"enum": ["memory", "mongo"]
+				}
+			}
+		},
+		
 		"get": {
 			"/authorization": {
 				"_apiInfo": {
 					"l": "Get the authorization value"
-				}
+				},
+				"commonFields": ["model"]
 			}
 		},
 		

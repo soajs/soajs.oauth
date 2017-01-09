@@ -14,13 +14,13 @@ describe("importing sample data", function () {
 			shell.exec(sampleData.shell, function (code) {
 				assert.equal(code, 0);
 				shell.popd();
+				console.log('Test data imported.');
 				done();
 			});
 		});
 	});
 	
 	after(function (done) {
-		console.log('Test data imported.');
 		console.log('Starting services ...');
 		controller = require("soajs.controller");
 		setTimeout(function () {
