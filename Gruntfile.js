@@ -105,7 +105,6 @@ module.exports = function (grunt) {
 			},
 			coverage: {
 				SOAJS_TEST: true,
-				SOAJS_PROFILE: '',
 				SOAJS_ENV: 'dev',
 				// APP_DIR: process.cwd(),
 				SOAJS_PROFILE: '',
