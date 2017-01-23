@@ -35,6 +35,7 @@
     "soajs.controller": "0.2.*"
   },
   "dependencies": {
-    "soajs": "0.4.*"
+    "soajs": "0.4.*",
+    "soajs.urac.driver": "0.1.*"
   }
 }
