@@ -14,21 +14,42 @@ describe("importing sample data", function () {
 			shell.exec(sampleData.shell, function (code) {
 				assert.equal(code, 0);
 				shell.popd();
+				console.log('Test data imported.');
 				done();
 			});
 		});
 	});
-	
-	after(function (done) {
-		console.log('Test data imported.');
+
+	it("Start Services", function (done) {
 		console.log('Starting services ...');
 		controller = require("soajs.controller");
 		setTimeout(function () {
 			oauthService = helper.requireModule('./index');
 			setTimeout(function () {
-				require("./soajs.oauth.test.js");
 				done();
 			}, 1500);
 		}, 1000);
+	});
+
+	it("Reload controller registry", function (done) {
+		var params = {
+			"uri": "http://127.0.0.1:5000/reloadRegistry",
+			"headers": {
+				"content-type": "application/json"
+			},
+			"json": true
+		};
+		helper.requester("get", params, function (error, response) {
+			assert.ifError(error);
+			assert.ok(response);
+			done();
+		});
+	});
+
+	after(function (done) {
+		setTimeout(function () {
+			require("./soajs.oauth.test.js");
+			done();
+		}, 500);
 	});
 });
