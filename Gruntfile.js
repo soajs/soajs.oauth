@@ -104,9 +104,10 @@ module.exports = function (grunt) {
 				SOAJS_SRVIP: '127.0.0.1'
 			},
 			coverage: {
-				// SOAJS_PROFILE: '',
+				SOAJS_TEST: true,
 				SOAJS_ENV: 'dev',
 				// APP_DIR: process.cwd(),
+				SOAJS_PROFILE: '',
 				APP_DIR_FOR_CODE_COVERAGE: '../test/coverage/instrument/',
 				SOAJS_SRVIP: '127.0.0.1'
 			}
