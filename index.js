@@ -5,6 +5,12 @@ var service = new soajsCore.server.service(config);
 
 var BLModule = require('./lib/oauth.js');
 
+/**
+ * Initialize the Business Logic model
+ * @param {Request Object} req
+ * @param {Response Object} res
+ * @param {Callback Function} cb
+ */
 function initBLModel(req, res, cb) {
 	var modelName = config.model;
 	if (req.soajs.servicesConfig && req.soajs.servicesConfig.model) {
@@ -26,7 +32,12 @@ function initBLModel(req, res, cb) {
 
 
 service.init(function () {
-	
+
+	/**
+	 *
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.get("/authorization", function (req, res) {
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
@@ -35,7 +46,12 @@ service.init(function () {
 			});
 		});
 	});
-	
+
+	/**
+	 *
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.post("/token", function (req, res, next) {
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
@@ -55,7 +71,12 @@ service.init(function () {
 		});
 		
 	}, service.oauth.grant());
-	
+
+	/**
+	 *
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.delete("/accessToken/:token", function (req, res) {
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
@@ -64,7 +85,12 @@ service.init(function () {
 			});
 		});
 	});
-	
+
+	/**
+	 *
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.delete("/refreshToken/:token", function (req, res) {
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
@@ -73,7 +99,12 @@ service.init(function () {
 			});
 		});
 	});
-	
+
+	/**
+	 *
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
 	service.delete("/tokens/:client", function (req, res) {
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
