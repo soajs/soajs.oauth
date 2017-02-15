@@ -53,6 +53,8 @@ service.init(function () {
 	 * @param {Function} API middleware
 	 */
 	service.post("/token", function (req, res, next) {
+		//todo: check
+		req.headers['content-type'] = 'application/x-www-form-urlencoded';
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
 			service.oauth.model["getUser"] = function (username, password, callback) {
@@ -66,7 +68,7 @@ service.init(function () {
 					}
 				});
 			};
-			
+
 			next();
 		});
 		
