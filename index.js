@@ -53,7 +53,7 @@ service.init(function () {
 	 * @param {Function} API middleware
 	 */
 	service.post("/token", function (req, res, next) {
-		//todo: check
+		//rewrite headers content-type so that oauth.grant works
 		req.headers['content-type'] = 'application/x-www-form-urlencoded';
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
