@@ -64,7 +64,9 @@ service.init(function () {
 						return callback(error);
 					}
 					else {
-						return callback(false, {"id": record._id.toString()});
+						if (record)
+							record.id = record._id.toString();
+						return callback(false, record);
 					}
 				});
 			};
