@@ -1,7 +1,6 @@
 "use strict";
 var assert = require('assert');
 var request = require("request");
-var soajs = require('soajs');
 var helper = require("../helper.js");
 var config = require("../../config.js");
 
@@ -28,7 +27,7 @@ var clientId = null;
 var clientTokenCount = null;
 var tokenCollectionName = "oauth_token";
 
-var Mongo = soajs.mongo;
+var Mongo = require('soajs.core.modules').mongo;
 var dbConfig = require("./db.config.test.js");
 
 var oauthConfig = dbConfig();
