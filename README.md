@@ -62,9 +62,14 @@ Similarly, to kill a refresh_token invoke the below API.
 $ CURL -X DELETE http://localhost:4000/oauth/refreshToken/bb09a2f5582425c4ef9440dcce5885cbbe743047 -d 'access_token=e58751473112bca2ed939e0445e55b0f7921f544'
 ```
 
+In order to delete all tokens of a certain user, invoke the below API.
+```bash
+$ CURL -X DELETE http://localhost:4000/oauth/tokens/user/%userID% -d 'access_token=e58751473112bca2ed939e0445e55b0f7921f544'
+```
+
 In order to delete all tokens of a certain client, invoke the below API.
 ```bash
-$ CURL -X DELETE http://localhost:4000/oauth/tokens/%clientID% -d 'access_token=e58751473112bca2ed939e0445e55b0f7921f544'
+$ CURL -X DELETE http://localhost:4000/oauth/tokens/tenant/%clientID% -d 'access_token=e58751473112bca2ed939e0445e55b0f7921f544'
 ```
 
 ---

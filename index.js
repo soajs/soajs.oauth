@@ -34,7 +34,7 @@ function initBLModel(req, res, cb) {
 service.init(function () {
 
 	/**
-	 *
+	 * Generate Authorization based on model provided from input and tenant id from request
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -48,7 +48,7 @@ service.init(function () {
 	});
 
 	/**
-	 *
+	 * Generate Access & Refresh Tokens for the user
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -77,7 +77,7 @@ service.init(function () {
 	}, service.oauth.grant());
 
 	/**
-	 *
+	 * Delete Access token for the user
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -91,7 +91,7 @@ service.init(function () {
 	});
 
 	/**
-	 *
+	 * Delete Refresh Token for the user
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
@@ -105,14 +105,28 @@ service.init(function () {
 	});
 
 	/**
-	 *
+	 * Delete all tokens for the User
 	 * @param {String} API route
 	 * @param {Function} API middleware
 	 */
-	service.delete("/tokens/:client", function (req, res) {
+	service.delete("/tokens/user/:userId", function (req, res) {
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
 			BLInstance.deleteAllTokens(req, function (error, data) {
+				return res.json(req.soajs.buildResponse(error, data));
+			});
+		});
+	});
+	
+	/**
+	 * Delete all tokens for the client
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.delete("/tokens/tenant/:clientId", function (req, res) {
+		initBLModel(req, res, function (BLInstance) {
+			req.soajs.config = config;
+			BLInstance.deauthorize(req, function (error, data) {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});

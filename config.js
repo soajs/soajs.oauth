@@ -117,12 +117,24 @@ module.exports = {
 					}
 				}
 			},
-			"/tokens/:client": {
+			"/tokens/user/:userId": {
 				"_apiInfo": {
-					"l": "Delete all Tokens for this client"
+					"l": "Delete all Tokens for this User"
 				},
-				"client": {
-					"source": ['params.client'],
+				"userId": {
+					"source": ['params.userId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			"/tokens/tenant/:clientId": {
+				"_apiInfo": {
+					"l": "Delete all Tokens for this Client"
+				},
+				"clientId": {
+					"source": ['params.clientId'],
 					"required": true,
 					"validation": {
 						"type": "string"

@@ -66,6 +66,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		if (params.qs) {
 			options.qs = params.qs;
 		}
+		
 		request[method](options, function (error, response, body) {
 			assert.ifError(error);
 			assert.ok(body);
@@ -136,7 +137,6 @@ describe("OAUTH TESTS", function () {
 				assert.ifError(error);
 				assert.ok(body);
 				assert.ok(body.errors);
-				console.log(body);
 				assert.deepEqual(body.errors.details[0], {
 					"code": 503,
 					"message": "Unable to log in the user. User not found."
@@ -154,7 +154,6 @@ describe("OAUTH TESTS", function () {
 			function callback(error, response, body) {
 				assert.ifError(error);
 				assert.ok(body);
-				console.log(body);
 				assert.equal(body.errors.details[0].code, 503);
 				done();
 			}
@@ -168,7 +167,6 @@ describe("OAUTH TESTS", function () {
 			function callback(error, response, body) {
 				assert.ok(body);
 				assert.ok(body.errors);
-				console.log(body);
 				assert.equal(body.errors.details[0].code, 172);
 				done();
 			}
@@ -183,7 +181,6 @@ describe("OAUTH TESTS", function () {
 				assert.ifError(error);
 				assert.ok(body);
 				assert.ok(body.errors);
-				console.log(body);
 				assert.deepEqual(body.errors.details[0], {
 					"code": 503,
 					"message": "Problem with the provided password."
@@ -232,6 +229,7 @@ describe("OAUTH TESTS", function () {
 					}
 				};
 				executeMyRequest(params, 'accessToken/' + token, 'del', function (body) {
+					console.log(JSON.stringify(body));
 					assert.ok(body);
 					assert.deepEqual(body.data, {ok: 1, n: 1});
 					done();
@@ -346,7 +344,7 @@ describe("OAUTH TESTS", function () {
 					"access_token": '1234567890'
 				}
 			};
-			executeMyRequest(params, 'tokens/' + clientId, 'del', function (body) {
+			executeMyRequest(params, 'tokens/tenant/' + clientId, 'del', function (body) {
 				assert.deepEqual(body.errors.details[0], {
 					"code": 401,
 					"message": 'The access token provided is invalid.'
@@ -361,7 +359,7 @@ describe("OAUTH TESTS", function () {
 					"access_token": token
 				}
 			};
-			executeMyRequest(params, 'tokens/0011234', 'del', function (body) {
+			executeMyRequest(params, 'tokens/tenant/0011234', 'del', function (body) {
 				assert.ok(body.result);
 				assert.deepEqual(body.data, {ok: 1, n: 0});
 				done();
@@ -374,7 +372,7 @@ describe("OAUTH TESTS", function () {
 					"access_token": token
 				}
 			};
-			executeMyRequest(params, 'tokens/' + clientId, 'del', function (body) {
+			executeMyRequest(params, 'tokens/tenant/' + clientId, 'del', function (body) {
 				assert.ok(body);
 				assert.ok(body.result, true);
 				assert.equal(body.data.n, clientTokenCount);
@@ -397,11 +395,13 @@ describe("OAUTH TESTS", function () {
 				'key': extKey2
 			}
 		};
+		var userAccessToken;
 		it('success - login', function (done) {
 			function callback(error, response, body) {
 				assert.ifError(error);
 				assert.ok(body);
 				assert.ok(body.access_token);
+				userAccessToken = body.access_token;
 				done();
 			}
 			
@@ -422,5 +422,17 @@ describe("OAUTH TESTS", function () {
 			request(oAuthParams2, callback);
 		});
 		
+		it("success - delete tokens for this user", function(done){
+			var params = {
+				qs: {
+					"access_token": userAccessToken
+				}
+			};
+			executeMyRequest(params, 'tokens/user/user1', 'del', function (body) {
+				assert.ok(body);
+				assert.ok(body.data);
+				done();
+			});
+		});
 	});
 });
