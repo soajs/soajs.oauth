@@ -63,17 +63,17 @@ service.init(function () {
 						var error = new Error(config.errors[errCode]);
 						return callback(error);
 					}
-					else {
-						if (record)
-							record.id = record._id.toString();
-						return callback(false, record);
+
+					if (record) {
+						record.id = record._id.toString();
 					}
+					return callback(false, record);
 				});
 			};
 
 			next();
 		});
-		
+
 	}, service.oauth.grant());
 
 	/**
@@ -117,7 +117,7 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	/**
 	 * Delete all tokens for the client
 	 * @param {String} API route
@@ -131,6 +131,6 @@ service.init(function () {
 			});
 		});
 	});
-	
+
 	service.start();
 });
