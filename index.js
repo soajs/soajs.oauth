@@ -33,6 +33,25 @@ function initBLModel(req, res, cb) {
 
 service.init(function () {
 
+    if (!service.oauth) {
+        var coreModules = require("soajs.core.modules");
+        var provision = coreModules.provision;
+        var oauthserver = require('oauth2-server');
+        var reg = service.registry.get();
+        service.oauth = oauthserver({
+            model: provision.oauthModel,
+            grants: reg.serviceConfig.oauth.grants,
+            debug: reg.serviceConfig.oauth.debug,
+            accessTokenLifetime: reg.serviceConfig.oauth.accessTokenLifetime,
+            refreshTokenLifetime: reg.serviceConfig.oauth.refreshTokenLifetime
+        });
+        provision.init(reg.coreDB.provision, service.log);
+        provision.loadProvision(function (loaded) {
+            if (loaded)
+                service.log.info("Service provision loaded.");
+        });
+    }
+
 	/**
 	 * Generate Authorization based on model provided from input and tenant id from request
 	 * @param {String} API route
@@ -53,46 +72,26 @@ service.init(function () {
 	 * @param {Function} API middleware
 	 */
 	service.post("/token", function (req, res, next) {
-		var triggerBLModel = function (){
-            //rewrite headers content-type so that oauth.grant works
-            req.headers['content-type'] = 'application/x-www-form-urlencoded';
-            initBLModel(req, res, function (BLInstance) {
-                req.soajs.config = config;
-                service.oauth.model["getUser"] = function (username, password, callback) {
-                    BLInstance.getUserRecord(req, function (errCode, record) {
-                        if (errCode) {
-                            var error = new Error(config.errors[errCode]);
-                            return callback(error);
-                        }
+		//rewrite headers content-type so that oauth.grant works
+		req.headers['content-type'] = 'application/x-www-form-urlencoded';
+		initBLModel(req, res, function (BLInstance) {
+			req.soajs.config = config;
+			service.oauth.model["getUser"] = function (username, password, callback) {
+				BLInstance.getUserRecord(req, function (errCode, record) {
+					if (errCode) {
+						var error = new Error(config.errors[errCode]);
+						return callback(error);
+					}
 
-                        if (record) {
-                            record.id = record._id.toString();
-                        }
-                        return callback(false, record);
-                    });
-                };
+					if (record) {
+						record.id = record._id.toString();
+					}
+					return callback(false, record);
+				});
+			};
 
-                next();
-            });
-		};
-		if (!service.oauth) {
-            var coreModules = require("soajs.core.modules");
-            var provision = coreModules.provision;
-            var oauthserver = require('oauth2-server');
-            service.oauth = oauthserver({
-                model: provision.oauthModel,
-                grants: req.soajs.registry.serviceConfig.oauth.grants,
-                debug: req.soajs.registry.serviceConfig.oauth.debug,
-                accessTokenLifetime: req.soajs.registry.serviceConfig.oauth.accessTokenLifetime,
-                refreshTokenLifetime: req.soajs.registry.serviceConfig.oauth.refreshTokenLifetime
-            });
-            provision.init(req.soajs.registry.coreDB.provision, req.soajs.log);
-            provision.loadProvision(function (loaded) {
-                triggerBLModel();
-            });
-        }
-        else
-            triggerBLModel ();
+			next();
+		});
 	}, service.oauth.grant());
 
 	/**
