@@ -53,6 +53,19 @@ service.init(function () {
 	 * @param {Function} API middleware
 	 */
 	service.post("/token", function (req, res, next) {
+
+		if (!service.oauth) {
+            var coreModules = require("soajs.core.modules");
+            var provision = coreModules.provision;
+            var oauthserver = require('oauth2-server');
+            service.oauth = oauthserver({
+                model: provision.oauthModel,
+                grants: req.soajs.registry.serviceConfig.oauth.grants,
+                debug: req.soajs.registry.serviceConfig.oauth.debug,
+                accessTokenLifetime: req.soajs.registry.serviceConfig.oauth.accessTokenLifetime,
+                refreshTokenLifetime: req.soajs.registry.serviceConfig.oauth.refreshTokenLifetime
+            });
+        }
 		//rewrite headers content-type so that oauth.grant works
 		req.headers['content-type'] = 'application/x-www-form-urlencoded';
 		initBLModel(req, res, function (BLInstance) {
