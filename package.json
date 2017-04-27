@@ -35,7 +35,6 @@
   },
   "dependencies": {
     "soajs": "1.*",
-    "soajs.core.modules": "1.*",
     "soajs.urac.driver": "1.*"
   }
 }
