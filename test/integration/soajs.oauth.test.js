@@ -27,7 +27,7 @@ var clientId = null;
 var clientTokenCount = null;
 var tokenCollectionName = "oauth_token";
 
-var Mongo = require('soajs.core.modules').mongo;
+var Mongo = require('soajs').mongo;
 var dbConfig = require("./db.config.test.js");
 
 var oauthConfig = dbConfig();
