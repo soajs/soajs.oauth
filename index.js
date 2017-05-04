@@ -34,8 +34,7 @@ function initBLModel(req, res, cb) {
 service.init(function () {
 
     if (!service.oauth) {
-        var coreModules = require("soajs").core;
-        var provision = coreModules.provision;
+        var provision = require("soajs").provision;
         var oauthserver = require('oauth2-server');
         var reg = service.registry.get();
         service.oauth = oauthserver({
