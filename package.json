@@ -34,7 +34,7 @@
     "soajs.controller": "1.0.*"
   },
   "dependencies": {
-    "soajs": "1.0.*",
-    "soajs.urac.driver": "1.0.*"
+    "soajs": "git://github.com/soajs/soajs#feature/sessionLessCtrl",
+    "soajs.urac.driver": "git://github.com/soajs/soajs.urac.driver#feature/sessionLess"
   }
 }
