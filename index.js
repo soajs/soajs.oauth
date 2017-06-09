@@ -49,6 +49,13 @@ service.init(function () {
             if (loaded)
                 service.log.info("Service provision loaded.");
         });
+        service.appMaintenance.get("/loadProvision", function (req, res) {
+            provision.loadProvision(function (loaded) {
+                var response = service.maintenanceResponse(req);
+                response['result'] = loaded;
+                res.jsonp(response);
+            });
+        });
     }
 
 	/**
