@@ -75,4 +75,4 @@ $ CURL -X DELETE http://localhost:4000/oauth/tokens/tenant/%clientID% -d 'access
 
 ---
 
-More information is available on SOAJS website section for [oAuth](http://www.soajs.org/#/documentation/services/oauth).
+More information is available on SOAJS website section for [oAuth](https://soajsorg.atlassian.net/wiki/spaces/OAUT/overview).
