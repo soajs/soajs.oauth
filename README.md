@@ -1,6 +1,7 @@
 # soajs.oauth
 [![Build Status](https://travis-ci.org/soajs/soajs.oauth.svg?branch=master)](https://travis-ci.org/soajs/soajs.oauth)
 [![Coverage Status](https://coveralls.io/repos/soajs/soajs.oauth/badge.png)](https://coveralls.io/r/soajs/soajs.oauth)
+[![Known Vulnerabilities](https://snyk.io/test/github/soajs/soajs.oauth/badge.svg)](https://snyk.io/test/github/soajs/soajs.oauth)
 
 SOAJS oAuth is a service that integrates with [oAuth 2.0](http://www.oauth.org).
 The service simply validates, refreshes and kills access tokens generated via oAuth 2.0.
