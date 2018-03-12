@@ -200,6 +200,7 @@ describe("OAUTH TESTS", function () {
 			it('fail - access token not found', function (done) {
 				executeMyRequest({}, 'accessToken/00000', 'del', function (body) {
 					assert.ok(body);
+					console.log(body);
 					assert.equal(body.data.n, 0);
 					done();
 				});
