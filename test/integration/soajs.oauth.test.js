@@ -199,10 +199,8 @@ describe("OAUTH TESTS", function () {
 			
 			it('fail - access token not found', function (done) {
 				executeMyRequest({}, 'accessToken/00000', 'del', function (body) {
-					assert.deepEqual(body.errors.details[0], {
-						"code": 400,
-						"message": 'The access token was not found'
-					});
+					assert.ok(body);
+					assert.equal(body.data.n, 0);
 					done();
 				});
 			});
@@ -229,7 +227,6 @@ describe("OAUTH TESTS", function () {
 					}
 				};
 				executeMyRequest(params, 'accessToken/' + token, 'del', function (body) {
-					console.log(JSON.stringify(body));
 					assert.ok(body);
 					assert.deepEqual(body.data, {ok: 1, n: 1});
 					done();
@@ -256,10 +253,8 @@ describe("OAUTH TESTS", function () {
 			
 			it("fail - access token not found", function (done) {
 				executeMyRequest({}, 'refreshToken/' + refreshToken, 'del', function (body) {
-					assert.deepEqual(body.errors.details[0], {
-						"code": 400,
-						"message": 'The access token was not found'
-					});
+					assert.ok(body);
+					assert.equal(body.data.n, 1);
 					done();
 				});
 			});
@@ -292,19 +287,6 @@ describe("OAUTH TESTS", function () {
 				});
 			});
 			
-			it("success - get new refresh token", function (done) {
-				var params = oAuthParams;
-				params.body = 'refresh_token=' + refreshToken + '&grant_type=refresh_token';
-				function callback(error, response, body) {
-					assert.ifError(error);
-					assert.ok(body);
-					assert.ok(body.refresh_token);
-					done();
-				}
-				
-				request(oAuthParams, callback);
-			});
-			
 			it("success - refresh token found and deleted", function (done) {
 				var params = {
 					qs: {
@@ -313,7 +295,7 @@ describe("OAUTH TESTS", function () {
 				};
 				executeMyRequest(params, 'refreshToken/' + refreshToken, 'del', function (body) {
 					assert.ok(body);
-					assert.deepEqual(body.data, {ok: 1, n: 1});
+					assert.deepEqual(body.data, {ok: 1, n: 0});
 					done();
 				});
 			});
