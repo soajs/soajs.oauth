@@ -66,9 +66,12 @@ service.init(function () {
 	service.get("/authorization", function (req, res) {
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
-			BLInstance.generateAuthValue(req, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
+            provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
+                req.soajs.tenantOauth = tenantOauth;
+                BLInstance.generateAuthValue(req, function (error, data) {
+                    return res.json(req.soajs.buildResponse(error, data));
+                });
+            });
 		});
 	});
 
@@ -82,19 +85,23 @@ service.init(function () {
 		req.headers['content-type'] = 'application/x-www-form-urlencoded';
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
-			service.oauth.model["getUser"] = function (username, password, callback) {
-				BLInstance.getUserRecord(req, function (errCode, record) {
-					if (errCode) {
-						var error = new Error(config.errors[errCode]);
-						return callback(error);
-					}
 
-					if (record) {
-						record.id = record._id.toString();
-					}
-					return callback(false, record);
-				});
-			};
+            provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
+                req.soajs.tenantOauth = tenantOauth;
+                service.oauth.model["getUser"] = function (username, password, callback) {
+                    BLInstance.getUserRecord(req, function (errCode, record) {
+                        if (errCode) {
+                            var error = new Error(config.errors[errCode]);
+                            return callback(error);
+                        }
+
+                        if (record) {
+                            record.id = record._id.toString();
+                        }
+                        return callback(false, record);
+                    });
+                };
+            });
 
 			next();
 		});
@@ -136,9 +143,13 @@ service.init(function () {
 	service.delete("/tokens/user/:userId", function (req, res) {
 		initBLModel(req, res, function (BLInstance) {
 			req.soajs.config = config;
-			BLInstance.deleteAllTokens(req, function (error, data) {
-				return res.json(req.soajs.buildResponse(error, data));
-			});
+
+            provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
+                req.soajs.tenantOauth = tenantOauth;
+                BLInstance.deleteAllTokens(req, function (error, data) {
+                    return res.json(req.soajs.buildResponse(error, data));
+                });
+            });
 		});
 	});
 
