@@ -297,7 +297,7 @@ describe("OAUTH TESTS", function () {
 				};
 				executeMyRequest(params, 'refreshToken/' + refreshToken, 'del', function (body) {
 					assert.ok(body);
-					assert.deepEqual(body.data, {ok: 1, n: 1});
+					assert.deepEqual(body.data, {ok: 1, n: 0});
 					done();
 				});
 			});
