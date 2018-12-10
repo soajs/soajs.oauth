@@ -16,7 +16,7 @@ module.exports = {
     "oauth": true,
     "maintenance": {
         "commands": [
-            {"label": "Releoad Provision", "url": "/reloadProvision", "icon": "provision"}
+            {"label": "Releoad Provision", "path": "/reloadProvision", "icon": "provision"}
         ]
     },
     "oauthService": {
