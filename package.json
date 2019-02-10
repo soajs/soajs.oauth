@@ -1,7 +1,7 @@
 {
   "name": "soajs.oauth",
   "description": "soajs oauth service",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -32,7 +32,7 @@
     "request": "2.79.0",
     "shelljs": "0.7.5",
     "soajs.mongodb.data": "2.1.*",
-    "soajs.controller": "2.1.*"
+    "soajs.controller": "2.2.*"
   },
   "dependencies": {
     "oauth2-server": "2.4.1",
