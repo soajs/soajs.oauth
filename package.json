@@ -1,7 +1,7 @@
 {
   "name": "soajs.oauth",
   "description": "soajs oauth service",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -31,12 +31,13 @@
     "mocha": "3.2.0",
     "request": "2.79.0",
     "shelljs": "0.7.5",
+
     "soajs.mongodb.data": "2.1.*",
-    "soajs.controller": "2.2.*"
+    "soajs.controller": "2.3.*"
   },
   "dependencies": {
     "oauth2-server": "2.4.1",
-    "soajs": "2.2.2",
-    "soajs.urac.driver": "1.2.0"
+    "soajs": "2.3.0",
+    "soajs.urac.driver": "1.3.0"
   }
 }
