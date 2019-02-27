@@ -54,7 +54,8 @@ module.exports = {
         "get": {
             "/authorization": {
                 "_apiInfo": {
-                    "l": "Get the authorization value"
+                    "l": "Get the authorization token",
+                    "group": "Authorize"
                 },
                 "commonFields": ["model"]
             }
@@ -63,7 +64,8 @@ module.exports = {
         "post": {
             "/token": {
                 "_apiInfo": {
-                    "l": "Create Token"
+                    "l": "Create an access token",
+                    "group": "Tokenization"
                 },
                 "username": {
                     "source": ['body.username'],
@@ -100,7 +102,8 @@ module.exports = {
         "delete": {
             "/accessToken/:token": {
                 "_apiInfo": {
-                    "l": "Delete Access Token"
+                    "l": "Delete access token",
+                    "group": "Tokenization"
                 },
                 "token": {
                     "source": ['params.token'],
@@ -112,7 +115,8 @@ module.exports = {
             },
             "/refreshToken/:token": {
                 "_apiInfo": {
-                    "l": "Delete Refresh Token"
+                    "l": "Delete refresh token",
+                    "group": "Tokenization"
                 },
                 "token": {
                     "source": ['params.token'],
@@ -124,7 +128,8 @@ module.exports = {
             },
             "/tokens/user/:userId": {
                 "_apiInfo": {
-                    "l": "Delete all Tokens for this User"
+                    "l": "Delete all tokens for a given user",
+                    "group": "Tokenization"
                 },
                 "userId": {
                     "source": ['params.userId'],
@@ -136,7 +141,8 @@ module.exports = {
             },
             "/tokens/tenant/:clientId": {
                 "_apiInfo": {
-                    "l": "Delete all Tokens for this Client"
+                    "l": "Delete all tokens for this client (tenant)",
+                    "group": "Tokenization"
                 },
                 "clientId": {
                     "source": ['params.clientId'],
