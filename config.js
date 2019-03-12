@@ -55,7 +55,7 @@ module.exports = {
             "/authorization": {
                 "_apiInfo": {
                     "l": "Get the authorization token",
-                    "group": "Authorize"
+                    "group": "Guest"
                 },
                 "commonFields": ["model"]
             }
@@ -65,7 +65,7 @@ module.exports = {
             "/token": {
                 "_apiInfo": {
                     "l": "Create an access token",
-                    "group": "Tokenization"
+                    "group": "Guest"
                 },
                 "username": {
                     "source": ['body.username'],
