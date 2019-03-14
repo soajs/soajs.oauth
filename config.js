@@ -129,7 +129,7 @@ module.exports = {
             "/tokens/user/:userId": {
                 "_apiInfo": {
                     "l": "Delete all tokens for a given user",
-                    "group": "Tokenization"
+                    "group": "User Tokenization"
                 },
                 "userId": {
                     "source": ['params.userId'],
@@ -142,7 +142,7 @@ module.exports = {
             "/tokens/tenant/:clientId": {
                 "_apiInfo": {
                     "l": "Delete all tokens for this client (tenant)",
-                    "group": "Tokenization"
+                    "group": "Cient Tokenization"
                 },
                 "clientId": {
                     "source": ['params.clientId'],
