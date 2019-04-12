@@ -36,6 +36,8 @@ module.exports = {
         405: "Invalid Tenant id",
         406: "Missing Tenant secret",
         413: "Problem with the provided password.",
+        450: "You do not have privileges to enable pin login",
+        451: "Pin login is not available for this account",
         601: "Model not found"
     },
     "schema": {
@@ -76,6 +78,34 @@ module.exports = {
                 },
                 "password": {
                     "source": ['body.password'],
+                    "required": false,
+                    "validation": {
+                        "type": "string"
+                    }
+                },
+                "grant_type": {
+                    "source": ['body.grant_type'],
+                    "required": true,
+                    "validation": {
+                        "type": "string",
+                        "enum": ["refresh_token", "password"]
+                    }
+                },
+                "refresh_token": {
+                    "source": ['body.refresh_token'],
+                    "required": false,
+                    "validation": {
+                        "type": "string"
+                    }
+                }
+            },
+            "/pin": {
+                "_apiInfo": {
+                    "l": "Create an access token with pin",
+                    "group": "Tokenization"
+                },
+                "pin": {
+                    "source": ['body.pin'],
                     "required": false,
                     "validation": {
                         "type": "string"
