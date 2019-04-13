@@ -101,6 +101,7 @@ service.init(function () {
 
             provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
                 req.soajs.tenantOauth = tenantOauth;
+
                 service.oauth.model["getUser"] = function (username, password, callback) {
                     BLInstance.getUserRecord(req, function (errCode, record) {
                         if (errCode) {
@@ -111,7 +112,12 @@ service.init(function () {
                         if (record) {
                             record.id = record._id.toString();
                         }
-                        if (record.loginMode === 'urac' && req.soajs.tenantOauth.pin && req.soajs.tenantOauth.pin.enabled) {
+
+                        let product = null;
+                        if (req.soajs.tenant && req.soajs.tenant.application)
+                            product = req.soajs.tenant.application.product;
+
+                        if (product && record.loginMode === 'urac' && req.soajs.tenantOauth.pin && req.soajs.tenantOauth.pin[product] && req.soajs.tenantOauth.pin[product].enabled) {
                             record.pinLocked = true;
                             let userTenant = checkUserTenantAccessPin(record, req.soajs.tenant);
                             if (userTenant.pin && userTenant.pin.allowed)
@@ -126,7 +132,20 @@ service.init(function () {
                     });
                 };
 
-                next();
+                if (!req.headers.authorization) {
+                    BLInstance.generateAuthValue(req, function (error, data) {
+                        if (error) {
+                            return res.json(req.soajs.buildResponse(error, data));
+                        }
+                        else {
+                            req.headers.authorization = data;
+                            next();
+                        }
+                    });
+                }
+                else {
+                    next();
+                }
             });
 
         });
@@ -137,12 +156,20 @@ service.init(function () {
         req.headers['content-type'] = 'application/x-www-form-urlencoded';
         initBLModel(req, res, function (BLInstance) {
             req.soajs.config = config;
+
+            // we should set password and username for oauth to work
+            // we should also remove access_token since the request passed the gateway
+            // we should add authorization to be able to generate a new access token
+            //      or set req.body.client_id, req.body.client_secret instead
             req.body = req.body || {};
             req.body.username = "NA";
             req.body.password = "NA";
+            if (req.query.access_token)
+                delete req.query.access_token;
 
             provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
                 req.soajs.tenantOauth = tenantOauth;
+
                 service.oauth.model["getUser"] = function (username, password, callback) {
                     BLInstance.getUserRecordByPin(req, function (errCode, record) {
                         if (errCode) {
@@ -156,7 +183,15 @@ service.init(function () {
                     });
                 };
 
-                next();
+                BLInstance.generateAuthValue(req, function (error, data) {
+                    if (error) {
+                        return res.json(req.soajs.buildResponse(error, data));
+                    }
+                    else {
+                        req.headers.authorization = data;
+                        next();
+                    }
+                });
             });
         });
     }, service.oauth.grant());
