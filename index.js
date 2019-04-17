@@ -120,7 +120,7 @@ service.init(function () {
                         if (product && record.loginMode === 'urac' && req.soajs.tenantOauth.pin && req.soajs.tenantOauth.pin[product] && req.soajs.tenantOauth.pin[product].enabled) {
                             record.pinLocked = true;
                             let userTenant = checkUserTenantAccessPin(record, req.soajs.tenant);
-                            if (userTenant.pin && userTenant.pin.allowed)
+                            if (userTenant && userTenant.pin && userTenant.pin.allowed)
                                 return callback(false, record);
                             else {
                                 let error = new Error(config.errors[450]);
