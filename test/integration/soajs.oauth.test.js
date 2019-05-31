@@ -54,7 +54,7 @@ function executeMyRequest(params, apiPath, method, cb) {
 		if (params.headers) {
 			for (var h in params.headers) {
 				if (Object.hasOwnProperty.call(params.headers, h)) {
-					options.headers[h] = params.headers.h;
+					options.headers[h] = params.headers[h];
 				}
 			}
 		}
@@ -407,16 +407,25 @@ describe("OAUTH TESTS", function () {
 		});
 		
 		it("success - delete tokens for this user", function(done){
-			var params = {
+            var oAuthParams2 = {
+                url: 'http://127.0.0.1:4000/oauth/tokens/user/user1',
+                method: "DELETE",
+                json: true,
+                headers: {
+                    'accept': '*/*',
+                    'content-type': 'application/x-www-form-urlencoded',
+                    'key': extKey2
+                },
 				qs: {
-					"access_token": userAccessToken
-				}
-			};
-			executeMyRequest(params, 'tokens/user/user1', 'del', function (body) {
-				assert.ok(body);
-				assert.ok(body.data);
-				done();
-			});
+                    "access_token": userAccessToken
+                }
+            };
+            function callback(error, response, body) {
+                assert.ok(body);
+                assert.ok(body.data);
+                done();
+            }
+            request(oAuthParams2, callback);
 		});
 	});
 });
