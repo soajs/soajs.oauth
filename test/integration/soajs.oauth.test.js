@@ -398,7 +398,7 @@ describe("OAUTH TESTS", function () {
 				assert.ifError(error);
 				assert.deepEqual(body.errors.details[0], {
 					"code": 503,
-					"message": 'Problem with the provided password.'
+					"message": 'Problem with the provided password'
 				});
 				done();
 			}

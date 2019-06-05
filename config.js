@@ -29,11 +29,11 @@ module.exports = {
     "model": 'mongo',
     "loginMode": "oauth",
     "errors": {
-        400: "Problem with the provided password.",
+        //400: "Problem with the provided password.",
         401: "Unable to log in the user. User not found.",
         403: "User does not have access to this tenant",
         404: "Error executing operation",
-        405: "Invalid Tenant id",
+        //405: "Invalid Tenant id",
         406: "Missing Tenant secret",
         413: "Problem with the provided password.",
         450: "You do not have privileges to enable pin login",

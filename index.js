@@ -103,9 +103,12 @@ service.init(function () {
                 req.soajs.tenantOauth = tenantOauth;
 
                 service.oauth.model["getUser"] = function (username, password, callback) {
-                    BLInstance.getUserRecord(req, function (errCode, record) {
-                        if (errCode) {
-                            let error = new Error(config.errors[errCode]);
+                    BLInstance.getUserRecord(req, function (error, record) {
+                        if (error) {
+                            if (!error.code)
+                                error = new Error(config.errors[error]);
+                            else if (error.msg)
+                                error = new Error(error.msg);
                             return callback(error);
                         }
 
@@ -171,9 +174,12 @@ service.init(function () {
                 req.soajs.tenantOauth = tenantOauth;
 
                 service.oauth.model["getUser"] = function (username, password, callback) {
-                    BLInstance.getUserRecordByPin(req, function (errCode, record) {
-                        if (errCode) {
-                            let error = new Error(config.errors[errCode]);
+                    BLInstance.getUserRecordByPin(req, function (error, record) {
+                        if (error) {
+                            if (!error.code)
+                                error = new Error(config.errors[error]);
+                            else if (error.msg)
+                                error = new Error(error.msg);
                             return callback(error);
                         }
                         if (record) {
