@@ -1,6 +1,7 @@
 'use strict';
 const soajsCore = require('soajs');
 const config = require('./config.js');
+config.packagejson = require("./package.json");
 const service = new soajsCore.server.service(config);
 
 const provision = require("soajs").provision;
