@@ -51,13 +51,16 @@ service.init(function () {
 
     if (!service.oauth) {
         let reg = service.registry.get();
-        service.oauth = oauthserver({
-            model: provision.oauthModel,
-            grants: reg.serviceConfig.oauth.grants,
-            debug: reg.serviceConfig.oauth.debug,
-            accessTokenLifetime: reg.serviceConfig.oauth.accessTokenLifetime,
-            refreshTokenLifetime: reg.serviceConfig.oauth.refreshTokenLifetime
-        });
+        let oauthOptions = {
+	        model: provision.oauthModel
+        };
+	    if (reg.serviceConfig && reg.serviceConfig.oauth){
+		    oauthOptions.grants = reg.serviceConfig.oauth.grants;
+		    oauthOptions.debug = reg.serviceConfig.oauth.debug;
+		    oauthOptions.accessTokenLifetime = reg.serviceConfig.oauth.accessTokenLifetime;
+		    oauthOptions.accessTokenLifetime = reg.serviceConfig.oauth.refreshTokenLifetime;
+	    }
+        service.oauth = oauthserver(oauthOptions);
         provision.init(reg.coreDB.provision, service.log);
         provision.loadProvision(function (loaded) {
             if (loaded)
