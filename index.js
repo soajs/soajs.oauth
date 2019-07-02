@@ -55,7 +55,7 @@ service.init(function () {
 	        model: provision.oauthModel
         };
         //grants check
-	    if (reg.serviceConfig &&  reg.serviceConfig.oauth.grants){
+	    if (reg.serviceConfig && reg.serviceConfig.oauth && reg.serviceConfig.oauth.grants){
 		    oauthOptions.grants = reg.serviceConfig.oauth.grants;
 	    }
 	    else {
@@ -64,7 +64,7 @@ service.init(function () {
 	    }
 	
 	    //debug check
-	    if (reg.serviceConfig && reg.serviceConfig.oauth.debug){
+	    if (reg.serviceConfig && reg.serviceConfig.oauth && reg.serviceConfig.oauth.debug){
 		    oauthOptions.debug = reg.serviceConfig.oauth.debug;
 	    }
 	    else {
@@ -73,7 +73,7 @@ service.init(function () {
 	    }
 	    
 	    //accessTokenLifetime check
-	    if (reg.serviceConfig && reg.serviceConfig.oauth.accessTokenLifetime){
+	    if (reg.serviceConfig && reg.serviceConfig.oauth && reg.serviceConfig.oauth.accessTokenLifetime){
 		    oauthOptions.accessTokenLifetime = reg.serviceConfig.oauth.accessTokenLifetime;
 	    }
 	    else {
@@ -82,7 +82,7 @@ service.init(function () {
 	    }
 	    
 	    //refreshTokenLifetime check
-	    if (reg.serviceConfig && reg.serviceConfig.oauth.refreshTokenLifetime){
+	    if (reg.serviceConfig && reg.serviceConfig.oauth && reg.serviceConfig.oauth.refreshTokenLifetime){
 		    oauthOptions.refreshTokenLifetime = reg.serviceConfig.oauth.refreshTokenLifetime;
 	    }
 	    else {
