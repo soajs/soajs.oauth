@@ -54,6 +54,7 @@ service.init(function () {
         let oauthOptions = {
 	        model: provision.oauthModel
         };
+        
         //grants check
 	    if (reg.serviceConfig && reg.serviceConfig.oauth && reg.serviceConfig.oauth.grants){
 		    oauthOptions.grants = reg.serviceConfig.oauth.grants;
@@ -87,7 +88,7 @@ service.init(function () {
 	    }
 	    else {
 		    service.log.debug("Unable to find refreshTokenLifetime entry in registry, defaulting to", config.oauthServer.refreshTokenLifetime);
-		    oauthOptions.grants = config.oauthServer.refreshTokenLifetime;
+		    oauthOptions.refreshTokenLifetime = config.oauthServer.refreshTokenLifetime;
 	    }
         service.oauth = oauthserver(oauthOptions);
         provision.init(reg.coreDB.provision, service.log);
