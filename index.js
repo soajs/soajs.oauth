@@ -54,11 +54,40 @@ service.init(function () {
         let oauthOptions = {
 	        model: provision.oauthModel
         };
-	    if (reg.serviceConfig && reg.serviceConfig.oauth){
+        //grants check
+	    if (reg.serviceConfig &&  reg.serviceConfig.oauth.grants){
 		    oauthOptions.grants = reg.serviceConfig.oauth.grants;
+	    }
+	    else {
+		    service.log.debug("Unable to find grants entry in registry, defaulting to", config.oauthServer.grants);
+		    oauthOptions.grants = config.oauthServer.grants;
+	    }
+	
+	    //debug check
+	    if (reg.serviceConfig && reg.serviceConfig.oauth.debug){
 		    oauthOptions.debug = reg.serviceConfig.oauth.debug;
+	    }
+	    else {
+		    service.log.debug("Unable to find debug entry in registry, defaulting to", config.oauthServer.debug);
+		    oauthOptions.debug = config.oauthServer.debug;
+	    }
+	    
+	    //accessTokenLifetime check
+	    if (reg.serviceConfig && reg.serviceConfig.oauth.accessTokenLifetime){
 		    oauthOptions.accessTokenLifetime = reg.serviceConfig.oauth.accessTokenLifetime;
-		    oauthOptions.accessTokenLifetime = reg.serviceConfig.oauth.refreshTokenLifetime;
+	    }
+	    else {
+		    service.log.debug("Unable to find accessTokenLifetime entry in registry, defaulting to", config.oauthServer.accessTokenLifetime);
+		    oauthOptions.accessTokenLifetime = config.oauthServer.accessTokenLifetime;
+	    }
+	    
+	    //refreshTokenLifetime check
+	    if (reg.serviceConfig && reg.serviceConfig.oauth.refreshTokenLifetime){
+		    oauthOptions.refreshTokenLifetime = reg.serviceConfig.oauth.refreshTokenLifetime;
+	    }
+	    else {
+		    service.log.debug("Unable to find refreshTokenLifetime entry in registry, defaulting to", config.oauthServer.refreshTokenLifetime);
+		    oauthOptions.grants = config.oauthServer.refreshTokenLifetime;
 	    }
         service.oauth = oauthserver(oauthOptions);
         provision.init(reg.coreDB.provision, service.log);

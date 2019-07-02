@@ -28,6 +28,15 @@ module.exports = {
     "seedLength": 32,
     "model": 'mongo',
     "loginMode": "oauth",
+	"oauthServer" :{
+		"grants": [
+			"password",
+			"refresh_token"
+		],
+		"debug": false,
+		"accessTokenLifetime": 7200,
+		"refreshTokenLifetime":1209600
+	},
     "errors": {
         //400: "Problem with the provided password.",
         401: "Unable to log in the user. User not found.",
