@@ -41,6 +41,6 @@
     "oauth2-server": "2.4.1",
 
     "soajs": "2.5.7",
-    "soajs.urac.driver": "2.0.5"
+    "soajs.urac.driver": "2.0.6"
   }
 }
