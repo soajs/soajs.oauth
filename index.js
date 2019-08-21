@@ -91,7 +91,16 @@ service.init(function () {
 		    oauthOptions.refreshTokenLifetime = config.oauthServer.refreshTokenLifetime;
 	    }
         service.oauth = oauthserver(oauthOptions);
-        provision.init(reg.coreDB.provision, service.log);
+
+        let dbConfig = reg.coreDB.provision;
+        if (reg.coreDB.oauth) {
+            dbConfig = {
+                "provision": reg.coreDB.provision,
+                "oauth": reg.coreDB.oauth
+            };
+        }
+        provision.init(dbConfig, service.log);
+        //provision.init(reg.coreDB.provision, service.log);
         provision.loadProvision(function (loaded) {
             if (loaded)
                 service.log.info("Service provision loaded.");
