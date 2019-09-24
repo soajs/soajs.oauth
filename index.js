@@ -134,7 +134,7 @@ service.init(function () {
 	service.get('/passport/validate/:strategy', function (req, res) {
 		req.soajs.config = config;
 		initBLModel(req, res, function (BLInstance) {
-			BLInstance.passportValidate(req, res);
+			BLInstance.passportValidate(req, res, provision);
 		});
 	});
 	
