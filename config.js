@@ -69,7 +69,137 @@ module.exports = {
                     "group": "Guest"
                 },
                 "commonFields": ["model"]
-            }
+            },
+	
+	        "/passport/login/:strategy": {
+		        "_apiInfo": {
+			        "l": "Login Through Passport",
+			        "group": "Guest Login(s)"
+		        },
+		        "commonFields": ["model"],
+		        "uracConfig": {
+			        "source": ['servicesConfig.urac'],
+			        "required": true,
+			        "validation": {
+				        "type": "object",
+				        "properties": {
+					        "passportLogin": {
+						        "type": "object",
+						        "required": true,
+						        "properties": {
+							        "facebook": {
+								        "type": "object",
+								        "properties": {
+									        "clientID": {
+										        "type": "string",
+										        "required": true
+									        },
+									        "clientSecret": {
+										        "type": "string",
+										        "required": true
+									        },
+									        "callbackURL": {
+										        "type": "string",
+										        "required": true
+									        }
+								        }
+							        },
+							        "twitter": {
+								        "type": "object",
+								        "properties": {
+									        "clientID": {
+										        "type": "string",
+										        "required": true
+									        },
+									        "clientSecret": {
+										        "type": "string",
+										        "required": true
+									        },
+									        "callbackURL": {
+										        "type": "string",
+										        "required": true
+									        }
+								        }
+							        },
+							        "google": {
+								        "type": "object",
+								        "properties": {
+									        "clientID": {
+										        "type": "string",
+										        "required": true
+									        },
+									        "clientSecret": {
+										        "type": "string",
+										        "required": true
+									        },
+									        "callbackURL": {
+										        "type": "string",
+										        "required": true
+									        }
+								        }
+							        },
+							        "github": {
+								        "type": "object",
+								        "properties": {
+									        "clientID": {
+										        "type": "string",
+										        "required": true
+									        },
+									        "clientSecret": {
+										        "type": "string",
+										        "required": true
+									        },
+									        "callbackURL": {
+										        "type": "string",
+										        "required": true
+									        }
+								        }
+							        }
+						        }
+					        }
+				        }
+			        }
+		        },
+		        "strategy": {
+			        "source": ['params.strategy'],
+			        "required": true,
+			        "validation": {
+				        "type": "string",
+				        "enum": ["facebook", "google", "twitter", "github", "azure"]
+			        }
+		        }
+	        },
+	
+	        "/passport/validate/:strategy": {
+		        "_apiInfo": {
+			        "l": "Login Through Passport Callback",
+			        "group": "Guest Login(s)"
+		        },
+		        "commonFields": ["model"],
+		        "strategy": {
+			        "source": ['params.strategy'],
+			        "required": true,
+			        "validation": {
+				        "type": "string",
+				        "enum": ["facebook", "google", "twitter", "github", "azure"]
+			        }
+		        },
+		        "oauth_token": {
+			        "source": ['query.oauth_token'],
+			        "required": false,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "oauth_verifier": {
+			        "source": ['query.oauth_verifier'],
+			        "required": false,
+			        "validation": {
+				        "type": "string"
+			        }
+		        }
+	        }
+	        
         },
 
         "post": {
