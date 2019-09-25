@@ -1,6 +1,6 @@
 "use strict";
 const colName_token = "oauth_token";
-const colName_user = "oauth_user";
+const colName_user = "oauth_urac";
 const core = require("soajs");
 const Mongo = core.mongo;
 
@@ -52,7 +52,7 @@ Oauth.prototype.getUser = function (data, cb) {
 Oauth.prototype.delete = function (data, cb) {
 	let __self = this;
 	
-	if (!data || !(data.token && data.type) || !data.clientId || !(data.user || !(data.user.id && data.user.loginMode))) {
+	if (!data || !((data.token && data.type) || data.clientId || (data.user || !(data.user.id && data.user.loginMode)))) {
 		let error = new Error("(token and type) or clientId or user[id, loginMode] is required.");
 		return cb(error, null);
 	}

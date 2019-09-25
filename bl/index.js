@@ -21,6 +21,7 @@ function init(service, localConfig, cb) {
 		
 		if (fs.existsSync(typeModel)) {
 			SSOT[`${blName}Model`] = require(typeModel);
+			SSOT[`${blName}ModelObj`] = new SSOT[`${blName}Model`](service, null, null);
 		}
 		if (SSOT[`${blName}Model`]) {
 			let temp = require(`./${blName}.js`);
@@ -206,24 +207,10 @@ let bl = {
 		options.provision.getTenantOauth(soajs.tenant.id, (err, tenantOauth) => {
 			soajs.tenantOauth = tenantOauth;
 			
-			let loginMode = bl.localConfig.loginMode;
+			let loginMode = bl.oauth.localConfig.loginMode;
 			if (soajs && soajs.tenantOauth && soajs.tenantOauth.loginMode) {
 				loginMode = soajs.tenantOauth.loginMode;
 			}
-			
-			let getLocal = () => {
-				let data = {
-					'username': inputmaskData.username,
-					'loginMode': loginMode
-				};
-				bl.oauth.getUser(soajs, data, options, (error, record) => {
-					if (error) {
-						error = new Error(error.msg);
-						return cb(error);
-					}
-					return cb(null, record);
-				});
-			};
 			
 			let pinCheck = (record) => {
 				let product = null;
@@ -241,8 +228,23 @@ let bl = {
 						return cb(error);
 					}
 				}
-				else
+				else {
+					return cb(null, record);
+				}
+			};
+			
+			let getLocal = () => {
+				let data = {
+					'username': inputmaskData.username,
+					'loginMode': loginMode
+				};
+				bl.oauth.getUser(soajs, data, options, (error, record) => {
+					if (error) {
+						error = new Error(error.msg);
+						return cb(error);
+					}
 					return pinCheck(record);
+				});
 			};
 			
 			if (loginMode === 'urac') {

@@ -117,7 +117,7 @@ service.init(() => {
 			req.headers['content-type'] = 'application/x-www-form-urlencoded';
 			
 			service.oauth.model["getUser"] = (username, password, callback) => {
-				bl.getUserRecord(req.soajs, req.soajs.inputmaskData, null, (error, record) => {
+				bl.getUserRecord(req.soajs, req.soajs.inputmaskData, {"provision": provision}, (error, record) => {
 					return callback(error, record);
 				});
 			};

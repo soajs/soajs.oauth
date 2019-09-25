@@ -98,7 +98,7 @@ describe("OAUTH TESTS", function () {
 			});
 		});
 
-		it('fail - no model', function (done) {
+		it.skip('fail - no model', function (done) {
 			var params = {
 				qs: {
 					model: "memory"
