@@ -139,6 +139,30 @@ service.init(function () {
 	});
 	
 	/**
+	 * Login through OpenAM
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post('/openam/login', function (req, res) {
+		req.soajs.config = config;
+		initBLModel(req, res, function (BLInstance) {
+			BLInstance.openam(req, res, provision);
+		});
+	});
+	
+	/**
+	 * Login through lDap
+	 * @param {String} API route
+	 * @param {Function} API middleware
+	 */
+	service.post('/ldap/login', function (req, res) {
+		req.soajs.config = config;
+		initBLModel(req, res, function (BLInstance) {
+			BLInstance.ldap(req, res, provision);
+		});
+	});
+	
+	/**
 	 * Generate Authorization based on model provided from input and tenant id from request
 	 * @param {String} API route
 	 * @param {Function} API middleware

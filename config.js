@@ -203,6 +203,42 @@ module.exports = {
         },
 
         "post": {
+	        "/openam/login": {
+		        "_apiInfo": {
+			        "l": "OpenAM Login",
+			        "group": "Guest Login(s)"
+		        },
+		        "commonFields": ["model"],
+		        "token": {
+			        "source": ['body.token'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        }
+	        },
+	        "/ldap/login": {
+		        "_apiInfo": {
+			        "l": "Ldap Login",
+			        "group": "Guest Login(s)"
+		        },
+		        "commonFields": ["model"],
+		        "username": {
+			        "source": ['body.username'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        },
+		        "password": {
+			        "source": ['body.password'],
+			        "required": true,
+			        "validation": {
+				        "type": "string"
+			        }
+		        }
+	        },
+	        
             "/token": {
                 "_apiInfo": {
                     "l": "Create an access token",
