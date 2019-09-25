@@ -2,9 +2,13 @@
 const fs = require("fs");
 const userCollectionName = "oauth_urac";
 const tokenCollectionName = "oauth_token";
-let uracDriver = require("soajs.urac.driver");
+
+const uracDriver = require("soajs.urac.driver");
 
 const soajsCoreModules = require('soajs');
+
+let soajsUtils = soajsCoreModules.utils;
+
 let coreHasher = soajsCoreModules.hasher;
 
 let Auth = soajsCoreModules.authorization;
@@ -56,7 +60,7 @@ let libProduct = {
 					
 					let returnRecord = soajsUtils.cloneObj(user);
 					returnRecord.socialLogin = {};
-					returnRecord.socialLogin = record.socialId[mode];
+					returnRecord.socialLogin = user.socialId[mode];
 					returnRecord.socialLogin.strategy = mode;
 					
 					delete returnRecord.socialId;
@@ -250,7 +254,7 @@ let libProduct = {
         }
 
         let criteria = {
-            "userId.loginMode": loginMode,
+	        "userId.loginMode": loginMode,
             "userId.id": req.soajs.inputmaskData.userId
         };
         let combo = {

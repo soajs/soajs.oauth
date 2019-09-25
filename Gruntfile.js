@@ -53,6 +53,7 @@ module.exports = function (grunt) {
 		//Defining jshint tasks
 		jshint: {
 			options: {
+				"esversion": 6,
 				"bitwise": true,
 				"eqeqeq": true,
 				"forin": true,
@@ -76,40 +77,27 @@ module.exports = function (grunt) {
 					"beforeEach": false,
 					"after": false,
 					"afterEach": false
-				},
-				ignores: ['test/coverage/**/*.js']
+				}
 			},
 			files: {
-				src: ['**/*.js']
+				src: ['index.js', 'config.js', 'bl/*.js', 'model/mongo/*.js', 'test/helper.js', 'test/unit/**/*.js', 'test/integration/**/*.js']
 			},
 			gruntfile: {
 				src: 'Gruntfile.js'
 			}
 		},
-		// jsdoc: {
-		//   doc : {
-		//     src: ['soajs/**/*.js'],
-		//     jsdoc: pluginsRootPath+'/node_modules/grunt-jsdoc/node_modules/jsdoc/jsdoc',
-		//     options: {
-		//       dest: 'doc',
-		//     }
-		//   }
-		// },
 		
 		env: {
 			mochaTest: {
-				// NODE_ENV: 'test',
-				// APP_DIR: process.cwd(),
 				APP_DIR_FOR_CODE_COVERAGE: '../',
-				SOAJS_SRVIP: '127.0.0.1'
+				SOAJS_SRVIP: '127.0.0.1',
+				SOAJS_TEST: true
 			},
 			coverage: {
-				SOAJS_TEST: true,
-				SOAJS_ENV: 'dev',
-				// APP_DIR: process.cwd(),
-				SOAJS_PROFILE: '',
 				APP_DIR_FOR_CODE_COVERAGE: '../test/coverage/instrument/',
-				SOAJS_SRVIP: '127.0.0.1'
+				SOAJS_SRVIP: '127.0.0.1',
+				SOAJS_TEST: true,
+				SOAJS_ENV: 'dev'
 			}
 		},
 		
@@ -131,8 +119,7 @@ module.exports = function (grunt) {
         },
 		
 		instrument: {
-			files: ['*.js', 'lib/*.js', 'model/*.js'],
-			//files: ['**/*.js'],
+			files: ['config.js', 'index.js', 'bl/*.js', 'model/mongo/*.js'],
 			options: {
 				lazy: false,
 				basePath: 'test/coverage/instrument/'
