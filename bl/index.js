@@ -14,38 +14,6 @@ let model = process.env.SOAJS_SERVICE_MODEL || "mongo";
 
 const BLs = ["oauth"];
 
-function init(service, localConfig, cb) {
-	
-	let fillModels = (blName, cb) => {
-		let typeModel = __dirname + `/../model/${model}/${blName}.js`;
-		
-		if (fs.existsSync(typeModel)) {
-			SSOT[`${blName}Model`] = require(typeModel);
-			SSOT[`${blName}ModelObj`] = new SSOT[`${blName}Model`](service, null, null);
-		}
-		if (SSOT[`${blName}Model`]) {
-			let temp = require(`./${blName}.js`);
-			temp.modelObj = SSOT[`${blName}ModelObj`];
-			temp.model = SSOT[`${blName}Model`];
-			temp.soajs_service = service;
-			temp.localConfig = localConfig;
-			bl[blName] = temp;
-			return cb(null);
-		} else {
-			return cb({name: blName, model: typeModel});
-		}
-	};
-	async.each(BLs, fillModels, function (err) {
-		
-		if (err) {
-			service.log.error(`Requested model not found. make sure you have a model for ${err.name} @ ${err.model}`);
-			return cb({"code": 601, "msg": localConfig.errors[601]});
-		}
-		return cb(null);
-	});
-}
-
-
 function checkUserTenantAccessPin(record, tenantObj) {
 	if (record && record.tenant && tenantObj && tenantObj.id) {
 		if (record.tenant.id === tenantObj.id) {
@@ -117,7 +85,7 @@ let bl = {
 	
 	"openam": (req, inputmaskData, options, cb) => {
 		let data = {
-			'token': inputmaskData['token']
+			'token': inputmaskData.token
 		};
 		uracDriver.openamLogin(req.soajs, data, function (error, data) {
 			if (error) {
@@ -135,8 +103,8 @@ let bl = {
 	
 	"ldap": (req, inputmaskData, options, cb) => {
 		let data = {
-			'username': inputmaskData['username'],
-			'password': inputmaskData['password']
+			'username': inputmaskData.username,
+			'password': inputmaskData.password
 		};
 		
 		uracDriver.ldapLogin(req.soajs, data, function (error, data) {
@@ -181,7 +149,7 @@ let bl = {
 			}
 			if (loginMode === 'urac') {
 				let data = {
-					'pin': inputmaskData['pin']
+					'pin': inputmaskData.pin
 				};
 				uracDriver.loginByPin(soajs, data, (error, record) => {
 					if (error) {
@@ -214,14 +182,15 @@ let bl = {
 			
 			let pinCheck = (record) => {
 				let product = null;
-				if (soajs.tenant && soajs.tenant.application)
+				if (soajs.tenant && soajs.tenant.application) {
 					product = soajs.tenant.application.product;
-				
+				}
 				if (product && record.loginMode === 'urac' && soajs.tenantOauth.pin && soajs.tenantOauth.pin[product] && soajs.tenantOauth.pin[product].enabled) {
 					record.pinLocked = true;
 					let userTenant = checkUserTenantAccessPin(record, soajs.tenant);
-					if (userTenant && userTenant.pin && userTenant.pin.allowed)
+					if (userTenant && userTenant.pin && userTenant.pin.allowed) {
 						return cb(false, record);
+					}
 					else {
 						let error = bl.oauth.handleError(soajs, 450, null);
 						error = new Error(error.msg);
@@ -249,8 +218,8 @@ let bl = {
 			
 			if (loginMode === 'urac') {
 				let data = {
-					'username': inputmaskData['username'],
-					'password': inputmaskData['password']
+					'username': inputmaskData.username,
+					'password': inputmaskData.password
 				};
 				uracDriver.login(soajs, data, function (error, record) {
 					if (error) {
@@ -271,5 +240,36 @@ let bl = {
 	}
 	
 };
+
+function init(service, localConfig, cb) {
+	
+	let fillModels = (blName, cb) => {
+		let typeModel = __dirname + `/../model/${model}/${blName}.js`;
+		
+		if (fs.existsSync(typeModel)) {
+			SSOT[`${blName}Model`] = require(typeModel);
+			SSOT[`${blName}ModelObj`] = new SSOT[`${blName}Model`](service, null, null);
+		}
+		if (SSOT[`${blName}Model`]) {
+			let temp = require(`./${blName}.js`);
+			temp.modelObj = SSOT[`${blName}ModelObj`];
+			temp.model = SSOT[`${blName}Model`];
+			temp.soajs_service = service;
+			temp.localConfig = localConfig;
+			bl[blName] = temp;
+			return cb(null);
+		} else {
+			return cb({name: blName, model: typeModel});
+		}
+	};
+	async.each(BLs, fillModels, function (err) {
+		
+		if (err) {
+			service.log.error(`Requested model not found. make sure you have a model for ${err.name} @ ${err.model}`);
+			return cb({"code": 601, "msg": localConfig.errors[601]});
+		}
+		return cb(null);
+	});
+}
 
 module.exports = bl;

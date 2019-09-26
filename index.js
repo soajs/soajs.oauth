@@ -70,13 +70,14 @@ service.init(() => {
 			}
 			provision.init(dbConfig, service.log);
 			provision.loadProvision(function (loaded) {
-				if (loaded)
+				if (loaded) {
 					service.log.info("Service provision loaded.");
+				}
 			});
 			service.appMaintenance.get("/loadProvision", function (req, res) {
 				provision.loadProvision(function (loaded) {
 					let response = service.maintenanceResponse(req);
-					response['result'] = loaded;
+					response.result = loaded;
 					res.jsonp(response);
 				});
 			});
@@ -116,7 +117,7 @@ service.init(() => {
 			//rewrite headers content-type so that oauth.grant works
 			req.headers['content-type'] = 'application/x-www-form-urlencoded';
 			
-			service.oauth.model["getUser"] = (username, password, callback) => {
+			service.oauth.model.getUser = (username, password, callback) => {
 				bl.getUserRecord(req.soajs, req.soajs.inputmaskData, {"provision": provision}, (error, record) => {
 					return callback(error, record);
 				});
@@ -149,10 +150,10 @@ service.init(() => {
 			req.body = req.body || {};
 			req.body.username = "NA";
 			req.body.password = "NA";
-			if (req.query.access_token)
+			if (req.query.access_token) {
 				delete req.query.access_token;
-			
-			service.oauth.model["getUser"] = (username, password, callback) => {
+			}
+			service.oauth.model.getUser = (username, password, callback) => {
 				bl.getUserRecordByPin(req.soajs, req.soajs.inputmaskData, null, (error, record) => {
 					return callback(error, record);
 				});
