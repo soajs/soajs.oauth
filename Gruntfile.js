@@ -1,10 +1,10 @@
 'use strict';
 
 
-var fs = require('fs');
-var path = require('path');
+const fs = require('fs');
+const path = require('path');
 
-var lib = {
+let lib = {
 	/**
 	 * Function that find the root path where grunt plugins are installed.
 	 *
@@ -12,9 +12,9 @@ var lib = {
 	 * @return String rootPath
 	 */
 	findRoot: function () {
-		var cwd = process.cwd();
-		var rootPath = cwd;
-		var newRootPath = null;
+		let cwd = process.cwd();
+		let rootPath = cwd;
+		let newRootPath = null;
 		while (!fs.existsSync(path.join(process.cwd(), "node_modules/grunt"))) {
 			process.chdir("..");
 			newRootPath = process.cwd();
@@ -35,8 +35,10 @@ var lib = {
 	 */
 	loadTasks: function (grunt, rootPath, tasks) {
 		tasks.forEach(function (name) {
-			if (name === 'grunt-cli') return;
-			var cwd = process.cwd();
+			if (name === 'grunt-cli') {
+				return;
+			}
+			let cwd = process.cwd();
 			process.chdir(rootPath); // load files from proper root, I don't want to install everything locally per module!
 			grunt.loadNpmTasks(name);
 			process.chdir(cwd);
@@ -46,30 +48,35 @@ var lib = {
 
 module.exports = function (grunt) {
 	//Loading the needed plugins to run the grunt tasks
-	var pluginsRootPath = lib.findRoot();
-	lib.loadTasks(grunt, pluginsRootPath, ['grunt-contrib-jshint', 'grunt-jsdoc', 'grunt-contrib-clean', 'grunt-contrib-copy', 'grunt-mocha-test', 'grunt-env'
-		, 'grunt-istanbul', 'grunt-coveralls']);
+	let pluginsRootPath = lib.findRoot();
+	lib.loadTasks(grunt, pluginsRootPath, ['grunt-contrib-jshint', 'grunt-jsdoc', 'grunt-contrib-clean', 'grunt-contrib-copy', 'grunt-mocha-test', 'grunt-env', 'grunt-istanbul', 'grunt-coveralls']);
 	grunt.initConfig({
 		//Defining jshint tasks
 		jshint: {
 			options: {
-				"esversion": 6,
 				"bitwise": true,
+				"curly": true,
 				"eqeqeq": true,
-				"forin": true,
-				"newcap": true,
-				"noarg": true,
-				"undef": true,
-				"unused": false,
 				"eqnull": true,
-				"laxcomma": true,
-				"loopfunc": true,
-				"sub": true,
-				"supernew": true,
-				"validthis": true,
-				"node": true,
+				"esversion": 6,
+				"forin": true,
+				"latedef": "nofunc",
+				"leanswitch": true,
 				"maxerr": 100,
-				"indent": 2,
+				"noarg": true,
+				"nonbsp": true,
+				"strict": "global",
+				"undef": true,
+				"unused": true,
+				"varstmt": true,
+				
+				//"validthis": true,
+				//"loopfunc": true,
+				//"sub": true,
+				//"supernew": true,
+				
+				"node": true,
+				
 				"globals": {
 					"describe": false,
 					"it": false,
@@ -80,7 +87,7 @@ module.exports = function (grunt) {
 				}
 			},
 			files: {
-				src: ['index.js', 'config.js', 'bl/*.js', 'model/mongo/*.js', 'test/helper.js', 'test/unit/**/*.js', 'test/integration/**/*.js']
+				src: ['index.js', 'config.js', 'Gruntfile.js', 'bl/*.js', 'model/mongo/*.js', 'test/helper.js', 'test/unit/**/*.js', 'test/integration/**/*.js']
 			},
 			gruntfile: {
 				src: 'Gruntfile.js'
@@ -109,14 +116,14 @@ module.exports = function (grunt) {
 				src: ['test/coverage/']
 			}
 		},
-
-        copy: {
-            main: {
-                files: [
-                    {expand: true, src: ['package.json'], dest: 'test/coverage/instrument/', filter: 'isFile'},
-                ]
-            }
-        },
+		
+		copy: {
+			main: {
+				files: [
+					{expand: true, src: ['package.json'], dest: 'test/coverage/instrument/', filter: 'isFile'},
+				]
+			}
+		},
 		
 		instrument: {
 			files: ['config.js', 'index.js', 'bl/*.js', 'model/mongo/*.js'],
