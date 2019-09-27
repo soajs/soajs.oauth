@@ -1,7 +1,7 @@
 "use strict";
 var assert = require('assert');
 var shell = require('shelljs');
-var helper = require("../helper.js");
+var helper = require("./helper.js");
 var sampleData = require("soajs.mongodb.data/modules/oauth");
 var oauthService, controller;
 
