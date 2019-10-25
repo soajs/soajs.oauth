@@ -1,7 +1,7 @@
 {
   "name": "soajs.oauth",
   "description": "soajs oauth service",
-  "version": "2.5.13",
+  "version": "2.5.15",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -27,7 +27,7 @@
     "grunt-istanbul": "0.8.0",
     "grunt-jsdoc": "2.4.0",
     "grunt-mocha-test": "0.13.3",
-    "mocha": "6.2.0",
+    "mocha": "6.2.2",
     "request": "2.88.0",
     "soajs.controller": "2.5.*",
     "shelljs": "0.8.3",
@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "oauth2-server": "2.4.1",
-    "soajs": "2.5.14",
-    "soajs.urac.driver": "2.0.11"
+    "soajs": "2.5.21",
+    "soajs.urac.driver": "2.0.12"
   }
 }
