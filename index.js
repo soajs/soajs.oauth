@@ -162,7 +162,7 @@ service.init(() => {
 				delete req.query.access_token;
 			}
 			service.oauth.model.getUser = (username, password, callback) => {
-				bl.getUserRecordByPin(req.soajs, req.soajs.inputmaskData, null, (error, record) => {
+				bl.getUserRecordByPin(req.soajs, req.soajs.inputmaskData, {"provision": provision}, (error, record) => {
 					return callback(error, record);
 				});
 			};

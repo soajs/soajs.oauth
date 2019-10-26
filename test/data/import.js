@@ -37,7 +37,7 @@ let lib = {
 			});
 		}
 	},
-	oauth: (dataPath, mongoConnection, cb) => {
+	oauth_token: (dataPath, mongoConnection, cb) => {
 		let records = [];
 		fs.readdirSync(dataPath).forEach(function (file) {
 			let rec = require(dataPath + file);
@@ -55,6 +55,34 @@ let lib = {
 							e.user._id = mongoConnection.ObjectId(e.user._id);
 						mongoConnection.update("oauth_token", condition, e, {'upsert': true}, (error, result) => {
 							console.log("oauth_token", error);
+							return cb();
+						});
+					},
+					() => {
+						return cb();
+					});
+			});
+		} else
+			return cb();
+	},
+	oauth_urac: (dataPath, mongoConnection, cb) => {
+		let records = [];
+		fs.readdirSync(dataPath).forEach(function (file) {
+			let rec = require(dataPath + file);
+			//TODO: validate oauth
+			records.push(rec);
+		});
+		if (records && Array.isArray(records) && records.length > 0) {
+			mongoConnection.dropCollection("oauth_urac", () => {
+				async.each(
+					records,
+					(e, cb) => {
+						let condition = {userId: e.userId};
+						e._id = mongoConnection.ObjectId(e._id);
+						if (e && e._id)
+							e._id = mongoConnection.ObjectId(e._id);
+						mongoConnection.update("oauth_urac", condition, e, {'upsert': true}, (error, result) => {
+							console.log("oauth_urac", error);
 							return cb();
 						});
 					},
@@ -239,8 +267,15 @@ module.exports = (profilePath, dataPath, callback) => {
 				},
 				function (cb) {
 					//check for tenants data
-					if (fs.existsSync(dataPath + "oauth/")) {
-						return lib.oauth(dataPath + "oauth/", mongoConnection, cb);
+					if (fs.existsSync(dataPath + "oauth/urac/")) {
+						return lib.oauth_urac(dataPath + "oauth/urac/", mongoConnection, cb);
+					} else
+						return cb(null);
+				},
+				function (cb) {
+					//check for tenants data
+					if (fs.existsSync(dataPath + "oauth/token/")) {
+						return lib.oauth_token(dataPath + "oauth/token/", mongoConnection, cb);
 					} else
 						return cb(null);
 				},

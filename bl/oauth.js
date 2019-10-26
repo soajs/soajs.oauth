@@ -51,6 +51,7 @@ let bl = {
 		if (!inputmaskData) {
 			return cb(bl.handleError(soajs, 400, null));
 		}
+		
 		inputmaskData = inputmaskData || {};
 		let modelObj = bl.mp.getModel(soajs, options);
 		let data = {
@@ -74,9 +75,9 @@ let bl = {
 					}
 				}
 				coreHasher.init(hashConfig);
-				coreHasher.compare(soajs.inputmaskData.password, record.password, function (err, result) {
+				coreHasher.compare(inputmaskData.password, record.password, function (err, result) {
 					if (err || !result) {
-						return cb(bl.handleError(soajs, 413, null));
+						return cb(bl.handleError(soajs, 413, err));
 					}
 					
 					delete record.password;
