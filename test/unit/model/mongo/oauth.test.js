@@ -112,7 +112,7 @@ describe("Starting OAUTH model Unit test", () => {
 		});
 		
 		it("Fails - getUser - Null data", (done) => {
-			modelObj.getUser(null, (err, record) => {
+			modelObj.getUser(null, (err) => {
 				assert.ok(err);
 				assert.deepEqual(err, new Error("(username is required."));
 				done();
@@ -120,7 +120,7 @@ describe("Starting OAUTH model Unit test", () => {
 		});
 		
 		it("Fails - getUser - empty data", (done) => {
-			modelObj.getUser({}, (err, record) => {
+			modelObj.getUser({}, (err) => {
 				assert.ok(err);
 				assert.deepEqual(err, new Error("(username is required."));
 				done();
@@ -140,7 +140,7 @@ describe("Starting OAUTH model Unit test", () => {
 		});
 		
 		it("Fails - delete - Null data", (done) => {
-			modelObj.delete(null, (err, record) => {
+			modelObj.delete(null, (err) => {
 				assert.ok(err);
 				assert.deepEqual(err, new Error("(token and type) or clientId or user[id, loginMode] is required."));
 				done();
@@ -148,7 +148,7 @@ describe("Starting OAUTH model Unit test", () => {
 		});
 		
 		it("Fails - delete - empty data", (done) => {
-			modelObj.delete({}, (err, record) => {
+			modelObj.delete({}, (err) => {
 				assert.ok(err);
 				assert.deepEqual(err, new Error("(token and type) or clientId or user[id, loginMode] is required."));
 				done();

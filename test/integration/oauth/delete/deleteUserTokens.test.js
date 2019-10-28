@@ -1,5 +1,3 @@
-
-
 "use strict";
 const assert = require('assert');
 const requester = require('../../requester');
@@ -26,7 +24,6 @@ describe("Testing delete user tokens API", () => {
 		requester('/tokens/user/notFound', 'delete', params, (error, body) => {
 			assert.ifError(error);
 			assert.ok(body);
-			console.log(body, body.errors)
 			assert.deepEqual(body.data, {ok: 1, n: 0});
 			let check = validator.validate(body, deleteUserTokensSchema);
 			assert.deepEqual(check.valid, true);
@@ -35,7 +32,7 @@ describe("Testing delete user tokens API", () => {
 		});
 	});
 	
-	it.skip('Success - user found and tokens deleted', (done) => {
+	it('Success - user found and tokens deleted', (done) => {
 		let params = {
 			qs:{
 				access_token: '44a5399dcce96325fadfab908e614bf00e6fe967'

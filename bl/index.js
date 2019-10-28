@@ -149,6 +149,9 @@ let bl = {
 	},
 	
 	"getUserRecordByPin": (soajs, inputmaskData, options, cb) => {
+		if (!inputmaskData) {
+			return cb(bl.oauth.handleError(soajs, 400, null));
+		}
 		options.provision.getTenantOauth(soajs.tenant.id, (err, tenantOauth) => {
 			soajs.tenantOauth = tenantOauth;
 			let loginMode = bl.oauth.localConfig.loginMode;
@@ -180,6 +183,9 @@ let bl = {
 	},
 	
 	"getUserRecord": (soajs, inputmaskData, options, cb) => {
+		if (!inputmaskData) {
+			return cb(bl.oauth.handleError(soajs, 400, null));
+		}
 		options.provision.getTenantOauth(soajs.tenant.id, (err, tenantOauth) => {
 			soajs.tenantOauth = tenantOauth;
 			

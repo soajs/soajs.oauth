@@ -25,6 +25,7 @@ describe("Starting OAUTH Unit test", () => {
 	it("Testing all bls", (done) => {
 		require('./bl/index.test');
 		require('./bl/oauth.test');
+		require('./bl/indexUnit.test');
 		done();
 	});
 	

@@ -11,9 +11,6 @@
 const helper = require("../../helper.js");
 const BL = helper.requireModule('bl/oauth.js');
 const assert = require('assert');
-const provision = require("soajs").provision;
-const sinon = require('sinon');
-
 
 let user = {
 	_id: "22d2cb5fc04ce51e06000001",
@@ -24,9 +21,7 @@ let user = {
 };
 
 
-
 describe("Unit test for: BL - oauth", () => {
-	let provisionStub;
 	let soajs = {
 		config: {
 			"errors": {
@@ -62,25 +57,11 @@ describe("Unit test for: BL - oauth", () => {
 			}
 		}
 	};
-	before(function (done) {
-		provisionStub = sinon.stub(provision, 'getTenantOauth').callsFake(() => {
-			return {
-				secret: "this is a secret",
-				pin: {
-					DSBRD: {
-						enabled: false
-					}
-				},
-				disabled: 0,
-				type: 2,
-				loginMode: "urac"
-			};
-		});
+	before((done) => {
 		done();
 	});
 	
-	after(function (done) {
-		provisionStub.restore();
+	after((done) => {
 		done();
 	});
 	
@@ -111,7 +92,7 @@ describe("Unit test for: BL - oauth", () => {
 				username: 'notFound'
 			};
 			
-			BL.getUser(soajs, data, null, (error, result) => {
+			BL.getUser(soajs, data, null, (error) => {
 				assert.ok(error);
 				assert.deepEqual(error.code, 401);
 				
@@ -139,7 +120,7 @@ describe("Unit test for: BL - oauth", () => {
 							password: 'notCorrect'
 						};
 						
-						BL.getUser(soajs, data, null, (error, record) => {
+						BL.getUser(soajs, data, null, (error) => {
 							assert.ok(error);
 							assert.deepEqual(error.code, 413);
 							done();
@@ -273,7 +254,7 @@ describe("Unit test for: BL - oauth", () => {
 		});
 	});
 	
-	it.skip("deleteAllUserTokens", (done) => {
+	it("deleteAllUserTokens", (done) => {
 		function MODEL() {
 			console.log("oauth model");
 		}
@@ -281,7 +262,7 @@ describe("Unit test for: BL - oauth", () => {
 		MODEL.prototype.closeConnection = () => {
 		};
 		MODEL.prototype.delete = (data, cb) => {
-			if (data && data.error) {
+			if (data && data.userId && data.userId === 'error') {
 				let error = new Error("OAuth: deleteAllUserTokens - mongo error.");
 				return cb(error, null);
 			} else {
@@ -291,7 +272,21 @@ describe("Unit test for: BL - oauth", () => {
 		BL.model = MODEL;
 		
 		let options = {
-			provision: provisionStub
+			"provision": {
+				"getTenantOauth": (input, cb) => {
+					return cb(null, {
+						"secret": "this is a secret",
+						"pin": {
+							"DSBRD": {
+								"enabled": false
+							}
+						},
+						"disabled": 0,
+						"type": 2,
+						"loginMode": "urac"
+					});
+				}
+			}
 		};
 		
 		BL.deleteAllUserTokens(soajs, null, options, (error) => {
@@ -299,21 +294,12 @@ describe("Unit test for: BL - oauth", () => {
 			assert.deepEqual(error, {code: 400, msg: 'Business logic required data are missing.'});
 			
 			let data = {
-				error: true
+				userId: 'userId',
 			};
 			
-			BL.deleteAllUserTokens(soajs, data, options, (error) => {
-				assert.ok(error);
-				assert.deepEqual(error.code, 602);
-				
-				let data = {
-					userId: 'userId',
-				};
-				
-				BL.deleteAllUserTokens(soajs, data, options, (error, record) => {
-					assert.ok(record);
-					done();
-				});
+			BL.deleteAllUserTokens(soajs, data, options, (error, record) => {
+				assert.ok(record);
+				done();
 			});
 		});
 	});

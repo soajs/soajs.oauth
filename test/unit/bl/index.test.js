@@ -82,7 +82,8 @@ describe("Unit test for: BLs", () => {
 								"autoReconnect": true
 							}
 						}
-					}
+					},
+					
 				};
 			}
 		}
