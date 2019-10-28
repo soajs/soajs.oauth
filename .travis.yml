@@ -22,6 +22,7 @@ jobs:
     - npm install -g grunt-cli
     - sleep 10
     script:
+    - grunt
     - if [ "$TRAVIS_BRANCH" != "master" ]; then grunt test; fi
     - if [ "$TRAVIS_BRANCH" = "master" ]; then grunt coverage; fi
 
