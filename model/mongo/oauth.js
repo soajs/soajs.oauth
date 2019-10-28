@@ -69,8 +69,8 @@ Oauth.prototype.delete = function (data, cb) {
 	let condition = {};
 	
 	if (data.user) {
-		condition["userId.loginMode"] = data.user.loginMode;
-		condition["userId.id"] = data.user.id;
+		condition["user.loginMode"] = data.user.loginMode;
+		condition["user.id"] = data.user.id;
 	} else if (data.clientId) {
 		condition.clientId = data.clientId;
 	} else {
