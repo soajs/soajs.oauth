@@ -57,6 +57,7 @@ let bl = {
 		let data = {
 			"username": inputmaskData.username
 		};
+		
 		modelObj.getUser(data, (err, record) => {
 			if (err) {
 				return cb(bl.handleError(soajs, 602, err));

@@ -12,12 +12,6 @@ describe("starting oauth integration tests", () => {
 	});
 	
 	it("loading group integration tests", (done) => {
-		// GET
-		
-		//POST
-		
-		//PUT
-		
 		//DELETE
 		require('./delete/deleteUserTokens.test');
 		require('./delete/deleteRefreshToken.test');

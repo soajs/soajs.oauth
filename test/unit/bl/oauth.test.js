@@ -16,7 +16,7 @@ let user = {
 	_id: "22d2cb5fc04ce51e06000001",
 	userId: "testUserID",
 	password: "$2a$04$MobjLIVPLB9Q7hb95QaFoe9ppcwAkvHiksPK57HFmXy09Z8LU6mri",
-	tId: "10d2cb5fc04ce51e06000001",
+	tId: "5c0e74ba9acc3c5a84a51259",
 	keys: null
 };
 
@@ -42,7 +42,7 @@ describe("Unit test for: BL - oauth", () => {
 			}
 		},
 		tenant: {
-			id: "10d2cb5fc04ce51e06000001",
+			id: "5c0e74ba9acc3c5a84a51259",
 			main: {
 				id: "5d8387fd1873f9079b863da0"
 			},
@@ -113,7 +113,7 @@ describe("Unit test for: BL - oauth", () => {
 						assert.ok(record);
 						assert.deepEqual(record.id, '22d2cb5fc04ce51e06000001');
 						assert.deepEqual(record.userId, 'testUserID');
-						assert.deepEqual(record.tId, '10d2cb5fc04ce51e06000001');
+						assert.deepEqual(record.tId, '5c0e74ba9acc3c5a84a51259');
 						
 						let data = {
 							username: 'testUserID',

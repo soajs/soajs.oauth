@@ -158,7 +158,9 @@ let bl = {
 			if (soajs && soajs.tenantOauth && soajs.tenantOauth.loginMode) {
 				loginMode = soajs.tenantOauth.loginMode;
 			}
+			
 			if (loginMode === 'urac') {
+				
 				let data = {
 					'pin': inputmaskData.pin
 				};
@@ -199,6 +201,7 @@ let bl = {
 				if (soajs.tenant && soajs.tenant.application) {
 					product = soajs.tenant.application.product;
 				}
+				
 				if (product && record.loginMode === 'urac' && soajs.tenantOauth.pin && soajs.tenantOauth.pin[product] && soajs.tenantOauth.pin[product].enabled) {
 					record.pinLocked = true;
 					let userTenant = checkUserTenantAccessPin(record, soajs.tenant);
@@ -219,6 +222,7 @@ let bl = {
 			let getLocal = () => {
 				let data = {
 					'username': inputmaskData.username,
+					'password': inputmaskData.password,
 					'loginMode': loginMode
 				};
 				bl.oauth.getUser(soajs, data, options, (error, record) => {

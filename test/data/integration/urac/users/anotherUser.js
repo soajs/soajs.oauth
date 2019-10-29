@@ -3,11 +3,12 @@
 let lib = {
 	_id: "5db2c7414e261a23f8ec2be9",
 	username: "test",
-	password: "$2a$12$rOcMlX2AAW2hwc5W8Y3B3OJ68QSmAKh.ZJmwZ8.oSWeQuYsWgmfVe",
+	password: "$2a$12$geJJfv33wkYIXEAlDkeeuOgiQ6y6MjP/YxbqLdHdDSK7LDG.7n7Pq",
 	firstName: "Test",
 	lastName: "Test",
 	email: "test@test.com",
 	status: "active",
+	loginMode: 'oauth',
 	config: {
 	},
 	ts: 1571997505278.0,
@@ -16,7 +17,7 @@ let lib = {
 		code: "DBTN",
 		pin: {
 			code: "9429",
-			allowed: true
+			allowed: false
 		}
 	},
 	groups: [

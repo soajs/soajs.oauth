@@ -13,8 +13,48 @@ const BL = helper.requireModule('bl/index.js');
 const assert = require('assert');
 const coreModules = require("soajs.core.modules");
 const core = coreModules.core;
+const uracDriver = require("soajs.urac.driver");
+const sinon = require('sinon');
+
+let user = {
+	_id: "5c8d0c505653de3985aa0ffd",
+	locked: true,
+	username: "owner",
+	password: "$2a$12$geJJfv33wkYIXEAlDkeeuOgiQ6y6MjP/YxbqLdHdDSK7LDG.7n7Pq",
+	firstName: "owner3",
+	lastName: "owner",
+	email: "me@localhost.com",
+	ts: 1552747600152,
+	status: "active",
+	profile: {},
+	groups: [
+		"owner"
+	],
+	config: {
+		packages: {},
+		keys: {},
+		allowedTenants: []
+	},
+	tenant: {
+		id: "5c0e74ba9acc3c5a84a51259",
+		code: "DBTN",
+		pin: {
+			code: "1235",
+			allowed: true
+		}
+	}
+};
+let user2 = {
+	_id: "ID",
+	userId: "testUserID",
+	loginMode: "oauth",
+	password: "$2a$12$geJJfv33wkYIXEAlDkeeuOgiQ6y6MjP/YxbqLdHdDSK7LDG.7n7Pq",
+	tId: "5c0e74ba9acc3c5a84a51259",
+	keys: null
+};
 
 describe("Unit test for: BL - oauth", () => {
+	let stubDriver;
 	let soajs = {
 		"meta": core.meta,
 		"registry": {
@@ -39,6 +79,27 @@ describe("Unit test for: BL - oauth", () => {
 					"timeConnected": 1552747598093
 				}
 			},
+			get: () => {
+				return {
+					"coreDB": {
+						"provision": {
+							"name": "core_provision",
+							"prefix": "",
+							"servers": [
+								{
+									"host": "127.0.0.1",
+									"port": 27017
+								}
+							],
+							"credentials": null,
+							"URLParam": {
+								"poolSize": 5,
+								"autoReconnect": true
+							}
+						}
+					}
+				};
+			}
 		},
 		"config": {
 			"errors": {
@@ -84,11 +145,15 @@ describe("Unit test for: BL - oauth", () => {
 		}
 	};
 	
-	before((done) => {
-		done();
+	beforeEach((done) => {
+		let localConfig = helper.requireModule("config.js");
+		BL.init(soajs, localConfig, () => {
+			done();
+		});
 	});
 	
-	after((done) => {
+	afterEach((done) => {
+		sinon.restore();
 		done();
 	});
 	
@@ -172,31 +237,28 @@ describe("Unit test for: BL - oauth", () => {
 			}
 		};
 		
+		stubDriver = sinon.stub(uracDriver, 'loginByPin').yields(null, user);
+		
 		BL.getUserRecordByPin(soajs, null, options, (err) => {
 			assert.ok(err);
 			assert.deepEqual(err.code, 400);
 			
 			let data = {
-				"pin": {
-					"code": "1235",
-					"allowed": true
-				}
+				"pin": "1235"
 			};
 			
 			BL.getUserRecordByPin(soajs, data, notValidOptions, (err) => {
 				assert.ok(err);
 				
-				// let data = {
-				// 	"pin": {
-				// 		"code": "1235",
-				// 		"allowed": true
-				// 	}
-				// };
+				let data = {
+					"pin": "1235"
+				};
 				
-				// BL.getUserRecordByPin(soajs, data, options, (err, record) => {
-				// 	assert.ok(record); //todo: fix not finding user
-				done();
-				// });
+				BL.getUserRecordByPin(soajs, data, options, (err, record) => {
+					assert.ok(record);
+					assert.deepEqual(record.id, '5c8d0c505653de3985aa0ffd');
+					done();
+				});
 			});
 		});
 	});
@@ -209,12 +271,29 @@ describe("Unit test for: BL - oauth", () => {
 						"secret": "this is a secret",
 						"pin": {
 							"DSBRD": {
-								"enabled": false
+								"enabled": true
 							}
 						},
 						"disabled": 0,
 						"type": 2,
 						"loginMode": "urac"
+					});
+				}
+			}
+		};
+		let oauthOptions = {
+			"provision": {
+				"getTenantOauth": (input, cb) => {
+					return cb(null, {
+						"secret": "this is a secret",
+						"pin": {
+							"DSBRD": {
+								"enabled": true
+							}
+						},
+						"disabled": 0,
+						"type": 2,
+						"loginMode": "oauth"
 					});
 				}
 			}
@@ -235,24 +314,49 @@ describe("Unit test for: BL - oauth", () => {
 			}
 		};
 		
+		stubDriver = sinon.stub(uracDriver, 'login').yields(null, user);
+		
 		BL.getUserRecord(soajs, null, options, (err) => {
 			assert.ok(err);
 			assert.deepEqual(err.code, 400);
 			
 			let data = {
-				"username": 'owner',
+				"username": "owner",
 				"password": "password"
 			};
 			
 			BL.getUserRecord(soajs, data, notValidOptions, (err) => {
 				assert.ok(err);
 				
+				let data = {
+					"username": "owner",
+					"password": "password"
+				};
+				
 				BL.getUserRecord(soajs, data, options, (err, record) => {
 					assert.ok(record);
 					assert.deepEqual(record.id, '5c8d0c505653de3985aa0ffd');
 					assert.deepEqual(record.username, 'owner');
 					assert.deepEqual(record.email, 'me@localhost.com');
-					done();
+					
+					
+					BL.oauth.modelObj = {
+						closeConnection: () => {
+						},
+						getUser: (data, cb) => {
+							return cb(null, user2);
+						}
+					};
+					
+					let data = {
+						"username": "testUserID",
+						"password": "password"
+					};
+					
+					BL.getUserRecord(soajs, data, oauthOptions, (err, record) => {
+						assert.ok(record);
+						done();
+					});
 				});
 			});
 		});

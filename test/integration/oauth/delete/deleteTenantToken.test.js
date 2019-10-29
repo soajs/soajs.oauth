@@ -20,7 +20,7 @@ describe("Testing delete tenant tokens API", () => {
 	it('Fails - tenant tokens not found', (done) => {
 		let params = {
 			qs:{
-				access_token: '2179a61307af23e481ea60684086409a66755ecd'
+				access_token: '7425a8ae4048d194f6390b64f45eb9525523a014'
 			}
 		};
 		requester('/tokens/tenant/notFound', 'delete', params, (error, body) => {
@@ -37,7 +37,7 @@ describe("Testing delete tenant tokens API", () => {
 	it('Success - tenant found and tokens deleted', (done) => {
 		let params = {
 			qs:{
-				access_token: '2179a61307af23e481ea60684086409a66755ecd'
+				access_token: '7425a8ae4048d194f6390b64f45eb9525523a014'
 			}
 		};
 		
