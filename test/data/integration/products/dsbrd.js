@@ -9,7 +9,7 @@ let prod = {
         acl: {
             dashboard: {
 	            oauth: {
-		            "2": {
+		            "1": {
 			            access: true
 		            }
 	            }
@@ -26,7 +26,7 @@ let prod = {
                 dashboard: {
 	                oauth: [
                         {
-                            version: "2",
+                            version: "1",
                             get: [
                                 "Guest"
                             ]
@@ -45,7 +45,7 @@ let prod = {
                 dashboard: {
                 	oauth: [
                         {
-                            version: "2",
+                            version: "1",
                             get: [
                                 "Guest"
                             ]

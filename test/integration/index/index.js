@@ -11,7 +11,7 @@ describe("starting index integration tests", () => {
 		done();
 	});
 	
-	it("loading group integration tests", (done) => {
+	it("loading index integration tests", (done) => {
 		// GET
 		require("./get/authorization.test.js");
 		

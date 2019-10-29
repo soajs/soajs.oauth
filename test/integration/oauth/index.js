@@ -11,7 +11,7 @@ describe("starting oauth integration tests", () => {
 		done();
 	});
 	
-	it("loading group integration tests", (done) => {
+	it("loading oauth integration tests", (done) => {
 		//DELETE
 		require('./delete/deleteUserTokens.test');
 		require('./delete/deleteRefreshToken.test');
