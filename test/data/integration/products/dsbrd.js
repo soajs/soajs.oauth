@@ -10,7 +10,56 @@ let prod = {
             dashboard: {
 	            oauth: {
 		            "1": {
-			            access: true
+			            "access": true,
+			            "apisPermission": "restricted",
+			            "delete": [{
+				            "group": "Tokenization",
+				            "apis": {
+					            "/refreshToken/:token": {
+						            "access": true
+					            },
+					            "/accessToken/:token": {
+						            "access": true
+					            }
+				            }
+			            }, {
+				            "group": "User Tokenization",
+				            "apis": {
+					            "/tokens/user/:userId": {
+						            "access": true
+					            }
+				            }
+			            }, {
+				            "group": "Cient Tokenization",
+				            "apis": {
+					            "/tokens/tenant/:clientId": {
+						            "access": true
+					            }
+				            }
+			            }],
+			            "post": [{
+				            "group": "Tokenization",
+				            "apis": {
+					            "/pin": {
+						            "access": true
+					            }
+				            }
+			            }, {
+				            "group": "Guest",
+				            "apis": {
+					            "/token": {
+						            "access": false
+					            }
+				            }
+			            }],
+			            "get": [{
+				            "group": "Guest",
+				            "apis": {
+					            "/authorization": {
+						            "access": false
+					            }
+				            }
+			            }]
 		            }
 	            }
             }
@@ -24,14 +73,12 @@ let prod = {
             description: "This package is used to provide anyone access to login and forgot password. Once logged in the package linked to the user tenant will take over thus providing the right access to the logged in user.",
             acl: {
                 dashboard: {
-	                oauth: [
-                        {
-                            version: "1",
-                            get: [
-                                "Guest"
-                            ]
-                        }
-                    ]
+	                "oauth": [{
+		                "version": "1",
+		                "get": ["Guest"],
+		                "post": ["Guest", "Tokenization"],
+		                "delete": ["Tokenization"]
+	                }]
                 }
             },
             _TTL: 604800000
@@ -43,14 +90,12 @@ let prod = {
             locked: true,
             acl: {
                 dashboard: {
-                	oauth: [
-                        {
-                            version: "1",
-                            get: [
-                                "Guest"
-                            ]
-                        }
-                    ]
+	                "oauth": [{
+		                "version": "1",
+		                "get": ["Guest"],
+		                "post": ["Guest", "Tokenization"],
+		                "delete": ["Tokenization", "User Tokenization", "Cient Tokenization"]
+	                }]
                 }
             },
             _TTL: 604800000
