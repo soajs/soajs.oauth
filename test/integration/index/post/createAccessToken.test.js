@@ -57,7 +57,9 @@ describe("Testing create access token API", () => {
 	});
 	
 	it("Fails - will not create authorization token - No data", (done) => {
-		let params = {};
+		let params = {
+			"noaccesstoken": true
+		};
 		requester('/token', 'post', params, (error, body) => {
 			assert.ok(body);
 			assert.ok(body.errors);

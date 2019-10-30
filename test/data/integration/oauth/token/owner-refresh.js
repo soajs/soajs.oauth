@@ -8,7 +8,6 @@ let token = {
     user: {
         _id: "5c8d0c505653de3985aa0ffd",
         username: "owner",
-        password: "$2a$12$geJJfv33wkYIXEAlDkeeuOgiQ6y6MjP/YxbqLdHdDSK7LDG.7n7Pq",
         firstName: "owner3",
         lastName: "owner",
         email: "me@localhost.com",
