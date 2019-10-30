@@ -19,6 +19,30 @@ describe("Testing create access token with pin API", () => {
 	
 	let accessToken;
 	
+	it("Success - will create authorization token pin - main tenant owner 2 user", (done) => {
+		let params = {
+			"noaccesstoken": true,
+			"body": {
+				pin: '1239',
+				grant_type: 'password'
+			}
+		};
+		requester('/pin', 'post', params, (error, body) => {
+			assert.ifError(error);
+			assert.ok(body);
+			console.log(body.errors)
+			assert.ok(body.token_type);
+			assert.deepEqual(body.token_type, 'bearer');
+			assert.ok(body.access_token);
+			assert.ok(body.expires_in);
+			assert.ok(body.refresh_token);
+			let check = validator.validate(body, createTokenPinSchema);
+			assert.deepEqual(check.valid, true);
+			assert.deepEqual(check.errors, []);
+			done();
+		});
+	});
+	
 	it("Success - will create authorization token pin - main tenant user", (done) => {
 		let params = {
 			"body": {
