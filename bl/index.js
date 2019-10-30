@@ -27,6 +27,7 @@ function checkUserTenantAccessPin(record, tenantObj) {
 		if (record.tenant.id === tenantObj.id) {
 			return record.tenant;
 		}
+		/*
 		if (record.config && record.config.allowedTenants) {
 			for (let i = 0; i < record.config.allowedTenants.length; i++) {
 				if (record.config.allowedTenants[i].tenant && (record.config.allowedTenants[i].tenant.id === tenantObj.id)) {
@@ -34,6 +35,7 @@ function checkUserTenantAccessPin(record, tenantObj) {
 				}
 			}
 		}
+		*/
 	}
 	return null;
 }
