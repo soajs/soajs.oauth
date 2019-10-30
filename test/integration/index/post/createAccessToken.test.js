@@ -49,8 +49,9 @@ describe("Testing create access token API", () => {
 			}
 		};
 		requester('/token', 'post', params, (error, body) => {
-			console.log(error)
-			console.log(body)
+			assert.ok(body.errors);
+			assert.deepEqual(body.errors.details, [ { code: 503,
+				message: 'You do not have privileges to enable pin login' } ]);
 			done();
 		});
 	});

@@ -28,8 +28,8 @@ describe("Testing create access token with pin API", () => {
 			}
 		};
 		requester('/pin', 'post', params, (error, body) => {
-			console.log(error)
-			console.log(body)
+			assert.ok(body.errors);
+			assert.deepEqual(body.errors.details, [ { code: 400, message: 'The access token was not found' } ]);
 			done();
 		});
 	});
