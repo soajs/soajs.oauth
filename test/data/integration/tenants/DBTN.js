@@ -95,9 +95,7 @@ let lib = {
                 }
             ]
         }
-    ],
-    tag: "Console",
-    console: true
+    ]
 };
 
 module.exports = lib;
