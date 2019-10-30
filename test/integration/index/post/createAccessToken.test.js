@@ -39,6 +39,22 @@ describe("Testing create access token API", () => {
 		});
 	});
 	
+	it("Success - will not create authorization token - user has pin allowed false", (done) => {
+		let params = {
+			"noaccesstoken": true,
+			"body": {
+				"username": 'owner2',
+				"password": 'password',
+				"grant_type": 'password'
+			}
+		};
+		requester('/token', 'post', params, (error, body) => {
+			console.log(error)
+			console.log(body)
+			done();
+		});
+	});
+	
 	it("Fails - will not create authorization token - No data", (done) => {
 		let params = {};
 		requester('/token', 'post', params, (error, body) => {
