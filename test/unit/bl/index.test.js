@@ -55,6 +55,7 @@ let user2 = {
 
 describe("Unit test for: BL - oauth", () => {
 	let stubDriver;
+	let stubDriverError;
 	let soajs = {
 		"meta": core.meta,
 		"registry": {
@@ -106,14 +107,14 @@ describe("Unit test for: BL - oauth", () => {
 				400: "Business logic required data are missing.",
 				401: "Unable to log in the user. User not found.",
 				403: "User does not have access to this tenant",
-
+				
 				406: "Missing Tenant secret",
-
+				
 				413: "Problem with the provided password.",
-
+				
 				450: "You do not have privileges to enable pin login",
 				451: "Pin login is not available for this account",
-
+				
 				600: "Error in generating oAUth Token.",
 				601: "Model not found.",
 				602: "Model error: "
@@ -365,6 +366,70 @@ describe("Unit test for: BL - oauth", () => {
 				});
 			});
 		});
+	});
+	
+	it("Fails - getUserRecord", (done) => {
+		let options = {
+			"provision": {
+				"getTenantOauth": (input, cb) => {
+					return cb(null, {
+						"secret": "this is a secret",
+						"pin": {
+							"DSBRD": {
+								"enabled": true
+							}
+						},
+						"disabled": 0,
+						"type": 2,
+						"loginMode": "urac"
+					});
+				}
+			}
+		};
+		stubDriverError = sinon.stub(uracDriver, 'login').yields(true, null);
+		
+		let data = {
+			"username": "owner",
+			"password": "password"
+		};
+		
+		BL.getUserRecord(soajs, data, options, (err, record) => {
+			assert.ok(err);
+			done();
+		});
+		
+	});
+	
+	it("Fails - getUserRecordByPin", (done) => {
+		let options = {
+			"provision": {
+				"getTenantOauth": (input, cb) => {
+					return cb(null, {
+						"secret": "this is a secret",
+						"pin": {
+							"DSBRD": {
+								"enabled": true
+							}
+						},
+						"disabled": 0,
+						"type": 2,
+						"loginMode": "urac"
+					});
+				}
+			}
+		};
+		stubDriverError = sinon.stub(uracDriver, 'loginByPin').yields(true, null);
+		
+		let data = {
+			"username": "owner",
+			"password": "password"
+		};
+		
+		BL.getUserRecordByPin(soajs, data, options, (err, record) => {
+			assert.ok(err);
+			done();
+		});
+		
 	});
 	
 	it.skip("passportLogin", (done) => {
