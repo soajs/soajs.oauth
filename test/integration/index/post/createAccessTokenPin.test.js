@@ -71,7 +71,6 @@ describe("Testing create access token with pin API", () => {
 		requester('/token', 'post', params, (error, body) => {
 			assert.ifError(error);
 			assert.ok(body);
-			process.exit(2);
 			assert.ok(body.token_type);
 			assert.deepEqual(body.token_type, 'bearer');
 			assert.ok(body.access_token);
@@ -110,7 +109,7 @@ describe("Testing create access token with pin API", () => {
 		});
 	});
 	
-	it.skip("Success - will create authorization token pin - sub tenant - user 2", (done) => {
+	it("Success - will create authorization token pin - sub tenant - user 2", (done) => {
 		let params = {
 			headers: {
 				key: 'e267a49b84bfa1e95dffe1efd45e443f36d7dced1dc97e8c46ce1965bac78faaa0b6fe18d50efa5a9782838841cba9659fac52a77f8fa0a69eb0188eef4038c49ee17f191c1d280fde4d34580cc3e6d00a05a7c58b07a504f0302915bbe58c18',
