@@ -21,7 +21,7 @@ describe("Testing create access token with pin API", () => {
 	
 	it("Success - will create authorization token pin - main tenant user", (done) => {
 		let params = {
-			body: {
+			"body": {
 				pin: '1235',
 				grant_type: 'password'
 			}
@@ -43,10 +43,11 @@ describe("Testing create access token with pin API", () => {
 	
 	it("Success - will create authorization token", (done) => {
 		let params = {
-			headers: {
+			"noaccesstoken": true,
+			"headers": {
 				key: extKey
 			},
-			body: {
+			"body": {
 				username: 'johnd',
 				password: 'password',
 				grant_type: 'password'
@@ -68,6 +69,7 @@ describe("Testing create access token with pin API", () => {
 	
 	it("Success - will create authorization token pin - sub tenant - user sub 1", (done) => {
 		let params = {
+			"noaccesstoken": true,
 			headers: {
 				key: extKey,
 				access_token: accessToken
@@ -120,12 +122,11 @@ describe("Testing create access token with pin API", () => {
 	});
 	
 	it("Fails - will not create authorization token pin- No data", (done) => {
-		let params = {
-		};
+		let params = {};
 		requester('/pin', 'post', params, (error, body) => {
 			assert.ok(body);
 			assert.ok(body.errors);
-			assert.deepEqual(body.errors.details, [ { code: 172, message: 'Missing required field: grant_type' } ]);
+			assert.deepEqual(body.errors.details, [{code: 172, message: 'Missing required field: grant_type'}]);
 			done();
 		});
 	});

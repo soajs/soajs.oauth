@@ -16,7 +16,9 @@ describe("Testing authorization API", () => {
 	});
 	
 	it("Success - will return authorization token", (done) => {
-		let params = {};
+		let params = {
+			"noaccesstoken": true
+		};
 		requester('/authorization', 'get', params, (error, body) => {
 			assert.ifError(error);
 			assert.ok(body);

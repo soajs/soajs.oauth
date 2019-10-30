@@ -17,10 +17,11 @@ describe("Testing create access token API", () => {
 	
 	it("Success - will create authorization token", (done) => {
 		let params = {
-			body: {
-				username: 'owner',
-				password: 'password',
-				grant_type: 'password'
+			"noaccesstoken": true,
+			"body": {
+				"username": 'owner',
+				"password": 'password',
+				"grant_type": 'password'
 			}
 		};
 		requester('/token', 'post', params, (error, body) => {
@@ -39,12 +40,11 @@ describe("Testing create access token API", () => {
 	});
 	
 	it("Fails - will not create authorization token - No data", (done) => {
-		let params = {
-		};
+		let params = {};
 		requester('/token', 'post', params, (error, body) => {
 			assert.ok(body);
 			assert.ok(body.errors);
-			assert.deepEqual(body.errors.details, [ { code: 172, message: 'Missing required field: grant_type' } ]);
+			assert.deepEqual(body.errors.details, [{code: 172, message: 'Missing required field: grant_type'}]);
 			done();
 		});
 	});
