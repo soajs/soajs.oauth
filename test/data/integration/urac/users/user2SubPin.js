@@ -28,7 +28,7 @@ let user = {
 					code: "SOME",
 					pin: {
 						code: "1932",
-						allowed: true
+						allowed: false
 					}
 				},
 				groups: [

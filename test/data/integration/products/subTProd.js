@@ -11,8 +11,55 @@ let lib = {
 				"oauth": {
 					"1": {
 						"access": true,
-						"get": [
-						]
+						"apisPermission": "restricted",
+						"delete": [{
+							"group": "Tokenization",
+							"apis": {
+								"/refreshToken/:token": {
+									"access": true
+								},
+								"/accessToken/:token": {
+									"access": true
+								}
+							}
+						}, {
+							"group": "User Tokenization",
+							"apis": {
+								"/tokens/user/:userId": {
+									"access": true
+								}
+							}
+						}, {
+							"group": "Cient Tokenization",
+							"apis": {
+								"/tokens/tenant/:clientId": {
+									"access": true
+								}
+							}
+						}],
+						"post": [{
+							"group": "Tokenization",
+							"apis": {
+								"/pin": {
+									"access": true
+								}
+							}
+						}, {
+							"group": "Guest",
+							"apis": {
+								"/token": {
+									"access": false
+								}
+							}
+						}],
+						"get": [{
+							"group": "Guest",
+							"apis": {
+								"/authorization": {
+									"access": false
+								}
+							}
+						}]
 					}
 				}
 			}
@@ -25,14 +72,12 @@ let lib = {
 			"description" : "this is a description for test product basic package",
 			"acl" : {
 				"dashboard": {
-					"oauth": [
-						{
-							"version": "1",
-							"get": [
-								"Guest",
-							]
-						}
-					]
+					"oauth": [{
+						"version": "1",
+						"get": ["Guest"],
+						"post": ["Guest", "Tokenization"],
+						"delete": ["Tokenization"]
+					}]
 				}
 			},
 			"_TTL" : 86400000 // 24 hours
@@ -43,23 +88,12 @@ let lib = {
 			"description" : "this is a description for test product example03 package",
 			"acl" : {
 				"dashboard": {
-					"oauth": [
-						{
-							"version": "1",
-							"get": [
-								"Guest",
-							],
-							"put": [
-								"Guest",
-							],
-							"delete": [
-								"Guest",
-							],
-							"post": [
-								"Guest",
-							]
-						}
-					]
+					"oauth": [{
+						"version": "1",
+						"get": ["Guest"],
+						"post": ["Guest", "Tokenization"],
+						"delete": ["Tokenization", "User Tokenization", "Cient Tokenization"]
+					}]
 				}
 			},
 			"_TTL" : 86400000 // 24 hours
