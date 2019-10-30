@@ -39,7 +39,7 @@ describe("Testing create access token API", () => {
 		});
 	});
 	
-	it("Success - will not create authorization token - user has pin allowed false", (done) => {
+	it("Fails - will not create authorization token - user has pin allowed false", (done) => {
 		let params = {
 			"noaccesstoken": true,
 			"body": {

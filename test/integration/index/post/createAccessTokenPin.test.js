@@ -19,7 +19,7 @@ describe("Testing create access token with pin API", () => {
 	
 	let accessToken;
 	
-	it("Success - will create authorization token pin - main tenant owner 2 user", (done) => {
+	it("Fails - will not create authorization token pin - main access token is not there", (done) => {
 		let params = {
 			"noaccesstoken": true,
 			"body": {
