@@ -393,7 +393,7 @@ describe("Unit test for: BL - oauth", () => {
 			"password": "password"
 		};
 		
-		BL.getUserRecord(soajs, data, options, (err, record) => {
+		BL.getUserRecord(soajs, data, options, (err) => {
 			assert.ok(err);
 			done();
 		});
@@ -425,7 +425,7 @@ describe("Unit test for: BL - oauth", () => {
 			"password": "password"
 		};
 		
-		BL.getUserRecordByPin(soajs, data, options, (err, record) => {
+		BL.getUserRecordByPin(soajs, data, options, (err) => {
 			assert.ok(err);
 			done();
 		});
