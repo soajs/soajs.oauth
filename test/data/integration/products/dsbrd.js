@@ -12,7 +12,8 @@ let prod = {
 		            "1": {
 			            "access": true,
 			            "apisPermission": "restricted",
-			            "delete": [{
+			            "delete": [
+			            	{
 				            "group": "Tokenization",
 				            "apis": {
 					            "/refreshToken/:token": {
@@ -59,6 +60,13 @@ let prod = {
 						            "access": false
 					            }
 				            }
+			            }, {
+			            	"group": "Guest Login(s)",
+				            "apis": {
+					            "/passport/login/:strategy": {
+						            "access": false
+					            }
+				            }
 			            }]
 		            }
 	            }
@@ -75,7 +83,7 @@ let prod = {
                 dashboard: {
 	                "oauth": [{
 		                "version": "1",
-		                "get": ["Guest"],
+		                "get": ["Guest", "Guest Login(s)"],
 		                "post": ["Guest", "Tokenization"],
 		                "delete": ["Tokenization"]
 	                }]
@@ -92,7 +100,7 @@ let prod = {
                 dashboard: {
 	                "oauth": [{
 		                "version": "1",
-		                "get": ["Guest"],
+		                "get": ["Guest", "Guest Login(s)"],
 		                "post": ["Guest", "Tokenization"],
 		                "delete": ["Tokenization", "User Tokenization", "Cient Tokenization"]
 	                }]

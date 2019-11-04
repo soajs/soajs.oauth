@@ -432,28 +432,58 @@ describe("Unit test for: BL - oauth", () => {
 		
 	});
 	
-	it.skip("passportLogin", (done) => {
+	it("Fails - passportLogin", (done) => {
 		let req = {
 			"soajs": {
 				"inputmaskData": {
-					"strategy": 'facebook'
+					"strategy": 'azure'
 				},
 				"servicesConfig": {
 					"urac": {
 						"passportLogin": {
-							"facebook": {
-								"clientID": 'FACEBOOK_CLIENT_ID',
-								"clientSecret": 'FACEBOOK_CLIENT_SECRET',
-								"callbackURL": "http://local-widget.com/urac/login/success?mode=facebook"
+							"azure": {
 							}
 						}
 					},
 				},
 			}
 		};
-		BL.passportLogin(req, {}, null, (err, record) => {
-			console.log(record, err);
-			assert.ok(record);
+		
+		stubDriverError = sinon.stub(uracDriver, 'passportLibInit').yields(true, null);
+		
+		BL.passportLogin(req, null, null, (err) => {
+			assert.ok(err);
+			done();
+		});
+	});
+	
+	it("passportLogin", (done) => {
+		let req = {
+			"soajs": {
+				"inputmaskData": {
+					"strategy": 'azure'
+				},
+				"servicesConfig": {
+					"oauth": {
+						"passportLogin": {
+							"azure": {
+								"clientID": "5efd8319-1c0a-42da-b246-ec3eee9914c2",
+								"clientSecret": "PAPlBY@FQGr]-A16:tnnOs4zw9JY8:S6",
+								"identityMetadata": 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
+								"validateIssuer": false,
+								"passReqToCallback": false
+							}
+						}
+					},
+				},
+			}
+		};
+		
+		stubDriver = sinon.stub(uracDriver, 'passportLibInit').yields(null, null);
+		
+		BL.passportLogin(req, null, null, (err) => {
+			console.log(err, 'erora')
+			assert.ok(err);
 			done();
 		});
 	});

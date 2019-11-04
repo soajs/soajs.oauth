@@ -81,8 +81,8 @@ module.exports = {
 					"l": "Login Through Passport",
 					"group": "Guest Login(s)"
 				},
-				"uracConfig": {
-					"source": ['servicesConfig.urac'],
+				"oauthConfig": {
+					"source": ['servicesConfig.oauth'],
 					"required": true,
 					"validation": {
 						"type": "object",
@@ -156,6 +156,47 @@ module.exports = {
 											"callbackURL": {
 												"type": "string",
 												"required": true
+											}
+										}
+									},
+									"azure": {
+										"type": "object",
+										"properties": {
+											"clientID": {
+												"type": "string",
+												"required": true
+											},
+											"clientSecret": {
+												"type": "string",
+												"required": true
+											},
+											"identityMetadata": {
+												"type": "string",
+												"required": true
+											},
+											"validateIssuer": {
+												"type": "string",
+												"required": true
+											},
+											"issuer": {
+												"type": "string",
+												"required": false
+											},
+											"passReqToCallback": {
+												"type": "string",
+												"required": true
+											},
+											"audience": {
+												"type": "string",
+												"required": false
+											},
+											"allowMultiAudiencesInToken": {
+												"type": "string",
+												"required": false
+											},
+											"loggingLevel": {
+												"type": "string",
+												"required": false
 											}
 										}
 									}

@@ -88,7 +88,20 @@ let lib = {
                                 }
                             },
                             oauth: {
-                                loginMode: "urac"
+                                loginMode: "urac",
+	                            passportLogin: {
+		                            "azure": {
+			                            "clientID": "0be4690d-844c-416c-ab1a-4f62c80be903",
+			                            "clientSecret": "z7cZJh66P[Na3DFmiMCOuW]Mjr_X?nsV",
+			                            "identityMetadata": 'https://login.microsoftonline.com/common/.well-known/openid-configuration',
+			                            "validateIssuer": true,
+			                            "passReqToCallback": true,
+			                            "skipUserProfile": true,
+			                            "responseType": "id_token",
+			                            "responseMode": "query",
+			                            "issuer": "https://login.microsoftonline.com/5a2fab2e-fd08-4fa0-9b4f-8e4312273e79/v2.0"
+		                            }
+	                            }
                             }
                         }
                     }

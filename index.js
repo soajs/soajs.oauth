@@ -92,6 +92,7 @@ service.init(() => {
 		}
 		
 		service.get('/passport/login/:strategy', (req, res) => {
+			req.soajs.servicesConfig.passportLogin = req.soajs.servicesConfig.oauth.passportLogin;
 			bl.passportLogin(req, res, null, (error, data) => {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
