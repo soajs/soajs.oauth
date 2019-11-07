@@ -1,14 +1,14 @@
-require('dotenv').config();
+'use strict';
 
 var express = require('express');
 var passport = require('passport');
 var Strategy = require('passport-facebook').Strategy;
-
+var config = require('./config/config');
 
 passport.use(new Strategy({
-    clientID: process.env['FACEBOOK_CLIENT_ID'],
-    clientSecret: process.env['FACEBOOK_CLIENT_SECRET'],
-    callbackURL: '/return'
+    clientID: config.credentials.clientID,
+    clientSecret: config.credentials.clientSecret,
+    callbackURL: config.credentials.callbackURL
   },
   function(accessToken, refreshToken, profile, cb) {
     return cb(null, profile);
