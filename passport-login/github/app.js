@@ -7,7 +7,6 @@ const session = require('cookie-session');
 const passport = require('passport');
 const GitHubStrategy = require('passport-github').Strategy;
 
-
 let bodyParserJSON = bodyParser.json();
 let bodyParserURLEncoded = bodyParser.urlencoded({extended: true});
 

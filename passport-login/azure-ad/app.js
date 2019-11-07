@@ -5,8 +5,6 @@ const bodyParser = require('body-parser');
 
 let props = require('./config/props');
 let db = require('./config/database');
-
-let tasksRoutes = require('./routes/index');
 let app = express();
 
 let bodyParserJSON = bodyParser.json();
@@ -14,18 +12,14 @@ let bodyParserURLEncoded = bodyParser.urlencoded({extended: true});
 let cookieParser = require('cookie-parser');
 let session = require('cookie-session');
 
-let router = express.Router();
-
+const https = require('https');
+const fs = require('fs');
 const passport = require('passport');
 const BearerStrategy = require('passport-azure-ad').BearerStrategy;
 const AuthenticationContext = require('adal-node').AuthenticationContext;
 const crypto = require('crypto');
 
-const TokenRequest = require('./node_modules/adal-node/lib/token-request');
-
 let config = require('./config/config');
-
-const request = require('request');
 
 
 db();
@@ -63,6 +57,11 @@ let options = {
 	scope: config.credentials.scope,
 	tenantIdOrName: config.credentials.tenantIdOrName,
 	redirect_uri: config.credentials.redirect_uri
+};
+
+const httpsOpt = {
+	key: fs.readFileSync('key.pem'),
+	cert: fs.readFileSync('cert.pem')
 };
 
 passport.use(new BearerStrategy(options, function verify(req, iss, sub, profile, jwtClaims, accessToken, refreshToken, params, done) {
@@ -145,59 +144,13 @@ app.get('/account', function (req, res) {
 					message += 'refreshError: ' + refreshErr.message + '\n';
 				}
 				message += 'refreshResponse: ' + JSON.stringify(refreshResponse);
-				
+				console.log(refreshResponse)
 				res.send(message);
 			});
 		}
 	);
 });
 
-
-///old
-
-// const bearerStrategy = new BearerStrategy(options, function (token, done) {
-// 	console.log(token, 'was the token retreived');
-// 	if (!token.oid)
-// 		done(new Error('oid is not found in token'));
-// 	else {
-// 		owner = token.oid;
-// 		done(null, {}, token);
-// 	}
-// });
-
-// function ensureAuthenticated(req, res, next) {
-// 	if (req.isAuthenticated()) {
-// 		return next();
-// 	}
-// 	res.redirect('/loginazure')
-// }
-
-// app.get('/account', ensureAuthenticated, function (req, res) {
-// 	const requestToken = req.query;
-//
-// 	console.log(requestToken);
-//
-// 	res.render('account', {user: req.user});
-// });
-
-// app.get('/loginazure',
-// 	passport.authenticate('oauth-bearer', {
-// 		session: false
-// 	}),
-// 	(req, res) => {
-// 		console.log('Login');
-// 		res.redirect('/');
-// 	});
-//
-// app.get('/logout', function (req, res) {
-// 	req.logout();
-// 	res.redirect('/');
-// });
-
-app.use('/api', router);
-
-tasksRoutes(router);
-
-app.listen(props.PORT, (req, res) => {
+https.createServer(httpsOpt, app).listen(props.PORT, (req, res) => {
 	console.log(`Server is running on ${props.PORT} port.`);
 });
