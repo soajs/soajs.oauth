@@ -1,7 +1,7 @@
 {
   "name": "soajs.oauth",
   "description": "soajs oauth service",
-  "version": "2.5.18",
+  "version": "2.5.19",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "oauth2-server": "2.4.1",
-    "soajs": "2.5.23",
-    "soajs.urac.driver": "2.0.13"
+    "soajs": "2.6.0",
+    "soajs.urac.driver": "2.0.15"
   }
 }
