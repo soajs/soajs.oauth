@@ -114,7 +114,7 @@ let bl = {
 			if (err) {
 				return cb(bl.handleError(soajs, 602, err));
 			}
-			return cb(null, records);
+			return cb(null, records.result);
 		});
 	},
 	
@@ -132,7 +132,7 @@ let bl = {
 			if (err) {
 				return cb(bl.handleError(soajs, 602, err));
 			}
-			return cb(null, records);
+			return cb(null, records.result);
 		});
 	},
 	
@@ -160,7 +160,7 @@ let bl = {
 				if (err) {
 					return cb(bl.handleError(soajs, 602, err));
 				}
-				return cb(null, records);
+				return cb(null, records.result);
 			});
 		});
 	},
@@ -178,7 +178,7 @@ let bl = {
 			if (err) {
 				return cb(bl.handleError(soajs, 602, err));
 			}
-			return cb(null, records);
+			return cb(null, records.result);
 		});
 	}
 	
