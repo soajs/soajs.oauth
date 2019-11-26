@@ -11,7 +11,6 @@ let prod = {
 	            oauth: {
 		            "1": {
 			            "access": true,
-			            "apisPermission": "restricted",
 			            "delete": [{
 				            "group": "Tokenization",
 				            "apis": {
