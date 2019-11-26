@@ -53,7 +53,7 @@ module.exports = {
 		400: "Business logic required data are missing.",
 		401: "Unable to log in the user. User not found.",
 		403: "User does not have access to this tenant",
-		
+		404: "Unable to roam the provided request",
 		406: "Missing Tenant secret",
 		
 		413: "Problem with the provided password.",
@@ -69,6 +69,13 @@ module.exports = {
 		"commonFields": {},
 		
 		"get": {
+			"/roaming": {
+				"_apiInfo": {
+					"l": "Cross environment roaming, but requires IP whitelisting",
+					"group": "Tokenization user"
+				}
+			},
+			
 			"/authorization": {
 				"_apiInfo": {
 					"l": "Get the authorization token",

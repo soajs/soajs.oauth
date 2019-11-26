@@ -35,8 +35,7 @@ service.init(() => {
 			//grants check
 			if (reg.serviceConfig && reg.serviceConfig.oauth && reg.serviceConfig.oauth.grants) {
 				oauthOptions.grants = reg.serviceConfig.oauth.grants;
-			}
-			else {
+			} else {
 				service.log.debug("Unable to find grants entry in registry, defaulting to", config.oauthServer.grants);
 				oauthOptions.grants = config.oauthServer.grants;
 			}
@@ -44,8 +43,7 @@ service.init(() => {
 			//debug check
 			if (reg.serviceConfig && reg.serviceConfig.oauth && reg.serviceConfig.oauth.debug) {
 				oauthOptions.debug = reg.serviceConfig.oauth.debug;
-			}
-			else {
+			} else {
 				service.log.debug("Unable to find debug entry in registry, defaulting to", config.oauthServer.debug);
 				oauthOptions.debug = config.oauthServer.debug;
 			}
@@ -53,8 +51,7 @@ service.init(() => {
 			//accessTokenLifetime check
 			if (reg.serviceConfig && reg.serviceConfig.oauth && reg.serviceConfig.oauth.accessTokenLifetime) {
 				oauthOptions.accessTokenLifetime = reg.serviceConfig.oauth.accessTokenLifetime;
-			}
-			else {
+			} else {
 				service.log.debug("Unable to find accessTokenLifetime entry in registry, defaulting to", config.oauthServer.accessTokenLifetime);
 				oauthOptions.accessTokenLifetime = config.oauthServer.accessTokenLifetime;
 			}
@@ -62,8 +59,7 @@ service.init(() => {
 			//refreshTokenLifetime check
 			if (reg.serviceConfig && reg.serviceConfig.oauth && reg.serviceConfig.oauth.refreshTokenLifetime) {
 				oauthOptions.refreshTokenLifetime = reg.serviceConfig.oauth.refreshTokenLifetime;
-			}
-			else {
+			} else {
 				service.log.debug("Unable to find refreshTokenLifetime entry in registry, defaulting to", config.oauthServer.refreshTokenLifetime);
 				oauthOptions.refreshTokenLifetime = config.oauthServer.refreshTokenLifetime;
 			}
@@ -90,6 +86,25 @@ service.init(() => {
 				});
 			});
 		}
+		
+		service.get('/roaming', (req, res) => {
+			if (req.soajs.servicesConfig.oauth &&
+				req.soajs.servicesConfig.oauth.roaming &&
+				req.soajs.servicesConfig.oauth.roaming.whitelistips &&
+				Array.isArray(req.soajs.servicesConfig.oauth.roaming.whitelistips)) {
+				
+				let clientIp = req.getClientIP();
+				let whitelistips = req.soajs.servicesConfig.oauth.roaming.whitelistips;
+				
+				if (whitelistips.includes(clientIp)) {
+					let inject = req.headers.soajsinjectobj;
+					res.set('soajsinjectobj', inject);
+					return res.json(req.soajs.buildResponse(null, true));
+				}
+			}
+			let error = {code: 404, msg: config.errors[404]};
+			return res.json(req.soajs.buildResponse(error, null));
+		});
 		
 		service.get('/passport/login/:strategy', (req, res) => {
 			bl.passportLogin(req, res, null, (error, data) => {
@@ -135,14 +150,12 @@ service.init(() => {
 				bl.authorization(req.soajs, req.soajs.inputmaskData, {"provision": provision}, (error, data) => {
 					if (error) {
 						return res.json(req.soajs.buildResponse(error, data));
-					}
-					else {
+					} else {
 						req.headers.authorization = data;
 						next();
 					}
 				});
-			}
-			else {
+			} else {
 				next();
 			}
 		}, service.oauth.grant());
@@ -170,8 +183,7 @@ service.init(() => {
 			bl.authorization(req.soajs, req.soajs.inputmaskData, {"provision": provision}, (error, data) => {
 				if (error) {
 					return res.json(req.soajs.buildResponse(error, data));
-				}
-				else {
+				} else {
 					req.headers.authorization = data;
 					next();
 				}

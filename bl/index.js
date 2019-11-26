@@ -258,7 +258,6 @@ let bl = {
 			}
 		});
 	}
-	
 };
 
 function init(service, localConfig, cb) {
