@@ -1,9 +1,9 @@
 'use strict';
 
 let lib = {
-	"code" : "TPROD",
-	"name" : "Test Product",
-	"description" : "This is a product with multiple services and versions, version is sanitized",
+	"code": "TPROD",
+	"name": "Test Product",
+	"description": "This is a product with multiple services and versions, version is sanitized",
 	"console": false,
 	"scope": {
 		"acl": {
@@ -52,51 +52,61 @@ let lib = {
 								}
 							}
 						}],
-						"get": [{
-							"group": "Guest",
-							"apis": {
-								"/authorization": {
-									"access": false
+						"get": [
+							{
+								"group": "Guest",
+								"apis": {
+									"/authorization": {
+										"access": false
+									}
+								}
+							},
+							{
+								"group": "Tokenization user",
+								"apis": {
+									"/roaming": {
+										"access": false
+									}
 								}
 							}
-						}]
+						]
 					}
 				}
 			}
 		}
 	},
-	"packages" : [
+	"packages": [
 		{
-			"code" : "TPROD_BASIC",
-			"name" : "basic package",
-			"description" : "this is a description for test product basic package",
-			"acl" : {
+			"code": "TPROD_BASIC",
+			"name": "basic package",
+			"description": "this is a description for test product basic package",
+			"acl": {
 				"dashboard": {
 					"oauth": [{
 						"version": "1",
-						"get": ["Guest"],
+						"get": ["Guest", "Tokenization user"],
 						"post": ["Guest", "Tokenization"],
 						"delete": ["Tokenization"]
 					}]
 				}
 			},
-			"_TTL" : 86400000 // 24 hours
+			"_TTL": 86400000 // 24 hours
 		},
 		{
-			"code" : "TPROD_EXA3",
-			"name" : "example03 package",
-			"description" : "this is a description for test product example03 package",
-			"acl" : {
+			"code": "TPROD_EXA3",
+			"name": "example03 package",
+			"description": "this is a description for test product example03 package",
+			"acl": {
 				"dashboard": {
 					"oauth": [{
 						"version": "1",
-						"get": ["Guest"],
+						"get": ["Guest", "Tokenization user"],
 						"post": ["Guest", "Tokenization"],
 						"delete": ["Tokenization", "User Tokenization", "Cient Tokenization"]
 					}]
 				}
 			},
-			"_TTL" : 86400000 // 24 hours
+			"_TTL": 86400000 // 24 hours
 		}
 	]
 };

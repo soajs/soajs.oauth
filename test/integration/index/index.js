@@ -14,6 +14,7 @@ describe("starting index integration tests", () => {
 	it("loading index integration tests", (done) => {
 		// GET
 		require("./get/authorization.test.js");
+		require("./get/roaming.test.js");
 		
 		//POST
 		require("./post/createAccessToken.test.js");

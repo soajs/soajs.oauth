@@ -90,7 +90,13 @@ let lib = {
 								}
 							},
 							oauth: {
-								loginMode: "urac"
+								loginMode: "urac",
+								roaming: {
+									whitelistips: [
+										"192.168.1.1",
+										"10.10.2.1"
+									]
+								}
 							}
 						}
 					}

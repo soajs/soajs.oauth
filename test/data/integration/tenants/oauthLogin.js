@@ -38,7 +38,14 @@ let tenent = {
 					"config": {
 						"dashboard": {
 							"oauth": {
-								"loginMode": 'oauth'
+								"loginMode": 'oauth',
+								"roaming": {
+									"whitelistips": [
+										"192.168.1.1",
+										"127.0.0.1",
+										"10.10.2.1"
+									]
+								}
 							}
 						}
 					}

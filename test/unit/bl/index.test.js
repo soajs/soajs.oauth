@@ -457,5 +457,4 @@ describe("Unit test for: BL - oauth", () => {
 			done();
 		});
 	});
-	
 });
