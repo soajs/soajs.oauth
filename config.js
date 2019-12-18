@@ -22,6 +22,7 @@ module.exports = {
 	"requestTimeoutRenewal": 5,
 	"extKeyRequired": true,
 	"oauth": true,
+	'awareness': false,
 	"maintenance": {
 		"commands": [
 			{"label": "Releoad Provision", "path": "/loadProvision", "icon": "provision"}

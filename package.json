@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "oauth2-server": "2.4.1",
-    "soajs": "2.6.1",
+    "soajs": "2.6.2",
     "soajs.urac.driver": "2.0.15"
   }
 }
