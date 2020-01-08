@@ -15,6 +15,11 @@ const soajsCoreModules = require('soajs');
 let soajsUtils = soajsCoreModules.utils;
 let Auth = soajsCoreModules.authorization;
 
+const integrationLib = require('./integration/lib.js');
+const passport = require('./integration/passport.js');
+const ldap = require('./integration/ldap.js');
+const openam = require('./integration/openam.js');
+
 const uracDriver = require("soajs.urac.driver");
 
 let SSOT = {};
@@ -27,15 +32,6 @@ function checkUserTenantAccessPin(record, tenantObj) {
 		if (record.tenant.id === tenantObj.id) {
 			return record.tenant;
 		}
-		/*
-		if (record.config && record.config.allowedTenants) {
-			for (let i = 0; i < record.config.allowedTenants.length; i++) {
-				if (record.config.allowedTenants[i].tenant && (record.config.allowedTenants[i].tenant.id === tenantObj.id)) {
-					return record.config.allowedTenants[i].tenant;
-				}
-			}
-		}
-		*/
 	}
 	return null;
 }
@@ -45,49 +41,58 @@ let bl = {
 	oauth: null,
 	
 	"passportLogin": (req, res, options, cb) => {
-		uracDriver.passportLibInit(req, function (error, passport) {
+		passport.init(req, function (error, passport) {
 			if (error) {
 				return cb(error, null);
 			}
-			uracDriver.passportLibInitAuth(req, res, passport);
+			passport.initAuth(req, res, passport);
 		});
 	},
 	
 	"passportValidate": (req, res, options, cb) => {
-		uracDriver.passportLibInit(req, function (error, passport) {
+		passport.init(req, function (error, passport) {
 			if (error) {
 				return cb(error, null);
 			}
-			uracDriver.passportLibAuthenticate(req, res, passport, function (error, user) {
+			passport.passportLibAuthenticate(req, res, passport, function (error, profile) {
 				if (error) {
 					return cb(error, null);
 				}
-				user.id = user._id.toString();
-				options.provision.generateSaveAccessRefreshToken(user, req, function (err, accessData) {
-					if (err) {
-						return cb(bl.oauth.handleError(req.soajs, 600, err));
-					}
+				
+				//save the user
+				let input = {
+					"user": profile,
+					"mode": req.soajs.inputmaskData.strategy
+				};
+				uracDriver.saveUser(req.soajs, input, (error, user) => {
 					
-					let mode = req.soajs.inputmaskData.strategy;
-					delete user.password;
+					options.provision.generateSaveAccessRefreshToken(user, req, function (err, accessData) {
+						if (err) {
+							return cb(bl.oauth.handleError(req.soajs, 600, err));
+						}
+						
+						let mode = req.soajs.inputmaskData.strategy;
+						delete user.password;
+						
+						let returnRecord = soajsUtils.cloneObj(user);
+						returnRecord.socialLogin = {};
+						returnRecord.socialLogin = user.socialId[mode];
+						returnRecord.socialLogin.strategy = mode;
+						
+						delete returnRecord.socialId;
+						
+						if (returnRecord.config && returnRecord.config.packages) {
+							delete returnRecord.config.packages;
+						}
+						if (returnRecord.config && returnRecord.config.keys) {
+							delete returnRecord.config.keys;
+						}
+						returnRecord._id = user._id;
+						returnRecord.accessTokens = accessData;
+						
+						return cb(null, returnRecord);
+					});
 					
-					let returnRecord = soajsUtils.cloneObj(user);
-					returnRecord.socialLogin = {};
-					returnRecord.socialLogin = user.socialId[mode];
-					returnRecord.socialLogin.strategy = mode;
-					
-					delete returnRecord.socialId;
-					
-					if (returnRecord.config && returnRecord.config.packages) {
-						delete returnRecord.config.packages;
-					}
-					if (returnRecord.config && returnRecord.config.keys) {
-						delete returnRecord.config.keys;
-					}
-					returnRecord._id = user._id;
-					returnRecord.accessTokens = accessData;
-					
-					return cb(null, returnRecord);
 				});
 			});
 		});
@@ -97,7 +102,8 @@ let bl = {
 		let data = {
 			'token': inputmaskData.token
 		};
-		uracDriver.openamLogin(req.soajs, data, function (error, data) {
+		openam.login(req.soajs, data, function (error, data) {
+			//uracDriver.openamLogin(req.soajs, data, function (error, data) {
 			if (error) {
 				return cb(error, null);
 			}
@@ -117,7 +123,8 @@ let bl = {
 			'password': inputmaskData.password
 		};
 		
-		uracDriver.ldapLogin(req.soajs, data, function (error, data) {
+		ldap.login(req.soajs, data, function (error, data) {
+			//uracDriver.ldapLogin(req.soajs, data, function (error, data) {
 			if (error) {
 				return cb(error, null);
 			}
@@ -282,12 +289,16 @@ function init(service, localConfig, cb) {
 		}
 	};
 	async.each(BLs, fillModels, function (err) {
-		
 		if (err) {
 			service.log.error(`Requested model not found. make sure you have a model for ${err.name} @ ${err.model}`);
 			return cb({"code": 601, "msg": localConfig.errors[601]});
 		}
-		return cb(null);
+		integrationLib.loadDrivers(service, __dirname + "/integration/drivers/", (error) => {
+			if (error) {
+				return cb({"code": 603, "msg": localConfig.errors[603] + error.message});
+			}
+			return cb(null);
+		});
 	});
 }
 

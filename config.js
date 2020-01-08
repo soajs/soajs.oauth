@@ -57,14 +57,33 @@ module.exports = {
 		404: "Unable to roam the provided request",
 		406: "Missing Tenant secret",
 		
+		411: "Third party integration mapProfile error",
+		412: "Third party integration profile is empty",
+		
 		413: "Problem with the provided password.",
+		
+		420: "Missing service key configuration for third party integration",
 		
 		450: "You do not have privileges to enable pin login",
 		451: "Pin login is not available for this account",
 		
 		600: "Error in generating oAUth Token.",
 		601: "Model not found.",
-		602: "Model error: "
+		602: "Model error: ",
+		603: "Drivers error: ",
+		
+		700: "Unable to log in. Ldap connection refused!",
+		701: "Unable to log in. Invalid ldap admin user.",
+		702: "Unable to log in. Invalid ldap admin credentials.",
+		703: "Unable to log in. Invalid ldap user credentials.",
+		704: "Unable to log in. Ldap user not found.",
+		705: "Unable to log in. Authentication failed.",
+		
+		710: "Unable to log in. OpenAM connection error.",
+		711: "Unable to log in. OpenAM token invalid.",
+		713: "Unable to log in. General error while parsing response",
+		
+		720: "Unable to authenticated with third party"
 	},
 	"schema": {
 		"commonFields": {},
