@@ -22,7 +22,8 @@ let lib = {
 			email: record.mail,
 			password: '',
 			username: record.dn,
-			groups: []
+			groups: [],
+			originalProfile: record
 		};
 		
 		return cb(null, profile);
