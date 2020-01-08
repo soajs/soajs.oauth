@@ -103,7 +103,6 @@ let bl = {
 			'token': inputmaskData.token
 		};
 		openam.login(req.soajs, data, function (error, data) {
-			//uracDriver.openamLogin(req.soajs, data, function (error, data) {
 			if (error) {
 				return cb(error, null);
 			}
@@ -124,7 +123,6 @@ let bl = {
 		};
 		
 		ldap.login(req.soajs, data, function (error, data) {
-			//uracDriver.ldapLogin(req.soajs, data, function (error, data) {
 			if (error) {
 				return cb(error, null);
 			}
@@ -293,12 +291,9 @@ function init(service, localConfig, cb) {
 			service.log.error(`Requested model not found. make sure you have a model for ${err.name} @ ${err.model}`);
 			return cb({"code": 601, "msg": localConfig.errors[601]});
 		}
-		integrationLib.loadDrivers(service, __dirname + "/integration/drivers/", (error) => {
-			if (error) {
-				return cb({"code": 603, "msg": localConfig.errors[603] + error.message});
-			}
-			return cb(null);
-		});
+		integrationLib.loadDrivers(service);
+		return cb(null);
+		
 	});
 }
 

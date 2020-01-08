@@ -70,7 +70,6 @@ module.exports = {
 		600: "Error in generating oAUth Token.",
 		601: "Model not found.",
 		602: "Model error: ",
-		603: "Drivers error: ",
 		
 		700: "Unable to log in. Ldap connection refused!",
 		701: "Unable to log in. Invalid ldap admin user.",

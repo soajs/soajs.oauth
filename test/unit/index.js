@@ -28,6 +28,12 @@ describe("Starting OAUTH Unit test", () => {
 		done();
 	});
 	
+	
+	it("Testing all integrations", (done) => {
+		require('./bl/integration/openam.js');
+		done();
+	});
+	
 	after((done) => {
 		done();
 	});
