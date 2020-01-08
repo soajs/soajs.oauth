@@ -8,8 +8,6 @@
 
 "use strict";
 
-//const coreModules = require("soajs.core.modules");
-//const core = coreModules.core;
 const helper = require("../../../helper.js");
 const driver = helper.requireModule('./bl/integration/openam.js');
 const integrationLib = helper.requireModule('./bl/integration/lib.js');

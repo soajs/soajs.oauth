@@ -32,4 +32,8 @@ describe("starting OAUTH integration tests", () => {
 		done();
 	});
 	
+	it("loading ldap test", (done) => {
+		require('./ldap/index.js');
+		done();
+	});
 });
