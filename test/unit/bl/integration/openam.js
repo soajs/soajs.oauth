@@ -31,13 +31,13 @@ describe("Unit test for: openam - integration", () => {
 		done();
 	});
 	
-	it("test - openamLogin - error config", function (done) {
+	it("test - openamLogin - error config", (done) => {
 		driver.login(soajs, {}, (error) => {
 			assert.equal(error.code, "420");
 			done();
 		});
 	});
-	it("test - openamLogin - error OpenAM connection", function (done) {
+	it("test - openamLogin - error OpenAM connection", (done) => {
 		soajs.servicesConfig.openam = {
 			"attributesURL": "https://test.com/openam/identity/json/attributes",
 			"attributesMap": [
@@ -62,7 +62,7 @@ describe("Unit test for: openam - integration", () => {
 			done();
 		});
 	});
-	it("test - openamLogin - Error in body.parse", function (done) {
+	it("test - openamLogin - Error in body.parse", (done) => {
 		soajs.servicesConfig.openam = {
 			"attributesURL": "https://test.com/openam/identity/json/attributes",
 			"attributesMap": [
@@ -88,7 +88,7 @@ describe("Unit test for: openam - integration", () => {
 			done();
 		});
 	});
-	it("test - openamLogin", function (done) {
+	it("test - openamLogin", (done) => {
 		soajs.servicesConfig.openam = {
 			"attributesURL": "https://test.com/openam/identity/json/attributes",
 			"attributesMap": [

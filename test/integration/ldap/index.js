@@ -15,7 +15,7 @@ const driver = helper.requireModule('./bl/integration/ldap.js');
 const integrationLib = helper.requireModule('./bl/integration/lib.js');
 const assert = require('assert');
 
-describe("Integration test for: ldap", function () {
+describe("Integration test for: ldap", () => {
 	let soajs = {
 		"meta": core.meta,
 		"tenant": {
@@ -93,7 +93,7 @@ describe("Integration test for: ldap", function () {
 		done();
 	});
 	
-	it("test - ldapLogin - with the correct credentials", function (done) {
+	it("test - ldapLogin - with the correct credentials", (done) => {
 		soajs.servicesConfig.ldapServer = {
 			host: 'ldap://127.0.0.1',
 			port: 10389,
@@ -102,7 +102,7 @@ describe("Integration test for: ldap", function () {
 			adminPassword: 'secret'
 		};
 		let ldapServer = require('./ldapServer.js');
-		ldapServer.startServer(serverConfig, function (server) {
+		ldapServer.startServer(serverConfig, (server) => {
 			let data = {
 				"username": "owner",
 				"password": "password"
@@ -114,7 +114,7 @@ describe("Integration test for: ldap", function () {
 			});
 		});
 	});
-	it("test - ldapLogin - with the wrong password", function (done) {
+	it("test - ldapLogin - with the wrong password", (done) => {
 		soajs.servicesConfig.ldapServer = {
 			host: 'ldap://127.0.0.1',
 			port: 10389,
@@ -123,19 +123,19 @@ describe("Integration test for: ldap", function () {
 			adminPassword: 'secret'
 		};
 		let ldapServer = require('./ldapServer.js');
-		ldapServer.startServer(serverConfig, function (server) {
+		ldapServer.startServer(serverConfig, (server) => {
 			let data = {
 				"username": "owner",
 				"password": "passw"
 			};
-			driver.login(soajs, data, (error, record) => {
+			driver.login(soajs, data, (error) => {
 				assert.equal(error.code, '703');
 				ldapServer.killServer(server);
 				done();
 			});
 		});
 	});
-	it("test - ldapLogin - with the wrong adminPassword in provision information", function (done) {
+	it("test - ldapLogin - with the wrong adminPassword in provision information", (done) => {
 		soajs.servicesConfig.ldapServer = {
 			host: 'ldap://127.0.0.1',
 			port: 10389,
@@ -144,19 +144,19 @@ describe("Integration test for: ldap", function () {
 			adminPassword: 'secret'
 		};
 		let ldapServer = require('./ldapServer.js');
-		ldapServer.startServer(serverConfig2, function (server) {
+		ldapServer.startServer(serverConfig2, (server) => {
 			let data = {
 				"username": "owner",
 				"password": "password"
 			};
-			driver.login(soajs, data, (error, record) => {
+			driver.login(soajs, data, (error) => {
 				assert.equal(error.code, '702');
 				ldapServer.killServer(server);
 				done();
 			});
 		});
 	});
-	it("test - ldapLogin - with the wrong adminUser in provision information", function (done) {
+	it("test - ldapLogin - with the wrong adminUser in provision information", (done) => {
 		soajs.servicesConfig.ldapServer = {
 			host: 'ldap://127.0.0.1',
 			port: 10389,
@@ -165,19 +165,19 @@ describe("Integration test for: ldap", function () {
 			adminPassword: 'secret'
 		};
 		let ldapServer = require('./ldapServer.js');
-		ldapServer.startServer(serverConfig3, function (server) {
+		ldapServer.startServer(serverConfig3, (server) => {
 			let data = {
 				"username": "owner",
 				"password": "password"
 			};
-			driver.login(soajs, data, (error, record) => {
+			driver.login(soajs, data, (error) => {
 				assert.equal(error.code, '701');
 				ldapServer.killServer(server);
 				done();
 			});
 		});
 	});
-	it("test - ldapLogin - with no ldap ON", function (done) {
+	it("test - ldapLogin - with no ldap ON", (done) => {
 		soajs.servicesConfig.ldapServer = {
 			host: 'ldap://127.0.0.1',
 			port: 10389,
@@ -189,7 +189,7 @@ describe("Integration test for: ldap", function () {
 			"username": "owner",
 			"password": "password"
 		};
-		driver.login(soajs, data, (error, record) => {
+		driver.login(soajs, data, (error) => {
 			assert.equal(error.code, '700');
 			done();
 		});

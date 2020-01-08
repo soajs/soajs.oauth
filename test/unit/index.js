@@ -32,6 +32,7 @@ describe("Starting OAUTH Unit test", () => {
 	it("Testing all integrations", (done) => {
 		require('./bl/integration/openam.js');
 		require('./bl/integration/ldap.js');
+		require('./bl/integration/passport.js');
 		done();
 	});
 	

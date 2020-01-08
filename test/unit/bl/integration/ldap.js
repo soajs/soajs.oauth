@@ -12,7 +12,6 @@ const helper = require("../../../helper.js");
 const driver = helper.requireModule('./bl/integration/ldap.js');
 const integrationLib = helper.requireModule('./bl/integration/lib.js');
 const assert = require('assert');
-const nock = require("nock");
 
 describe("Unit test for: ldap - integration", () => {
 	let soajs = {
@@ -30,7 +29,7 @@ describe("Unit test for: ldap - integration", () => {
 		integrationLib.loadDrivers();
 		done();
 	});
-	it("test - ldapLogin - error config", function (done) {
+	it("test - ldapLogin - error config", (done) => {
 		driver.login(soajs, {}, (error) => {
 			assert.equal(error.code, "420");
 			done();
