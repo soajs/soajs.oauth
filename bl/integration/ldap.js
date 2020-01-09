@@ -19,8 +19,8 @@ let main = {
 		let password = data.password;
 		let ldapServer;
 		
-		if (soajs.servicesConfig && soajs.servicesConfig.ldapServer) {
-			ldapServer = soajs.servicesConfig.ldapServer;
+		if (soajs.servicesConfig && soajs.servicesConfig.oauth && soajs.servicesConfig.oauth.ldapServer) {
+			ldapServer = soajs.servicesConfig.oauth.ldapServer;
 		}
 		else {
 			return cb({"code": 420, "msg": driverConfig.errors[420]});
@@ -92,7 +92,7 @@ let main = {
 						if (!profile) {
 							return cb({"code": 412, "msg": driverConfig.errors[412]});
 						}
-						cb(err, profile);
+						cb(null, profile);
 					});
 				});
 			}

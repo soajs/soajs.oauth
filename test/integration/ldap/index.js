@@ -23,9 +23,7 @@ describe("Integration test for: ldap", () => {
 			"id": "5c0e74ba9acc3c5a84a51259"
 		},
 		"servicesConfig": {
-			"urac": {
-				"model": "mongo"
-			}
+			"oauth": {}
 		},
 		"registry": {
 			"tenantMetaDB": {
@@ -94,7 +92,7 @@ describe("Integration test for: ldap", () => {
 	});
 	
 	it("test - ldapLogin - with the correct credentials", (done) => {
-		soajs.servicesConfig.ldapServer = {
+		soajs.servicesConfig.oauth.ldapServer = {
 			host: 'ldap://127.0.0.1',
 			port: 10389,
 			baseDN: 'ou=users,ou=system',
@@ -115,7 +113,7 @@ describe("Integration test for: ldap", () => {
 		});
 	});
 	it("test - ldapLogin - with the wrong password", (done) => {
-		soajs.servicesConfig.ldapServer = {
+		soajs.servicesConfig.oauth.ldapServer = {
 			host: 'ldap://127.0.0.1',
 			port: 10389,
 			baseDN: 'ou=users,ou=system',
@@ -136,7 +134,7 @@ describe("Integration test for: ldap", () => {
 		});
 	});
 	it("test - ldapLogin - with the wrong adminPassword in provision information", (done) => {
-		soajs.servicesConfig.ldapServer = {
+		soajs.servicesConfig.oauth.ldapServer = {
 			host: 'ldap://127.0.0.1',
 			port: 10389,
 			baseDN: 'ou=users,ou=system',
@@ -157,7 +155,7 @@ describe("Integration test for: ldap", () => {
 		});
 	});
 	it("test - ldapLogin - with the wrong adminUser in provision information", (done) => {
-		soajs.servicesConfig.ldapServer = {
+		soajs.servicesConfig.oauth.ldapServer = {
 			host: 'ldap://127.0.0.1',
 			port: 10389,
 			baseDN: 'ou=users,ou=system',
@@ -178,7 +176,7 @@ describe("Integration test for: ldap", () => {
 		});
 	});
 	it("test - ldapLogin - with no ldap ON", (done) => {
-		soajs.servicesConfig.ldapServer = {
+		soajs.servicesConfig.oauth.ldapServer = {
 			host: 'ldap://127.0.0.1',
 			port: 10389,
 			baseDN: 'ou=users,ou=system',

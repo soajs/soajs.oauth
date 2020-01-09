@@ -12,7 +12,7 @@ const async = require("async");
 const fs = require("fs");
 const soajsCoreModules = require('soajs');
 
-let soajsUtils = soajsCoreModules.utils;
+//let soajsUtils = soajsCoreModules.utils;
 let Auth = soajsCoreModules.authorization;
 
 const integrationLib = require('./integration/lib.js');
@@ -26,15 +26,6 @@ let SSOT = {};
 let model = process.env.SOAJS_SERVICE_MODEL || "mongo";
 
 const BLs = ["oauth"];
-
-function checkUserTenantAccessPin(record, tenantObj) {
-	if (record && record.tenant && tenantObj && tenantObj.id) {
-		if (record.tenant.id === tenantObj.id) {
-			return record.tenant;
-		}
-	}
-	return null;
-}
 
 let bl = {
 	init: init,
@@ -64,36 +55,7 @@ let bl = {
 					"user": profile,
 					"mode": req.soajs.inputmaskData.strategy
 				};
-				uracDriver.saveUser(req.soajs, input, (error, user) => {
-					
-					options.provision.generateSaveAccessRefreshToken(user, req, function (err, accessData) {
-						if (err) {
-							return cb(bl.oauth.handleError(req.soajs, 600, err));
-						}
-						
-						let mode = req.soajs.inputmaskData.strategy;
-						delete user.password;
-						
-						let returnRecord = soajsUtils.cloneObj(user);
-						returnRecord.socialLogin = {};
-						returnRecord.socialLogin = user.socialId[mode];
-						returnRecord.socialLogin.strategy = mode;
-						
-						delete returnRecord.socialId;
-						
-						if (returnRecord.config && returnRecord.config.packages) {
-							delete returnRecord.config.packages;
-						}
-						if (returnRecord.config && returnRecord.config.keys) {
-							delete returnRecord.config.keys;
-						}
-						returnRecord._id = user._id;
-						returnRecord.accessTokens = accessData;
-						
-						return cb(null, returnRecord);
-					});
-					
-				});
+				thirdpartySaveAndGrantAccess(req, input, options, cb);
 			});
 		});
 	},
@@ -102,17 +64,16 @@ let bl = {
 		let data = {
 			'token': inputmaskData.token
 		};
-		openam.login(req.soajs, data, function (error, data) {
+		openam.login(req.soajs, data, function (error, profile) {
 			if (error) {
 				return cb(error, null);
 			}
-			options.provision.generateSaveAccessRefreshToken(data, req, function (err, accessData) {
-				if (err) {
-					return cb(bl.oauth.handleError(req.soajs, 600, err));
-				}
-				data.accessTokens = accessData;
-				return cb(null, data);
-			});
+			//save the user
+			let input = {
+				"user": profile,
+				"mode": "openam"
+			};
+			thirdpartySaveAndGrantAccess(req, input, options, cb);
 		});
 	},
 	
@@ -122,18 +83,16 @@ let bl = {
 			'password': inputmaskData.password
 		};
 		
-		ldap.login(req.soajs, data, function (error, data) {
+		ldap.login(req.soajs, data, function (error, profile) {
 			if (error) {
 				return cb(error, null);
 			}
-			
-			options.provision.generateSaveAccessRefreshToken(data, req, function (err, accessData) {
-				if (err) {
-					return cb(bl.oauth.handleError(req.soajs, 600, err));
-				}
-				data.accessTokens = accessData;
-				return cb(null, data);
-			});
+			//save the user
+			let input = {
+				"user": profile,
+				"mode": "ldap"
+			};
+			thirdpartySaveAndGrantAccess(req, input, options, cb);
 		});
 	},
 	
@@ -293,6 +252,41 @@ function init(service, localConfig, cb) {
 		}
 		integrationLib.loadDrivers(service);
 		return cb(null);
+		
+	});
+}
+
+function checkUserTenantAccessPin(record, tenantObj) {
+	if (record && record.tenant && tenantObj && tenantObj.id) {
+		if (record.tenant.id === tenantObj.id) {
+			return record.tenant;
+		}
+	}
+	return null;
+}
+
+function thirdpartySaveAndGrantAccess(req, input, options, cb) {
+	uracDriver.saveUser(req.soajs, input, (error, user) => {
+		if (error) {
+			return cb(bl.oauth.handleError(req.soajs, 602, error));
+		}
+		options.provision.generateSaveAccessRefreshToken(user, req, (err, accessData) => {
+			if (err) {
+				return cb(bl.oauth.handleError(req.soajs, 600, err));
+			}
+			
+			let returnRecord = {
+				"id": user._id.toString(),
+				"username": user.username,
+				"firstName": user.firstName,
+				"lastName": user.lastName,
+				"email": user.email,
+				"mode": input.mode,
+				"access": accessData
+			};
+			
+			return cb(null, returnRecord);
+		});
 		
 	});
 }

@@ -20,11 +20,13 @@ describe("Unit test for: lib - passport", () => {
 				"strategy": "facebook"
 			},
 			"servicesConfig": {
-				"passportLogin": {
-					"facebook": {
-						"clientID": "331502413866510",
-						"clientSecret": "1a07a7eb9c9884dc5d148106ede830b2",
-						"callbackURL": "http://local-widget.com/urac/login/success?mode=facebook"
+				"oauth": {
+					"passportLogin": {
+						"facebook": {
+							"clientID": "331502413866510",
+							"clientSecret": "1a07a7eb9c9884dc5d148106ede830b2",
+							"callbackURL": "http://local-widget.com/urac/login/success?mode=facebook"
+						}
 					}
 				}
 			},
@@ -48,7 +50,7 @@ describe("Unit test for: lib - passport", () => {
 	});
 	it("test - init - error servicesConfig", (done) => {
 		req.soajs.inputmaskData.strategy = "facebook";
-		req.soajs.servicesConfig.passportLogin = {};
+		req.soajs.servicesConfig.oauth = {"passportLogin": {}};
 		driver.init(req, (error) => {
 			assert.ok(error.code, "420");
 			done();
@@ -56,11 +58,13 @@ describe("Unit test for: lib - passport", () => {
 	});
 	it("test - init", (done) => {
 		req.soajs.inputmaskData.strategy = "facebook";
-		req.soajs.servicesConfig.passportLogin = {
-			"facebook": {
-				"clientID": "331502413866510",
-				"clientSecret": "1a07a7eb9c9884dc5d148106ede830b2",
-				"callbackURL": "http://local-widget.com/urac/login/success?mode=facebook"
+		req.soajs.servicesConfig.oauth = {
+			"passportLogin": {
+				"facebook": {
+					"clientID": "331502413866510",
+					"clientSecret": "1a07a7eb9c9884dc5d148106ede830b2",
+					"callbackURL": "http://local-widget.com/urac/login/success?mode=facebook"
+				}
 			}
 		};
 		driver.init(req, (error, passport) => {

@@ -13,15 +13,14 @@ let lib = {
 	 * Initialize facebook strategy
 	 *
 	 */
-	"init": (req, cb) => {
-		let mode = req.soajs.inputmaskData.strategy;
+	"init": (req, config, cb) => {
 		let data = {
 			strategy: require('passport-facebook').Strategy,
 			authentication: 'facebook',
 			configAuth: {
-				clientID: req.soajs.servicesConfig.passportLogin[mode].clientID,
-				clientSecret: req.soajs.servicesConfig.passportLogin[mode].clientSecret.trim(),
-				callbackURL: req.soajs.servicesConfig.passportLogin[mode].callbackURL,
+				clientID: config.clientID,
+				clientSecret: config.clientSecret.trim(),
+				callbackURL: config.callbackURL,
 				scope: 'email',
 				profileFields: ['id', 'email', 'name']
 			}

@@ -17,8 +17,8 @@ let main = {
 		let token = data.token;
 		let openam;
 		
-		if (soajs.servicesConfig && soajs.servicesConfig.openam) {
-			openam = soajs.servicesConfig.openam;
+		if (soajs.servicesConfig && soajs.servicesConfig.oauth && soajs.servicesConfig.oauth.openam) {
+			openam = soajs.servicesConfig.oauth.openam;
 		}
 		else {
 			return cb({"code": 420, "msg": driverConfig.errors[420]});
@@ -69,7 +69,7 @@ let main = {
 				if (!profile) {
 					return cb({"code": 412, "msg": driverConfig.errors[412]});
 				}
-				cb(err, profile);
+				cb(null, profile);
 			});
 		});
 	}

@@ -67,15 +67,14 @@ let bl = {
 					"hashIterations": bl.localConfig.hashIterations,
 					"seedLength": bl.localConfig.seedLength
 				};
-				if (soajs.servicesConfig && soajs.servicesConfig.oauth) {
-					if (soajs.servicesConfig.oauth.hashIterations && soajs.servicesConfig.oauth.seedLength) {
-						hashConfig = {
-							"hashIterations": soajs.servicesConfig.oauth.hashIterations,
-							"seedLength": soajs.servicesConfig.oauth.seedLength
-						};
-					}
+				if (soajs.servicesConfig && soajs.servicesConfig.hashIterations && soajs.servicesConfig.seedLength) {
+					hashConfig = {
+						"hashIterations": soajs.servicesConfig.hashIterations,
+						"seedLength": soajs.servicesConfig.seedLength
+					};
 				}
 				coreHasher.init(hashConfig);
+				//NOTE: oauth user does not use optionalAlgorithm, so no need to do coreHasher.update
 				coreHasher.compare(inputmaskData.password, record.password, function (err, result) {
 					if (err || !result) {
 						return cb(bl.handleError(soajs, 413, err));

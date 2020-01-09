@@ -15,7 +15,9 @@ const assert = require('assert');
 
 describe("Unit test for: ldap - integration", () => {
 	let soajs = {
-		"servicesConfig": {},
+		"servicesConfig": {
+			"oauth": {}
+		},
 		"log": {
 			"error": (msg) => {
 				console.log(msg);

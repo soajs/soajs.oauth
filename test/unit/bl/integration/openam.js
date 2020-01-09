@@ -16,7 +16,9 @@ const nock = require("nock");
 
 describe("Unit test for: openam - integration", () => {
 	let soajs = {
-		"servicesConfig": {},
+		"servicesConfig": {
+			"oauth": {}
+		},
 		"log": {
 			"error": (msg) => {
 				console.log(msg);
@@ -38,16 +40,18 @@ describe("Unit test for: openam - integration", () => {
 		});
 	});
 	it("test - openamLogin - error OpenAM connection", (done) => {
-		soajs.servicesConfig.openam = {
-			"attributesURL": "https://test.com/openam/identity/json/attributes",
-			"attributesMap": [
-				{"field": 'sAMAccountName', "mapTo": 'id'},
-				{"field": 'sAMAccountName', "mapTo": 'username'},
-				{"field": 'mail', "mapTo": 'email'},
-				{"field": 'givenname', "mapTo": 'firstName'},
-				{"field": 'sn', "mapTo": 'lastName'}
-			],
-			"timeout": 5000
+		soajs.servicesConfig.oauth = {
+			"openam": {
+				"attributesURL": "https://test.com/openam/identity/json/attributes",
+				"attributesMap": [
+					{"field": 'sAMAccountName', "mapTo": 'id'},
+					{"field": 'sAMAccountName', "mapTo": 'username'},
+					{"field": 'mail', "mapTo": 'email'},
+					{"field": 'givenname', "mapTo": 'firstName'},
+					{"field": 'sn', "mapTo": 'lastName'}
+				],
+				"timeout": 5000
+			}
 		};
 		let input = {
 			"token": "123456"
@@ -63,16 +67,18 @@ describe("Unit test for: openam - integration", () => {
 		});
 	});
 	it("test - openamLogin - Error in body.parse", (done) => {
-		soajs.servicesConfig.openam = {
-			"attributesURL": "https://test.com/openam/identity/json/attributes",
-			"attributesMap": [
-				{"field": 'sAMAccountName', "mapTo": 'id'},
-				{"field": 'sAMAccountName', "mapTo": 'username'},
-				{"field": 'mail', "mapTo": 'email'},
-				{"field": 'givenname', "mapTo": 'firstName'},
-				{"field": 'sn', "mapTo": 'lastName'}
-			],
-			"timeout": 5000
+		soajs.servicesConfig.oauth = {
+			"openam": {
+				"attributesURL": "https://test.com/openam/identity/json/attributes",
+				"attributesMap": [
+					{"field": 'sAMAccountName', "mapTo": 'id'},
+					{"field": 'sAMAccountName', "mapTo": 'username'},
+					{"field": 'mail', "mapTo": 'email'},
+					{"field": 'givenname', "mapTo": 'firstName'},
+					{"field": 'sn', "mapTo": 'lastName'}
+				],
+				"timeout": 5000
+			}
 		};
 		let input = {
 			"token": "123456"
@@ -89,16 +95,18 @@ describe("Unit test for: openam - integration", () => {
 		});
 	});
 	it("test - openamLogin", (done) => {
-		soajs.servicesConfig.openam = {
-			"attributesURL": "https://test.com/openam/identity/json/attributes",
-			"attributesMap": [
-				{"field": 'sAMAccountName', "mapTo": 'id'},
-				{"field": 'sAMAccountName', "mapTo": 'username'},
-				{"field": 'mail', "mapTo": 'email'},
-				{"field": 'givenname', "mapTo": 'firstName'},
-				{"field": 'sn', "mapTo": 'lastName'}
-			],
-			"timeout": 5000
+		soajs.servicesConfig.oauth = {
+			"openam": {
+				"attributesURL": "https://test.com/openam/identity/json/attributes",
+				"attributesMap": [
+					{"field": 'sAMAccountName', "mapTo": 'id'},
+					{"field": 'sAMAccountName', "mapTo": 'username'},
+					{"field": 'mail', "mapTo": 'email'},
+					{"field": 'givenname', "mapTo": 'firstName'},
+					{"field": 'sn', "mapTo": 'lastName'}
+				],
+				"timeout": 5000
+			}
 		};
 		let input = {
 			"token": "123456"

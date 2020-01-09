@@ -18,15 +18,16 @@ let main = {
 	 */
 	"init": (req, cb) => {
 		let passport = require("passport");
-		let authentication = req.soajs.inputmaskData.strategy;
-		let driver = lib.getDriver(req.soajs.inputmaskData.strategy);
+		let mode = req.soajs.inputmaskData.strategy;
+		let driver = lib.getDriver(mode);
 		if (!driver) {
-			return cb(new Error("Unable to get driver: " + req.soajs.inputmaskData.strategy));
+			return cb(new Error("Unable to get driver: " + mode));
 		}
-		if (!req.soajs.servicesConfig || !req.soajs.servicesConfig.passportLogin || !req.soajs.servicesConfig.passportLogin[authentication]) {
+		if (!req.soajs.servicesConfig || !req.soajs.servicesConfig.oauth || !req.soajs.servicesConfig.oauth.passportLogin || !req.soajs.servicesConfig.oauth.passportLogin[mode]) {
 			return cb({"code": 420, "msg": driverConfig.errors[420]});
 		}
-		driver.init(req, (error, data) => {
+		let config = req.soajs.servicesConfig.oauth.passportLogin[mode];
+		driver.init(req, config, (error, data) => {
 			// now we have the strategy, configuration , and authentication method defined
 			let myStrategy = new data.strategy(data.configAuth, () => {//(accessToken, refreshToken, profile, done) {
 				let accessToken = null;
@@ -105,7 +106,7 @@ let main = {
 					if (!profile) {
 						return cb({"code": 412, "msg": driverConfig.errors[412]});
 					}
-					cb(err, profile);
+					cb(null, profile);
 				});
 			})(req, res);
 		});

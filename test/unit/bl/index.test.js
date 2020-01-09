@@ -129,12 +129,7 @@ describe("Unit test for: BL - oauth", () => {
 			}
 		},
 		"servicesConfig": {
-			"urac": {
-				"hashIterations": 1024,
-				"seedLength": 32,
-				"tokenExpiryTTL": 172800000,
-				"validateJoin": true
-			},
+			"oauth": {}
 		},
 		"log": {
 			error: () => {
@@ -432,29 +427,4 @@ describe("Unit test for: BL - oauth", () => {
 		
 	});
 	
-	it.skip("passportLogin", (done) => {
-		let req = {
-			"soajs": {
-				"inputmaskData": {
-					"strategy": 'facebook'
-				},
-				"servicesConfig": {
-					"urac": {
-						"passportLogin": {
-							"facebook": {
-								"clientID": 'FACEBOOK_CLIENT_ID',
-								"clientSecret": 'FACEBOOK_CLIENT_SECRET',
-								"callbackURL": "http://local-widget.com/urac/login/success?mode=facebook"
-							}
-						}
-					},
-				},
-			}
-		};
-		BL.passportLogin(req, {}, null, (err, record) => {
-			console.log(record, err);
-			assert.ok(record);
-			done();
-		});
-	});
 });
