@@ -44,12 +44,13 @@ app.use(passport.session()); // Provides session support
 
 let options = {
 	identityMetadata: config.credentials.identityMetadata,
-	issuer: config.credentials.issuer,
-	audience: config.credentials.audience,
-	validateIssuer: config.credentials.validateIssuer,
-	passReqToCallback: config.credentials.passReqToCallback,
-	loggingLevel: config.credentials.loggingLevel,
 	clientID: config.credentials.clientID,
+	validateIssuer: config.credentials.validateIssuer,
+	issuer: config.credentials.issuer,
+	passReqToCallback: config.credentials.passReqToCallback,
+	audience: config.credentials.audience,
+	loggingLevel: config.credentials.loggingLevel,
+	
 	clientSecret: config.credentials.clientSecret,
 	skipUserProfile: config.credentials.skipUserProfile,
 	responseType: config.credentials.responseType,
