@@ -4,7 +4,7 @@ const imported = require("../data/import.js");
 describe("Starting OAUTH Unit test", () => {
 	
 	before((done) => {
-		console.log ("Import unit test data for oauth");
+		console.log("Import unit test data for oauth");
 		let rootPath = process.cwd();
 		imported(rootPath + "/test/data/soajs_profile.js", rootPath + "/test/data/unit/", (err, msg) => {
 			if (err) {
@@ -28,11 +28,18 @@ describe("Starting OAUTH Unit test", () => {
 		done();
 	});
 	
-	
 	it("Testing all integrations", (done) => {
 		require('./bl/integration/openam.js');
 		require('./bl/integration/ldap.js');
 		require('./bl/integration/passport.js');
+		done();
+	});
+	
+	it("Testing all integration drivers", (done) => {
+		require('./bl/integration/drivers/facebook.js');
+		require('./bl/integration/drivers/github.js');
+		require('./bl/integration/drivers/google.js');
+		require('./bl/integration/drivers/twitter.js');
 		done();
 	});
 	
