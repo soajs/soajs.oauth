@@ -104,8 +104,8 @@ module.exports = {
 			
 			"/passport/login/:strategy": {
 				"_apiInfo": {
-					"l": "Login Through Passport",
-					"group": "Guest Login(s)"
+					"l": "Passport login",
+					"group": "Third party login"
 				},
 				"uracConfig": {
 					"source": ['servicesConfig.urac'],
@@ -202,8 +202,8 @@ module.exports = {
 			
 			"/passport/validate/:strategy": {
 				"_apiInfo": {
-					"l": "Login Through Passport Callback",
-					"group": "Guest Login(s)"
+					"l": "Passport login validation",
+					"group": "Third party login"
 				},
 				"strategy": {
 					"source": ['params.strategy'],
@@ -234,8 +234,8 @@ module.exports = {
 		"post": {
 			"/openam/login": {
 				"_apiInfo": {
-					"l": "OpenAM Login",
-					"group": "Guest Login(s)"
+					"l": "OpenAM login",
+					"group": "Third party login"
 				},
 				"token": {
 					"source": ['body.token'],
@@ -247,8 +247,8 @@ module.exports = {
 			},
 			"/ldap/login": {
 				"_apiInfo": {
-					"l": "Ldap Login",
-					"group": "Guest Login(s)"
+					"l": "Ldap login",
+					"group": "Third party login"
 				},
 				"username": {
 					"source": ['body.username'],
