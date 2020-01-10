@@ -15,15 +15,15 @@ let lib = {
 	 */
 	"init": (req, config, cb) => {
 		let data = {
-			strategy: require('passport-google-oauth').OAuth2Strategy, // OAuthStrategy, OAuth2Strategy
+			strategy: require('passport-google-oauth20').Strategy,
 			authentication: 'google',
 			configAuth: {
 				clientID: config.clientID,
 				clientSecret: config.clientSecret.trim(),
-				callbackURL: config.callbackURL,
-				accessType: 'offline',
+				callbackURL: config.callbackURL
+				//accessType: 'offline',
 				// approvalPrompt: 'force',
-				scope: 'email'
+				//scope: 'email'
 			}
 		};
 		return cb(null, data);
@@ -62,8 +62,8 @@ let lib = {
 	 *
 	 */
 	"updateConfig": (config, cb) => {
-		config.scope = 'email'; // request email information
-		config.accessType = 'offline';
+		config.scope = ['profile'];
+		//config.accessType = 'offline';
 		
 		return cb(null, config);
 	}

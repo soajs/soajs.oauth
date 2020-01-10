@@ -16,7 +16,7 @@ let lib = {
 	 */
 	"init": (req, config, cb) => {
 		let data = {
-			strategy: require('passport-github').Strategy,
+			strategy: require('passport-github2').Strategy,
 			authentication: 'github',
 			configAuth: {
 				clientID: config.clientID,
@@ -56,6 +56,7 @@ let lib = {
 	 *
 	 */
 	"updateConfig": (config, cb) => {
+		config.scope = ['user:email'];
 		return cb(null, config);
 	}
 };

@@ -32,24 +32,35 @@ let main = {
 			let myStrategy = new data.strategy(data.configAuth, () => {//(accessToken, refreshToken, profile, done) {
 				let accessToken = null;
 				let refreshToken = null;
+				let params = null;
 				let profile = null;
 				let done = arguments[arguments.length - 1];
 				switch (arguments.length) {
-					//controller, cb
-					case 2:
+					case 2: //controller, cb
 						accessToken = arguments[0];
 						break;
 					case 3:
 						accessToken = arguments[0];
 						refreshToken = arguments[1];
 						break;
-					case 4:
+					case 4: //facebook, twitter, github, google
 						accessToken = arguments[0];
 						refreshToken = arguments[1];
 						profile = arguments[2];
 						break;
+					case 5: //office365
+						accessToken = arguments[0];
+						refreshToken = arguments[1];
+						params = arguments[2];
+						profile = arguments[3];
+						break;
 				}
-				done(null, {"profile": profile, "refreshToken": refreshToken, "accessToken": accessToken});
+				done(null, {
+					"profile": profile,
+					"params": params,
+					"refreshToken": refreshToken,
+					"accessToken": accessToken
+				});
 			});
 			passport.use(myStrategy);
 			return cb(null, passport);
@@ -64,6 +75,8 @@ let main = {
 		let authentication = req.soajs.inputmaskData.strategy;
 		if (authentication === "azure") {
 			authentication = 'oauth-bearer';
+		} else if (authentication === "'office365'") {
+			authentication = 'azure_ad_oauth2';
 		}
 		let config = {session: false};
 		let driver = lib.getDriver(req.soajs.inputmaskData.strategy);
