@@ -11,8 +11,6 @@
 const async = require("async");
 const fs = require("fs");
 const soajsCoreModules = require('soajs');
-
-//let soajsUtils = soajsCoreModules.utils;
 let Auth = soajsCoreModules.authorization;
 
 const integrationLib = require('./integration/lib.js');
@@ -32,24 +30,27 @@ let bl = {
 	oauth: null,
 	
 	"passportLogin": (req, res, options, cb) => {
-		passport.init(req, function (error, passport) {
+		passport.init(req.soajs, (error, _passport) => {
 			if (error) {
 				return cb(error, null);
 			}
-			passport.initAuth(req, res, passport);
+			passport.login(req, res, _passport, (error) => {
+				if (error) {
+					return cb(error, null);
+				}
+			});
 		});
 	},
 	
 	"passportValidate": (req, res, options, cb) => {
-		passport.init(req, function (error, passport) {
+		passport.init(req.soajs, (error, _passport) => {
 			if (error) {
 				return cb(error, null);
 			}
-			passport.passportLibAuthenticate(req, res, passport, function (error, profile) {
+			passport.validate(req, res, _passport, (error, profile) => {
 				if (error) {
 					return cb(error, null);
 				}
-				
 				//save the user
 				let input = {
 					"user": profile,
@@ -276,8 +277,6 @@ function thirdpartySaveAndGrantAccess(req, input, options, cb) {
 			}
 			
 			let returnRecord = {
-				"id": user._id.toString(),
-				"username": user.username,
 				"firstName": user.firstName,
 				"lastName": user.lastName,
 				"email": user.email,

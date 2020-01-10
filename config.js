@@ -63,6 +63,9 @@ module.exports = {
 		413: "Problem with the provided password.",
 		
 		420: "Missing service key configuration for third party integration",
+		421: "Service key configuration for third party integration is not complete",
+		422: "Unable to get driver: ",
+		423: "Error getting driver configuration",
 		
 		450: "You do not have privileges to enable pin login",
 		451: "Pin login is not available for this account",
@@ -106,89 +109,6 @@ module.exports = {
 				"_apiInfo": {
 					"l": "Passport login",
 					"group": "Third party login"
-				},
-				"uracConfig": {
-					"source": ['servicesConfig.urac'],
-					"required": true,
-					"validation": {
-						"type": "object",
-						"properties": {
-							"passportLogin": {
-								"type": "object",
-								"required": true,
-								"properties": {
-									"facebook": {
-										"type": "object",
-										"properties": {
-											"clientID": {
-												"type": "string",
-												"required": true
-											},
-											"clientSecret": {
-												"type": "string",
-												"required": true
-											},
-											"callbackURL": {
-												"type": "string",
-												"required": true
-											}
-										}
-									},
-									"twitter": {
-										"type": "object",
-										"properties": {
-											"clientID": {
-												"type": "string",
-												"required": true
-											},
-											"clientSecret": {
-												"type": "string",
-												"required": true
-											},
-											"callbackURL": {
-												"type": "string",
-												"required": true
-											}
-										}
-									},
-									"google": {
-										"type": "object",
-										"properties": {
-											"clientID": {
-												"type": "string",
-												"required": true
-											},
-											"clientSecret": {
-												"type": "string",
-												"required": true
-											},
-											"callbackURL": {
-												"type": "string",
-												"required": true
-											}
-										}
-									},
-									"github": {
-										"type": "object",
-										"properties": {
-											"clientID": {
-												"type": "string",
-												"required": true
-											},
-											"clientSecret": {
-												"type": "string",
-												"required": true
-											},
-											"callbackURL": {
-												"type": "string",
-												"required": true
-											}
-										}
-									}
-								}
-							}
-						}
-					}
 				},
 				"strategy": {
 					"source": ['params.strategy'],

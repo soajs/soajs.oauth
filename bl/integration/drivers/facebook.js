@@ -8,56 +8,59 @@
  * found in the LICENSE file at the root of this repository
  */
 
+const passport = require("passport");
+let Strategy = require('passport-facebook').Strategy;
+let authentication = "facebook";
+
 let lib = {
-	/**
-	 * Initialize facebook strategy
-	 *
-	 */
-	"init": (req, config, cb) => {
-		let data = {
-			strategy: require('passport-facebook').Strategy,
-			authentication: 'facebook',
-			configAuth: {
-				clientID: config.clientID,
-				clientSecret: config.clientSecret.trim(),
-				callbackURL: config.callbackURL,
-				scope: 'email',
-				profileFields: ['id', 'email', 'name']
-			}
-		};
-		return cb(null, data);
+	"init": (config, cb) => {
+		if (!config || !config.clientID || !config.clientSecret || !config.callbackURL) {
+			return cb(new Error("Facebook passport configuration is not complete."));
+		}
+		passport.use(new Strategy({
+				"clientID": config.clientID,
+				"clientSecret": config.clientSecret.trim(),
+				"callbackURL": config.callbackURL,
+				"scope": config.scope || 'email',
+				"profileFields": config.profileFields || ['id', 'email', 'name', 'displayName', 'gender']
+			},
+			(accessToken, refreshToken, profile, done) => {
+				
+				console.log("------------- FACEBOOK");
+				console.log(accessToken, refreshToken, profile);
+				
+				let soajsResponse = {
+					"profile": profile,
+					"refreshToken": refreshToken,
+					"accessToken": accessToken
+				};
+				return done(null, soajsResponse);
+			}));
+		return cb(null, passport);
 	},
 	
-	/**
-	 * Map facebook user returned from API to SOAJS profile correspondingly
-	 *
-	 */
-	"mapProfile": (user, cb) => {
+	"getLoginConfig": (cb) => {
+		let config = null;
+		return cb(null, authentication, config);
+	},
+	
+	"getValidateConfig": (cb) => {
+		let config = null;
+		return cb(null, authentication, config);
+	},
+	
+	"mapProfile": (soajsResponse, cb) => {
 		let profile = {
-			firstName: user.profile._json.first_name,
-			lastName: user.profile._json.last_name,
-			email: user.profile._json.email,
-			username: user.profile.id,
-			id: user.profile.id,
-			originalProfile: user.profile._json
+			firstName: soajsResponse.profile._json.first_name,
+			lastName: soajsResponse.profile._json.last_name,
+			email: soajsResponse.profile._json.email,
+			username: soajsResponse.profile.id,
+			id: soajsResponse.profile.id,
+			originalProfile: soajsResponse.profile._json,
+			accessToken: soajsResponse.accessToken,
+			refreshToken: soajsResponse.refreshToken
 		};
 		return cb(null, profile);
-	},
-	
-	/**
-	 * Update the request object before authenticating (inapplicable for facebook)
-	 *
-	 */
-	"preAuthenticate": (req, cb) => {
-		return cb(null);
-	},
-	
-	/**
-	 * Custom update passport configuration before authenticating (inapplicable for facebook)
-	 *
-	 */
-	"updateConfig": (config, cb) => {
-		return cb(null, config);
 	}
 };
 
