@@ -47,7 +47,7 @@ let main = {
 		}
 		driver.getLoginConfig((error, authentication, config) => {
 			if (error || !authentication) {
-				req.soajs.log.error(err);
+				req.soajs.log.error(error);
 				return cb({"code": 423, "msg": driverConfig.errors[423]});
 			}
 			if (!config) {
@@ -69,7 +69,7 @@ let main = {
 		}
 		driver.getValidateConfig((error, authentication, config) => {
 			if (error || !authentication) {
-				req.soajs.log.error(err);
+				req.soajs.log.error(error);
 				return cb({"code": 423, "msg": driverConfig.errors[423]});
 			}
 			if (!config) {
