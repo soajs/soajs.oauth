@@ -22,6 +22,7 @@ describe("Unit test for: driver - facebook", () => {
 				"oauth": {
 					"passportLogin": {
 						"facebook": {
+							"groups": ["maingroup"],
 							"clientID": "331502413866510",
 							"clientSecret": "1a07a7eb9c9884dc5d148106ede830b2",
 							"callbackURL": "http://local-widget.com/urac/login/success?mode=facebook"
@@ -34,7 +35,7 @@ describe("Unit test for: driver - facebook", () => {
 	it("test - init", (done) => {
 		let mode = req.soajs.inputmaskData.strategy;
 		let config = req.soajs.servicesConfig.oauth.passportLogin[mode];
-		driver.init(req, config, (error, data) => {
+		driver.init(config, (error, data) => {
 			assert.ok(data);
 			done();
 		});
@@ -57,14 +58,15 @@ describe("Unit test for: driver - facebook", () => {
 			done();
 		});
 	});
-	it("test - preAuthenticate", (done) => {
-		driver.preAuthenticate(req, () => {
+	it("test - getLoginConfig", (done) => {
+		driver.getLoginConfig((error, authentication) => {
+			assert.ok(authentication);
 			done();
 		});
 	});
-	it("test - updateConfig", (done) => {
-		driver.updateConfig({"conf": "1"}, (error, config) => {
-			assert.equal(config.conf, "1");
+	it("test - getValidateConfig", (done) => {
+		driver.getValidateConfig((error, authentication) => {
+			assert.ok(authentication);
 			done();
 		});
 	});

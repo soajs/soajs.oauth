@@ -22,6 +22,7 @@ describe("Unit test for: driver - github", () => {
 				"oauth": {
 					"passportLogin": {
 						"github": {
+							"groups": ["maingroup"],
 							"clientID": "79729863675e2513ae44",
 							"clientSecret": "3f37cea1cff3e2ead1a11d96f9961e27293739e4",
 							"callbackURL": "http://local-widget.com/urac/login/success?mode=github"
@@ -34,7 +35,7 @@ describe("Unit test for: driver - github", () => {
 	it("test - init", (done) => {
 		let mode = req.soajs.inputmaskData.strategy;
 		let config = req.soajs.servicesConfig.oauth.passportLogin[mode];
-		driver.init(req, config, (error, data) => {
+		driver.init(config, (error, data) => {
 			assert.ok(data);
 			done();
 		});
@@ -52,14 +53,15 @@ describe("Unit test for: driver - github", () => {
 			done();
 		});
 	});
-	it("test - preAuthenticate", (done) => {
-		driver.preAuthenticate(req, () => {
+	it("test - getLoginConfig", (done) => {
+		driver.getLoginConfig((error, authentication) => {
+			assert.ok(authentication);
 			done();
 		});
 	});
-	it("test - updateConfig", (done) => {
-		driver.updateConfig({"conf": "1"}, (error, config) => {
-			assert.equal(config.conf, "1");
+	it("test - getValidateConfig", (done) => {
+		driver.getValidateConfig((error, authentication) => {
+			assert.ok(authentication);
 			done();
 		});
 	});

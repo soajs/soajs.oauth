@@ -102,6 +102,8 @@ let main = {
 				driver.preAuthenticate(req, () => {
 					authorize();
 				});
+			} else {
+				authorize();
 			}
 		});
 	}

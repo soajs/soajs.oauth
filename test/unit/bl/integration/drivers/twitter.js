@@ -25,6 +25,7 @@ describe("Unit test for: driver - twitter", () => {
 				"oauth": {
 					"passportLogin": {
 						"twitter": {
+							"groups": ["maingroup"],
 							"clientID": "qywH8YMduIsKA2RRlUkS50kCZ",
 							"clientSecret": "aodnXVCBijQcS8sJrcLM3ULgCl9VEoqqwu00XgamRUv5qm8bF1",
 							"callbackURL": "http://local-widget.com/urac/login/success",
@@ -38,7 +39,7 @@ describe("Unit test for: driver - twitter", () => {
 	it("test - init", (done) => {
 		let mode = req.soajs.inputmaskData.strategy;
 		let config = req.soajs.servicesConfig.oauth.passportLogin[mode];
-		driver.init(req, config, (error, data) => {
+		driver.init(config, (error, data) => {
 			assert.ok(data);
 			done();
 		});
@@ -57,15 +58,21 @@ describe("Unit test for: driver - twitter", () => {
 			done();
 		});
 	});
-	it("test - preAuthenticate", (done) => {
-		driver.preAuthenticate(req, () => {
-			assert.equal(req.session['oauth:twitter'].oauth_token, "TTTTT");
+	it("test - getLoginConfig", (done) => {
+		driver.getLoginConfig((error, authentication) => {
+			assert.ok(authentication);
 			done();
 		});
 	});
-	it("test - updateConfig", (done) => {
-		driver.updateConfig({"conf": "1"}, (error, config) => {
-			assert.equal(config.conf, "1");
+	it("test - getValidateConfig", (done) => {
+		driver.getValidateConfig((error, authentication) => {
+			assert.ok(authentication);
+			done();
+		});
+	});
+	it("test - preAuthenticate", (done) => {
+		driver.preAuthenticate(req, () => {
+			assert.equal(req.session['oauth:twitter'].oauth_token, "TTTTT");
 			done();
 		});
 	});

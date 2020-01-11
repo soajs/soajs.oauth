@@ -7,151 +7,73 @@
  * Use of this source code is governed by an Apache license that can be
  * found in the LICENSE file at the root of this repository
  */
+const passport = require("passport");
+let Strategy = require('passport-azure-ad-oauth2').Strategy;
+let authentication = "azure_ad_oauth2";
+
+const jwt = require('jsonwebtoken');
 
 let lib = {
-	/**
-	 * Initialize Azure strategy
-	 
-	 identityMetadata: 'https://login.microsoftonline.com/' + test_parameters.tenantID + '/.well-known/openid-configuration',
-	 clientID: test_parameters.clientID,
-	 validateIssuer: true,
-	 issuer: ['https://sts.windows.net/' + test_parameters.tenantID + '/'],
-	 passReqToCallback: false,
-	 
-	 responseType: 'code id_token',
-	 responseMode: 'form_post',
-	 redirectUrl: 'http://localhost:3000/auth/openid/return',
-	 allowHttpForRedirectUrl: true,
-	 clientSecret: test_parameters.clientSecret,
-	 scope: null,
-	 loggingLevel: null,
-	 nonceLifetime: null,
-	 
-	 */
-	"init": (req, config, cb) => {
-		let data = {
-			strategy: require('passport-azure-ad').BearerStrategy, // BearerStrategy, OIDCStrategy
-			authentication: 'azure',
-			configAuth: {
-				// Required
-				// 'https://login.microsoftonline.com/<your_tenant_name>.onmicrosoft.com/v2.0/.well-known/openid-configuration',
-				// or 'https://login.microsoftonline.com/<your_tenant_guid>/v2.0/.well-known/openid-configuration'
-				// or you can use the common endpoint
-				// 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration'
-				identityMetadata: config.identityMetadata,
-				
-				// Required
-				clientID: config.clientID,
-				
-				// Required.
-				// If you are using the common endpoint, you should either set `validateIssuer` to false, or provide a value for `issuer`.
-				validateIssuer: config.validateIssuer || true,
-				
-				// Required if you are using common endpoint and setting `validateIssuer` to true.
-				// For tenant-specific endpoint, this field is optional, we will use the issuer from the metadata by default.
-				issuer: config.issuer || null,
-				
-				// Required.
-				// Set to true if you use `function(req, token, done)` as the verify callback.
-				// Set to false if you use `function(req, token)` as the verify callback.
-				passReqToCallback: config.passReqToCallback || true,
-				
-				// Optional, default value is clientID
-				audience: config.audience || null,
-				
-				// Optional. Default value is false.
-				// Set to true if you accept access_token whose `aud` claim contains multiple values.
-				allowMultiAudiencesInToken: config.allowMultiAudiencesInToken || false,
-				
-				// Optional. 'error', 'warn' or 'info'
-				loggingLevel: config.loggingLevel || 'info',
-				
-			}
+	"init": (config, cb) => {
+		if (!config || !config.clientID || !config.clientSecret || !config.callbackURL) {
+			return cb(new Error("Azure passport configuration is not complete."));
+		}
+		let options = {
+			"clientID": config.clientID,
+			"clientSecret": config.clientSecret.trim(),
+			"callbackURL": config.callbackURL
 		};
-		
-		// Optional.
-		if (config.clientSecret) {
-			data.configAuth.clientSecret = config.clientSecret;
+		if (config.useCommonEndpoint) {
+			options.useCommonEndpoint = config.useCommonEndpoint;
 		}
-		// Optional.
-		if (config.skipUserProfile) {
-			data.configAuth.skipUserProfile = config.skipUserProfile;
-		}
-		// Optional.
-		if (config.responseType) {
-			data.configAuth.responseType = config.responseType;
-		}
-		// Optional.
-		if (config.responseMode) {
-			data.configAuth.responseMode = config.responseMode;
-		}
-		// Optional.
-		if (config.scope) {
-			data.configAuth.scope = config.scope;
-		}
-		if (config.tenantIdOrName) {
-			data.configAuth.tenantIdOrName = config.tenantIdOrName;
-		}
-		if (config.redirect_uri) {
-			data.configAuth.redirect_uri = config.redirect_uri;
+		if (config.tenant) {
+			options.tenant = config.tenant;
 		}
 		if (config.resource) {
-			data.configAuth.resource = config.resource;
+			options.resource = config.resource;
 		}
-		
-		// Required to be true to use B2C
-		if (config.isB2C) {
-			data.configAuth.isB2C = config.isB2C;
-		}
-		// Required to use B2C
-		if (config.policyName) {
-			data.configAuth.policyName = config.policyName;
-		}
-		// Optional.
-		if (config.loggingNoPII) {
-			data.configAuth.loggingNoPII = config.loggingNoPII;
-		}
-		// Optional.
-		if (config.clockSkew) {
-			data.configAuth.clockSkew = config.clockSkew;
-		}
-		return cb(null, data);
+		passport.use(new Strategy(options,
+			(accessToken, refreshToken, params, profile, done) => {
+				
+				if (params && params.id_token){
+					profile = jwt.decode(params.id_token);
+				}
+				
+				console.log("------------- AZURE");
+				console.log(profile);
+				
+				let soajsResponse = {
+					"profile": profile,
+					"refreshToken": refreshToken,
+					"accessToken": accessToken
+				};
+				return done(null, soajsResponse);
+			}));
+		return cb(null, passport);
 	},
 	
-	/**
-	 * Map azure user returned from API to SOAJS profile correspondingly
-	 *
-	 */
-	"mapProfile": (user, cb) => {
-		let email = '';
-		if (user.profile.emails && user.profile.emails.length !== 0) {
-			email = user.profile.emails[0].value;
-		}
+	"getLoginConfig": (cb) => {
+		let config = null;
+		return cb(null, authentication, config);
+	},
+	
+	"getValidateConfig": (cb) => {
+		let config = null;
+		return cb(null, authentication, config);
+	},
+	
+	"mapProfile": (soajsResponse, cb) => {
 		let profile = {
-			firstName: user.profile.name.givenName,
-			lastName: user.profile.name.familyName,
-			email: email,
-			password: '',
-			username: user.profile.id,
-			id: user.profile.id
+			firstName: soajsResponse.profile.given_name,
+			lastName: soajsResponse.profile.family_name,
+			email: soajsResponse.profile.email,
+			username: soajsResponse.profile.oid,
+			id: soajsResponse.profile.oid,
+			originalProfile: soajsResponse.profile,
+			accessToken: soajsResponse.accessToken,
+			refreshToken: soajsResponse.refreshToken
 		};
 		return cb(null, profile);
-	},
-	
-	/**
-	 * Update the request object before authenticating (inapplicable for azure)
-	 *
-	 */
-	"preAuthenticate": (req, cb) => {
-		return cb(null);
-	},
-	
-	/**
-	 * Custom update passport configuration before authenticating
-	 *
-	 */
-	"updateConfig": (config, cb) => {
-		return cb(null, config);
 	}
 };
 

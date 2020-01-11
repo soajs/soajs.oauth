@@ -36,6 +36,7 @@ describe("Starting OAUTH Unit test", () => {
 	});
 	
 	it("Testing all integration drivers", (done) => {
+		require('./bl/integration/drivers/azure.js');
 		require('./bl/integration/drivers/facebook.js');
 		require('./bl/integration/drivers/github.js');
 		require('./bl/integration/drivers/google.js');

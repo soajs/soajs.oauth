@@ -23,6 +23,7 @@ describe("Unit test for: lib - passport", () => {
 				"oauth": {
 					"passportLogin": {
 						"facebook": {
+							"groups": ["maingroup"],
 							"clientID": "331502413866510",
 							"clientSecret": "1a07a7eb9c9884dc5d148106ede830b2",
 							"callbackURL": "http://local-widget.com/urac/login/success?mode=facebook"
@@ -42,16 +43,16 @@ describe("Unit test for: lib - passport", () => {
 	
 	it("test - init - error strategy", (done) => {
 		req.soajs.inputmaskData.strategy = "wrongdriver";
-		driver.init(req, (error) => {
-			let index = error.message.indexOf("Unable to get driver:");
-			assert.ok(index !== -1);
+		driver.init(req.soajs, (error) => {
+			assert.ok(error);
+			assert.equal(error.code, "422");
 			done();
 		});
 	});
 	it("test - init - error servicesConfig", (done) => {
 		req.soajs.inputmaskData.strategy = "facebook";
 		req.soajs.servicesConfig.oauth = {"passportLogin": {}};
-		driver.init(req, (error) => {
+		driver.init(req.soajs, (error) => {
 			assert.ok(error.code, "420");
 			done();
 		});
@@ -61,18 +62,19 @@ describe("Unit test for: lib - passport", () => {
 		req.soajs.servicesConfig.oauth = {
 			"passportLogin": {
 				"facebook": {
+					"groups": ["maingroup"],
 					"clientID": "331502413866510",
 					"clientSecret": "1a07a7eb9c9884dc5d148106ede830b2",
 					"callbackURL": "http://local-widget.com/urac/login/success?mode=facebook"
 				}
 			}
 		};
-		driver.init(req, (error, passport) => {
+		driver.init(req.soajs, (error, passport) => {
 			assert.ok(passport);
 			done();
 		});
 	});
-	it("test - initAuth - error", (done) => {
+	it("test - login - error", (done) => {
 		req.soajs.inputmaskData.strategy = "wrongdriver";
 		let passport = {
 			"authenticate": (authentication, config) => {
@@ -87,13 +89,13 @@ describe("Unit test for: lib - passport", () => {
 				};
 			}
 		};
-		driver.initAuth(req, res, passport, (error) => {
-			let index = error.message.indexOf("Unable to get driver:");
-			assert.ok(index !== -1);
+		driver.login(req, res, passport, (error) => {
+			assert.ok(error);
+			assert.equal(error.code, "422");
 			done();
 		});
 	});
-	it("test - initAuth", (done) => {
+	it("test - login", (done) => {
 		req.soajs.inputmaskData.strategy = "facebook";
 		let passport = {
 			"authenticate": (authentication, config) => {
@@ -108,9 +110,48 @@ describe("Unit test for: lib - passport", () => {
 				};
 			}
 		};
-		driver.initAuth(req, res, passport, () => {
+		driver.login(req, res, passport, () => {
 			done();
 		});
 	});
-	
+	it("test - validate - error", (done) => {
+		req.soajs.inputmaskData.strategy = "wrongdriver";
+		let passport = {
+			"authenticate": (authentication, config) => {
+				if (config) {
+				
+				}
+				return (req, res) => {
+					if (res) {
+					
+					}
+					done();
+				};
+			}
+		};
+		driver.validate(req, res, passport, (error) => {
+			assert.ok(error);
+			assert.equal(error.code, "422");
+			done();
+		});
+	});
+	it("test - validate", (done) => {
+		req.soajs.inputmaskData.strategy = "facebook";
+		let passport = {
+			"authenticate": (authentication, config) => {
+				if (config) {
+				
+				}
+				return (req, res) => {
+					if (res) {
+					
+					}
+					done();
+				};
+			}
+		};
+		driver.validate(req, res, passport, () => {
+			done();
+		});
+	});
 });

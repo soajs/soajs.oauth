@@ -24,7 +24,7 @@ let lib = {
 			(accessToken, refreshToken, profile, done) => {
 				
 				console.log("------------- GOOGLE");
-				console.log(accessToken, refreshToken, profile);
+				console.log(profile);
 				
 				let soajsResponse = {
 					"profile": profile,

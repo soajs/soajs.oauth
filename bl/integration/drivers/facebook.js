@@ -27,7 +27,7 @@ let lib = {
 			(accessToken, refreshToken, profile, done) => {
 				
 				console.log("------------- FACEBOOK");
-				console.log(accessToken, refreshToken, profile);
+				console.log(profile);
 				
 				let soajsResponse = {
 					"profile": profile,

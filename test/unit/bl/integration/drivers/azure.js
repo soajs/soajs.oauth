@@ -9,7 +9,7 @@
 "use strict";
 
 const helper = require("../../../../helper.js");
-const driver = helper.requireModule('./bl/integration/drivers/google.js');
+const driver = helper.requireModule('./bl/integration/drivers/azure.js');
 const assert = require('assert');
 
 describe("Unit test for: driver - google", () => {
@@ -23,9 +23,11 @@ describe("Unit test for: driver - google", () => {
 					"passportLogin": {
 						"google": {
 							"groups": ["maingroup"],
-							"clientID": "393278808961-7qahk8kadr2jhbo05o84pbp5tc774a1l.apps.googleusercontent.com",
+							"clientID": "ffsdsdddf-esdd-4347-sdd3a-ec9fdsdse4a",
 							"clientSecret": "sdSpS8FLeUvc0UBs_z8m4f89",
-							"callbackURL": "http://local-widget.com/urac/login/success"
+							"callbackURL": "http://local-widget.com/urac/login/success",
+							"tenant": "soajs.onmicrosoft.com",
+							"useCommonEndpoint": "https://login.microsoftonline.com/dddd-fd08-4fa0-dddd-8e43dddd12273e79"
 						}
 					}
 				}
@@ -43,12 +45,10 @@ describe("Unit test for: driver - google", () => {
 	it("test - mapProfile", (done) => {
 		let user = {
 			"profile": {
-				"name": {
-					"givenName": "antoine",
-					"familyName": "hage"
-				},
-				"emails": [{"value": "antoine@soajs.org"}],
-				"id": "123456789"
+				"given_name": "antoine",
+				"family_name": "hage",
+				"email": "antoine@soajs.org",
+				"oid": "123456789"
 			}
 		};
 		driver.mapProfile(user, (error, profile) => {

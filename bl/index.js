@@ -267,6 +267,13 @@ function checkUserTenantAccessPin(record, tenantObj) {
 }
 
 function thirdpartySaveAndGrantAccess(req, input, options, cb) {
+	let mode = req.soajs.inputmaskData.strategy;
+	if (req.soajs.servicesConfig && req.soajs.servicesConfig.oauth && req.soajs.servicesConfig.oauth.passportLogin && req.soajs.servicesConfig.oauth.passportLogin[mode]) {
+		let config = req.soajs.servicesConfig.oauth.passportLogin[mode];
+		if (config.groups && Array.isArray(config.groups)) {
+			input.user.groups = config.groups;
+		}
+	}
 	uracDriver.saveUser(req.soajs, input, (error, user) => {
 		if (error) {
 			return cb(bl.oauth.handleError(req.soajs, 602, error));
