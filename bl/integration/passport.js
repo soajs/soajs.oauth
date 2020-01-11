@@ -18,8 +18,6 @@ let main = {
 	 */
 	"init": (soajs, cb) => {
 		let mode = soajs.inputmaskData.strategy;
-		console.log(mode)
-		console.log(soajs.servicesConfig.oauth)
 		let driver = lib.getDriver(mode);
 		if (!driver) {
 			return cb({"code": 422, "msg": driverConfig.errors[422] + mode});
@@ -77,25 +75,34 @@ let main = {
 			if (!config) {
 				config = {"session": false};
 			}
-			passport.authenticate(authentication, config, (err, soajsResponse) => {
-				if (err) {
-					req.soajs.log.error(err);
-					return cb({"code": 720, "msg": driverConfig.errors[720]});
-				}
-				if (!soajsResponse) {
-					cb({"code": 403, "msg": driverConfig.errors[403]});
-				}
-				driver.mapProfile(soajsResponse, (err, profile) => {
+			
+			let authorize = () => {
+				passport.authenticate(authentication, config, (err, soajsResponse) => {
 					if (err) {
 						req.soajs.log.error(err);
-						return cb({"code": 411, "msg": driverConfig.errors[411] + " - " + err.message});
+						return cb({"code": 720, "msg": driverConfig.errors[720]});
 					}
-					if (!profile) {
-						return cb({"code": 412, "msg": driverConfig.errors[412]});
+					if (!soajsResponse) {
+						cb({"code": 403, "msg": driverConfig.errors[403]});
 					}
-					cb(null, profile);
+					driver.mapProfile(soajsResponse, (err, profile) => {
+						if (err) {
+							req.soajs.log.error(err);
+							return cb({"code": 411, "msg": driverConfig.errors[411] + " - " + err.message});
+						}
+						if (!profile) {
+							return cb({"code": 412, "msg": driverConfig.errors[412]});
+						}
+						cb(null, profile);
+					});
+				})(req, res);
+			};
+			
+			if (driver.preAuthenticate) {
+				driver.preAuthenticate(req, () => {
+					authorize();
 				});
-			})(req, res);
+			}
 		});
 	}
 };

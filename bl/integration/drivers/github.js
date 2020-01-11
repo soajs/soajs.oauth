@@ -7,57 +7,57 @@
  * Use of this source code is governed by an Apache license that can be
  * found in the LICENSE file at the root of this repository
  */
-
+const passport = require("passport");
+let Strategy = require('passport-github2').Strategy;
+let authentication = "github";
 
 let lib = {
-	/**
-	 * Initialize GitHub strategy
-	 *
-	 */
-	"init": (req, config, cb) => {
-		let data = {
-			strategy: require('passport-github2').Strategy,
-			authentication: 'github',
-			configAuth: {
-				clientID: config.clientID,
-				clientSecret: config.clientSecret.trim(),
-				callbackURL: config.callbackURL
-			}
-		};
-		return cb(null, data);
+	"init": (config, cb) => {
+		if (!config || !config.clientID || !config.clientSecret || !config.callbackURL) {
+			return cb(new Error("Github passport configuration is not complete."));
+		}
+		passport.use(new Strategy({
+				"clientID": config.clientID,
+				"clientSecret": config.clientSecret.trim(),
+				"callbackURL": config.callbackURL
+			},
+			(accessToken, refreshToken, profile, done) => {
+				
+				console.log("------------- GITHUB");
+				console.log(accessToken, refreshToken, profile);
+				
+				let soajsResponse = {
+					"profile": profile,
+					"refreshToken": refreshToken,
+					"accessToken": accessToken
+				};
+				return done(null, soajsResponse);
+			}));
+		return cb(null, passport);
 	},
 	
-	/**
-	 * Map Github user returned from API to SOAJS profile correspondingly
-	 *
-	 */
-	"mapProfile": (user, cb) => {
+	"getLoginConfig": (cb) => {
+		let config = {"scope": ['user:email', 'profile']};
+		return cb(null, authentication, config);
+	},
+	
+	"getValidateConfig": (cb) => {
+		let config = null;
+		return cb(null, authentication, config);
+	},
+	
+	"mapProfile": (soajsResponse, cb) => {
 		let profile = {
-			firstName: user.profile.username,
+			firstName: soajsResponse.profile.username,
 			lastName: '',
-			email: user.profile.username + '@github.com',
-			password: '',
-			username: user.profile.username + '_' + user.profile.id,
-			id: user.profile.id
+			email: soajsResponse.profile.username + '@github.com',
+			username: soajsResponse.profile.username + '_' + soajsResponse.profile.id,
+			id: soajsResponse.profile.id,
+			originalProfile: {},
+			accessToken: soajsResponse.accessToken,
+			refreshToken: soajsResponse.refreshToken
 		};
 		return cb(null, profile);
-	},
-	
-	/**
-	 * Update the request object before authenticating (inapplicable for Github)
-	 *
-	 */
-	"preAuthenticate": (req, cb) => {
-		return cb(null);
-	},
-	
-	/**
-	 * Custom update passport configuration before authenticating (inapplicable for Github)
-	 *
-	 */
-	"updateConfig": (config, cb) => {
-		config.scope = ['user:email'];
-		return cb(null, config);
 	}
 };
 

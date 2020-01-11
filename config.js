@@ -115,7 +115,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["facebook", "google", "twitter", "github", "azure"]
+						"enum": ["facebook", "google", "twitter", "github", "azure", "office365"]
 					}
 				}
 			},
@@ -130,7 +130,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["facebook", "google", "twitter", "github", "azure"]
+						"enum": ["facebook", "google", "twitter", "github", "azure", "office365"]
 					}
 				},
 				"oauth_token": {
