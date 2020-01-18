@@ -137,6 +137,7 @@ let bl = {
 						return cb(error);
 					}
 					if (record) {
+						record.pinLogin = true;
 						record.loginMode = loginMode;
 						record.id = record._id.toString();
 					}
