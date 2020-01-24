@@ -15,12 +15,13 @@ let accessToken = "44a5399dcce96325fadfab908e614bf00e6fe967";
 function requester(apiName, method, params, cb) {
 	let options = {
 		uri: 'http://127.0.0.1:4000/oauth' + apiName,
-		headers: {
-			key: extKey
-		},
+		headers: {},
 		method: method.toUpperCase(),
 		json: true
 	};
+	if (!params.noextkey) {
+		options.headers.key = extKey;
+	}
 	if (!params.noaccesstoken) {
 		options.headers.access_token = accessToken;
 	}

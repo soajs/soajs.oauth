@@ -108,12 +108,12 @@ let bl = {
 			"token": inputmaskData.token,
 			"type": "accessToken"
 		};
-		modelObj.delete(data, (err, records) => {
+		modelObj.delete(data, (err, count) => {
 			bl.mp.closeModel(soajs, modelObj);
 			if (err) {
 				return cb(bl.handleError(soajs, 602, err));
 			}
-			return cb(null, records.result);
+			return cb(null, count);
 		});
 	},
 	
@@ -126,12 +126,12 @@ let bl = {
 			"token": inputmaskData.token,
 			"type": "refreshToken"
 		};
-		modelObj.delete(data, (err, records) => {
+		modelObj.delete(data, (err, count) => {
 			bl.mp.closeModel(soajs, modelObj);
 			if (err) {
 				return cb(bl.handleError(soajs, 602, err));
 			}
-			return cb(null, records.result);
+			return cb(null, count);
 		});
 	},
 	
@@ -154,12 +154,12 @@ let bl = {
 				}
 			};
 			let modelObj = bl.mp.getModel(soajs, options);
-			modelObj.delete(data, (err, records) => {
+			modelObj.delete(data, (err, count) => {
 				bl.mp.closeModel(soajs, modelObj);
 				if (err) {
 					return cb(bl.handleError(soajs, 602, err));
 				}
-				return cb(null, records.result);
+				return cb(null, count);
 			});
 		});
 	},
@@ -172,12 +172,12 @@ let bl = {
 		let data = {
 			"clientId": inputmaskData.clientId
 		};
-		modelObj.delete(data, (err, records) => {
+		modelObj.delete(data, (err, count) => {
 			bl.mp.closeModel(soajs, modelObj);
 			if (err) {
 				return cb(bl.handleError(soajs, 602, err));
 			}
-			return cb(null, records.result);
+			return cb(null, count);
 		});
 	}
 	

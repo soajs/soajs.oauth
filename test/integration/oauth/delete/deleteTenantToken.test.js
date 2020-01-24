@@ -26,7 +26,7 @@ describe("Testing delete tenant tokens API", () => {
 		requester('/tokens/tenant/notFound', 'delete', params, (error, body) => {
 			assert.ifError(error);
 			assert.ok(body);
-			assert.deepEqual(body.data, {ok: 1, n: 0});
+			assert.deepEqual(body.data, 0);
 			let check = validator.validate(body, deleteTenantTokensSchema);
 			assert.deepEqual(check.valid, true);
 			assert.deepEqual(check.errors, []);
@@ -46,6 +46,7 @@ describe("Testing delete tenant tokens API", () => {
 		requester('/tokens/tenant/' + clientId, 'delete', params, (error, body) => {
 			assert.ifError(error);
 			assert.ok(body);
+			assert.ok(body.data); //can be 1 or 2 depend on which test case runs first
 			let check = validator.validate(body, deleteTenantTokensSchema);
 			assert.deepEqual(check.valid, true);
 			assert.deepEqual(check.errors, []);

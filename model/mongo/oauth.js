@@ -77,8 +77,12 @@ Oauth.prototype.delete = function (data, cb) {
 		condition.token = data.token;
 		condition.type = data.type;
 	}
-	__self.mongoCore.remove(colName_token, condition, (err, count) => {
-		return cb(err, count);
+	__self.mongoCore.deleteMany(colName_token, condition, (err, count) => {
+		let response = 0;
+		if (count && count.result) {
+			response = count.result.n;
+		}
+		return cb(err, response);
 	});
 };
 

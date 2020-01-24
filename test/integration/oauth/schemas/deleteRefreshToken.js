@@ -18,18 +18,8 @@ let deleteRefreshTokenSchema = {
 			"required": true
 		},
 		"data": {
-			"type": "object",
-			"required": false,
-			"properties": {
-				"ok": {
-					"type": "number",
-					"required": true
-				},
-				"n": {
-					"type": "number",
-					"required": true
-				},
-			}
+			"type": "number",
+			"required": true
 		},
 		"errors": {
 			"type": "object",

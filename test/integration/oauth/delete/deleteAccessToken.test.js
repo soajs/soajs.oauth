@@ -19,7 +19,7 @@ describe("Testing delete access token API", () => {
 		requester('/accessToken/notFound', 'delete', {}, (error, body) => {
 			assert.ifError(error);
 			assert.ok(body);
-			assert.deepEqual(body.data, {ok: 1, n: 0});
+			assert.deepEqual(body.data, 0);
 			let check = validator.validate(body, deleteAccessTokenSchema);
 			assert.deepEqual(check.valid, true);
 			assert.deepEqual(check.errors, []);
@@ -33,7 +33,7 @@ describe("Testing delete access token API", () => {
 		requester('/accessToken/' + token, 'delete', {}, (error, body) => {
 			assert.ifError(error);
 			assert.ok(body);
-			assert.deepEqual(body.data, {ok: 1, n: 1});
+			assert.deepEqual(body.data, 1);
 			let check = validator.validate(body, deleteAccessTokenSchema);
 			assert.deepEqual(check.valid, true);
 			assert.deepEqual(check.errors, []);

@@ -24,7 +24,7 @@ describe("Testing delete user tokens API", () => {
 		requester('/tokens/user/notFound', 'delete', params, (error, body) => {
 			assert.ifError(error);
 			assert.ok(body);
-			assert.deepEqual(body.data, {ok: 1, n: 0});
+			assert.deepEqual(body.data, 0);
 			let check = validator.validate(body, deleteUserTokensSchema);
 			assert.deepEqual(check.valid, true);
 			assert.deepEqual(check.errors, []);
@@ -44,7 +44,7 @@ describe("Testing delete user tokens API", () => {
 		requester('/tokens/user/' + userId, 'delete', params, (error, body) => {
 			assert.ifError(error);
 			assert.ok(body);
-			assert.deepEqual(body.data, {ok: 1, n: 1});
+			assert.deepEqual(body.data, 1);
 			let check = validator.validate(body, deleteUserTokensSchema);
 			assert.deepEqual(check.valid, true);
 			assert.deepEqual(check.errors, []);
