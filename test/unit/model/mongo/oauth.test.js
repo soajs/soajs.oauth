@@ -134,7 +134,7 @@ describe("Starting OAUTH model Unit test", () => {
 			};
 			modelObj.delete(data, (err, record) => {
 				assert.ok(record);
-				assert.deepEqual(record.result.ok, 1);
+				assert.deepEqual(record, 1);
 				done();
 			});
 		});

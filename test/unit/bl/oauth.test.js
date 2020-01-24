@@ -165,7 +165,7 @@ describe("Unit test for: BL - oauth", () => {
 				};
 				
 				BL.deleteAccessToken(soajs, data, null, (error, record) => {
-					assert.ok(record);
+					assert.deepEqual(record, 0);
 					done();
 				});
 			});
@@ -247,7 +247,7 @@ describe("Unit test for: BL - oauth", () => {
 				};
 				
 				BL.deleteAllClientTokens(soajs, data, null, (error, record) => {
-					assert.ok(record);
+					assert.deepEqual(record, 0);
 					done();
 				});
 			});
@@ -298,7 +298,7 @@ describe("Unit test for: BL - oauth", () => {
 			};
 			
 			BL.deleteAllUserTokens(soajs, data, options, (error, record) => {
-				assert.ok(record);
+				assert.deepEqual(record, 0);
 				done();
 			});
 		});
