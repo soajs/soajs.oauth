@@ -18,13 +18,15 @@ describe("Starting OAUTH Unit test", () => {
 	});
 	
 	it("Testing all models", (done) => {
-		require('./model/mongo/oauth.test');
+		require('./model/mongo/oauth_token.test');
+		require('./model/mongo/oauth_urac.test');
 		done();
 	});
 	
 	it("Testing all bls", (done) => {
 		require('./bl/index.test');
-		require('./bl/oauth.test');
+		require('./bl/oauth_token.test');
+		require('./bl/oauth_urac.test');
 		done();
 	});
 	

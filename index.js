@@ -191,25 +191,25 @@ service.init(() => {
 		}, service.oauth.grant());
 		
 		service.delete("/accessToken/:token", (req, res) => {
-			bl.oauth.deleteAccessToken(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
+			bl.oauth_token.deleteAccessToken(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
 		
 		service.delete("/refreshToken/:token", (req, res) => {
-			bl.oauth.deleteRefreshToken(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
+			bl.oauth_token.deleteRefreshToken(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
 		
 		service.delete("/tokens/user/:userId", (req, res) => {
-			bl.oauth.deleteAllUserTokens(req.soajs, req.soajs.inputmaskData, {"provision": provision}, (error, data) => {
+			bl.oauth_token.deleteAllUserTokens(req.soajs, req.soajs.inputmaskData, {"provision": provision}, (error, data) => {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});
 		
 		service.delete("/tokens/tenant/:clientId", (req, res) => {
-			bl.oauth.deleteAllClientTokens(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
+			bl.oauth_token.deleteAllClientTokens(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
 				return res.json(req.soajs.buildResponse(error, data));
 			});
 		});

@@ -341,7 +341,7 @@ describe("Unit test for: BL - oauth", () => {
 					assert.deepEqual(record.email, 'me@localhost.com');
 					
 					
-					BL.oauth.modelObj = {
+					BL.oauth_urac.modelObj = {
 						closeConnection: () => {
 						},
 						getUser: (data, cb) => {

@@ -8,14 +8,13 @@
  * found in the LICENSE file at the root of this repository
  */
 
-const colName_token = "oauth_token";
-const colName_user = "oauth_urac";
+const colName = "oauth_urac";
 const core = require("soajs");
 const Mongo = core.mongo;
 
 let indexing = {};
 
-function Oauth(service, options, mongoCore) {
+function Oauth_urac(service, options, mongoCore) {
 	let __self = this;
 	
 	if (mongoCore) {
@@ -36,12 +35,11 @@ function Oauth(service, options, mongoCore) {
 	if (indexing && !indexing[index]) {
 		indexing[index] = true;
 		
-		
 		service.log.debug("Oauth: Indexes for " + index + " Updated!");
 	}
 }
 
-Oauth.prototype.getUser = function (data, cb) {
+Oauth_urac.prototype.getUser = function (data, cb) {
 	let __self = this;
 	
 	if (!data || !data.username) {
@@ -53,40 +51,13 @@ Oauth.prototype.getUser = function (data, cb) {
 		'userId': data.username
 	};
 	
-	__self.mongoCore.findOne(colName_user, condition, null, null, (err, record) => {
+	__self.mongoCore.findOne(colName, condition, null, null, (err, record) => {
 		return cb(err, record);
 	});
 };
 
-Oauth.prototype.delete = function (data, cb) {
-	let __self = this;
-	
-	if (!data || !((data.token && data.type) || data.clientId || (data.user || (data.user && data.user.id && data.user.loginMode)))) {
-		let error = new Error("(token and type) or clientId or user[id, loginMode] is required.");
-		return cb(error, null);
-	}
-	
-	let condition = {};
-	
-	if (data.user) {
-		condition["user.loginMode"] = data.user.loginMode;
-		condition["user.id"] = data.user.id;
-	} else if (data.clientId) {
-		condition.clientId = data.clientId;
-	} else {
-		condition.token = data.token;
-		condition.type = data.type;
-	}
-	__self.mongoCore.deleteMany(colName_token, condition, (err, count) => {
-		let response = 0;
-		if (count && count.result) {
-			response = count.result.n;
-		}
-		return cb(err, response);
-	});
-};
 
-Oauth.prototype.validateId = function (id, cb) {
+Oauth_urac.prototype.validateId = function (id, cb) {
 	let __self = this;
 	
 	if (!id) {
@@ -102,9 +73,10 @@ Oauth.prototype.validateId = function (id, cb) {
 	}
 };
 
-Oauth.prototype.closeConnection = function () {
+Oauth_urac.prototype.closeConnection = function () {
 	let __self = this;
+	__self.mongoCore.closeDb();
 	__self.mongoCore.closeDb();
 };
 
-module.exports = Oauth;
+module.exports = Oauth_urac;

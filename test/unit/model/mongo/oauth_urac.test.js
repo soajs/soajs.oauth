@@ -1,6 +1,6 @@
 "use strict";
 const helper = require("../../../helper.js");
-const Model = helper.requireModule('./model/mongo/oauth.js');
+const Model = helper.requireModule('./model/mongo/oauth_urac.js');
 const assert = require('assert');
 
 describe("Starting OAUTH model Unit test", () => {
@@ -123,34 +123,6 @@ describe("Starting OAUTH model Unit test", () => {
 			modelObj.getUser({}, (err) => {
 				assert.ok(err);
 				assert.deepEqual(err, new Error("(username is required."));
-				done();
-			});
-		});
-		
-		it("Success - delete - data", (done) => {
-			let data = {
-				token: 'a64374dc0928ac5da3b1dc7e9bb7cd7a60684eba',
-				type: 'refreshToken'
-			};
-			modelObj.delete(data, (err, record) => {
-				assert.ok(record);
-				assert.deepEqual(record, 1);
-				done();
-			});
-		});
-		
-		it("Fails - delete - Null data", (done) => {
-			modelObj.delete(null, (err) => {
-				assert.ok(err);
-				assert.deepEqual(err, new Error("(token and type) or clientId or user[id, loginMode] is required."));
-				done();
-			});
-		});
-		
-		it("Fails - delete - empty data", (done) => {
-			modelObj.delete({}, (err) => {
-				assert.ok(err);
-				assert.deepEqual(err, new Error("(token and type) or clientId or user[id, loginMode] is required."));
 				done();
 			});
 		});

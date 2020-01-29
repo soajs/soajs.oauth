@@ -23,11 +23,12 @@ const uracDriver = require("soajs.urac.driver");
 let SSOT = {};
 let model = process.env.SOAJS_SERVICE_MODEL || "mongo";
 
-const BLs = ["oauth"];
+const BLs = ["oauth_token", "oauth_urac"];
 
 let bl = {
 	init: init,
-	oauth: null,
+	oauth_urac: null,
+	oauth_token: null,
 	
 	"passportLogin": (req, res, options, cb) => {
 		passport.init(req.soajs, (error, _passport) => {
@@ -110,18 +111,18 @@ let bl = {
 				return cb(null, basic);
 			}
 			else {
-				return cb(bl.oauth.handleError(soajs, 406, err));
+				return cb(bl.oauth_urac.handleError(soajs, 406, err));
 			}
 		});
 	},
 	
 	"getUserRecordByPin": (soajs, inputmaskData, options, cb) => {
 		if (!inputmaskData) {
-			return cb(bl.oauth.handleError(soajs, 400, null));
+			return cb(bl.oauth_urac.handleError(soajs, 400, null));
 		}
 		options.provision.getTenantOauth(soajs.tenant.id, (err, tenantOauth) => {
 			soajs.tenantOauth = tenantOauth;
-			let loginMode = bl.oauth.localConfig.loginMode;
+			let loginMode = bl.oauth_urac.localConfig.loginMode;
 			if (soajs && soajs.tenantOauth && soajs.tenantOauth.loginMode) {
 				loginMode = soajs.tenantOauth.loginMode;
 			}
@@ -145,7 +146,7 @@ let bl = {
 				});
 			}
 			else {
-				let error = bl.oauth.handleError(soajs, 451, null);
+				let error = bl.oauth_urac.handleError(soajs, 451, null);
 				error = new Error(error.msg);
 				return cb(error);
 			}
@@ -154,12 +155,12 @@ let bl = {
 	
 	"getUserRecord": (soajs, inputmaskData, options, cb) => {
 		if (!inputmaskData) {
-			return cb(bl.oauth.handleError(soajs, 400, null));
+			return cb(bl.oauth_urac.handleError(soajs, 400, null));
 		}
 		options.provision.getTenantOauth(soajs.tenant.id, (err, tenantOauth) => {
 			soajs.tenantOauth = tenantOauth;
 			
-			let loginMode = bl.oauth.localConfig.loginMode;
+			let loginMode = bl.oauth_urac.localConfig.loginMode;
 			if (soajs && soajs.tenantOauth && soajs.tenantOauth.loginMode) {
 				loginMode = soajs.tenantOauth.loginMode;
 			}
@@ -177,7 +178,7 @@ let bl = {
 						return cb(false, record);
 					}
 					else {
-						let error = bl.oauth.handleError(soajs, 450, null);
+						let error = bl.oauth_urac.handleError(soajs, 450, null);
 						error = new Error(error.msg);
 						return cb(error);
 					}
@@ -193,7 +194,7 @@ let bl = {
 					'password': inputmaskData.password,
 					'loginMode': loginMode
 				};
-				bl.oauth.getUser(soajs, data, options, (error, record) => {
+				bl.oauth_urac.getUser(soajs, data, options, (error, record) => {
 					if (error) {
 						error = new Error(error.msg);
 						return cb(error);
@@ -277,11 +278,11 @@ function thirdpartySaveAndGrantAccess(req, input, options, cb) {
 	}
 	uracDriver.saveUser(req.soajs, input, (error, user) => {
 		if (error) {
-			return cb(bl.oauth.handleError(req.soajs, 602, error));
+			return cb(bl.oauth_urac.handleError(req.soajs, 602, error));
 		}
 		options.provision.generateSaveAccessRefreshToken(user, req, (err, accessData) => {
 			if (err) {
-				return cb(bl.oauth.handleError(req.soajs, 600, err));
+				return cb(bl.oauth_urac.handleError(req.soajs, 600, err));
 			}
 			
 			let returnRecord = {
