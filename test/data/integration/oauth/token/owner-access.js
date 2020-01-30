@@ -12,6 +12,7 @@ let token = {
         lastName: "owner",
         email: "me@localhost.com",
         status: "active",
+	    pinLogin: true,
         config: {
             allowedTenants: [
                 {

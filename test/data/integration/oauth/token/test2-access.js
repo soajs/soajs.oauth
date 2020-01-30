@@ -13,6 +13,7 @@ let token = {
 		email: "test@localhost.com",
 		ts: 1568122710943.0,
 		status: "active",
+		pinLogin: true,
 		groups: [
 			"owner"
 		],
