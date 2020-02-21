@@ -81,7 +81,7 @@ describe("Testing create access token API", () => {
 		});
 	});
 	
-	it("Fails - will not create authorization token - No data", (done) => {
+	it.skip("Fails - will not create authorization token - No data", (done) => {
 		let params = {
 			"noaccesstoken": true
 		};
