@@ -207,7 +207,8 @@ module.exports = {
 				},
 				"grant_type": {
 					"source": ['body.grant_type'],
-					"required": true,
+					"required": false,
+					"default": "password",
 					"validation": {
 						"type": "string",
 						"enum": ["refresh_token", "password"]
