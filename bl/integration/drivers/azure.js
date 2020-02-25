@@ -66,7 +66,7 @@ let lib = {
 		let profile = {
 			firstName: soajsResponse.profile.given_name,
 			lastName: soajsResponse.profile.family_name,
-			email: soajsResponse.profile.email,
+			email: soajsResponse.profile.email || soajsResponse.profile.upn,
 			username: soajsResponse.profile.oid,
 			id: soajsResponse.profile.oid,
 			originalProfile: soajsResponse.profile,
