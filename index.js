@@ -106,6 +106,44 @@ service.init(() => {
 			return res.json(req.soajs.buildResponse(error, null));
 		});
 		
+		service.get('/available/login', (req, res) => {
+			let data = {
+				"thirdparty": [],
+				"local": {
+					"available": true
+				}
+			};
+			if (req.soajs.servicesConfig.oauth) {
+				if (req.soajs.servicesConfig.oauth.local) {
+					let local = req.soajs.servicesConfig.oauth.local;
+					if (local.hasOwnProperty("available")) {
+						data.local.available = !!local.available;
+					}
+					if (local.whitelist && Array.isArray(local.whitelist) && local.whitelist.length > 0) {
+						data.local.available = true;
+					}
+				}
+				if (req.soajs.servicesConfig.oauth.passportLogin) {
+					let passportLogin = req.soajs.servicesConfig.oauth.passportLogin;
+					for (let strategy in passportLogin) {
+						if (passportLogin.hasOwnProperty(strategy)) {
+							data.thirdparty.push(strategy);
+						}
+					}
+				}
+				if (req.soajs.servicesConfig.oauth.openam) {
+					data.thirdparty.push("openam");
+				}
+				if (req.soajs.servicesConfig.oauth.ldapServer) {
+					data.thirdparty.push("ldap");
+				}
+				return res.json(req.soajs.buildResponse(null, data));
+			} else {
+				return res.json(req.soajs.buildResponse(null, data));
+			}
+			
+		});
+		
 		service.get('/passport/login/:strategy', (req, res) => {
 			bl.passportLogin(req, res, null, (error, data) => {
 				return res.json(req.soajs.buildResponse(error, data));
@@ -137,6 +175,23 @@ service.init(() => {
 		});
 		
 		service.post("/token", (req, res, next) => {
+			let allowed = true;
+			if (req.soajs.servicesConfig.oauth && req.soajs.servicesConfig.oauth.local) {
+				let local = req.soajs.servicesConfig.oauth.local;
+				if (local.hasOwnProperty("available")) {
+					allowed = !!local.available;
+				}
+				if (!allowed && local.whitelist && Array.isArray(local.whitelist) && local.whitelist.length > 0) {
+					if (local.whitelist.includes(req.soajs.inputmaskData.username)) {
+						allowed = true;
+					}
+				}
+			}
+			if (!allowed) {
+				let errCode = 414;
+				return res.json(req.soajs.buildResponse({"code": errCode, "msg": config.errors[errCode]}, null));
+			}
+			
 			//rewrite headers content-type so that oauth.grant works
 			req.headers['content-type'] = 'application/x-www-form-urlencoded';
 			

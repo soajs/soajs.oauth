@@ -61,6 +61,7 @@ module.exports = {
 		412: "Third party integration profile is empty",
 		
 		413: "Problem with the provided password.",
+		414: "Local login is not allowed",
 		
 		420: "Missing service key configuration for third party integration",
 		421: "Service key configuration for third party integration is not complete",
@@ -95,6 +96,13 @@ module.exports = {
 				"_apiInfo": {
 					"l": "Cross environment roaming, but requires IP whitelisting",
 					"group": "Tokenization user"
+				}
+			},
+			
+			"/available/login": {
+				"_apiInfo": {
+					"l": "Get information about what third party login is available",
+					"group": "Guest"
 				}
 			},
 			
