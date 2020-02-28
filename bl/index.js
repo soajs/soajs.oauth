@@ -164,7 +164,7 @@ let bl = {
 			if (soajs && soajs.tenantOauth && soajs.tenantOauth.loginMode) {
 				loginMode = soajs.tenantOauth.loginMode;
 			}
-			
+			/*
 			let pinCheck = (record) => {
 				let product = null;
 				if (soajs.tenant && soajs.tenant.application) {
@@ -187,7 +187,7 @@ let bl = {
 					return cb(null, record);
 				}
 			};
-			
+			*/
 			let getLocal = () => {
 				let data = {
 					'username': inputmaskData.username,
@@ -199,7 +199,7 @@ let bl = {
 						error = new Error(error.msg);
 						return cb(error);
 					}
-					return pinCheck(record);
+					return pinCheck(record, soajs, cb);
 				});
 			};
 			
@@ -217,7 +217,7 @@ let bl = {
 						record.loginMode = loginMode;
 						record.id = record._id.toString();
 					}
-					return pinCheck(record);
+					return pinCheck(record, soajs, cb);
 				});
 			}
 			else {
@@ -268,6 +268,29 @@ function checkUserTenantAccessPin(record, tenantObj) {
 	return null;
 }
 
+function pinCheck(record, soajs, cb) {
+	let product = null;
+	if (soajs.tenant && soajs.tenant.application) {
+		product = soajs.tenant.application.product;
+	}
+	
+	if (product && record.loginMode === 'urac' && soajs.tenantOauth.pin && soajs.tenantOauth.pin[product] && soajs.tenantOauth.pin[product].enabled) {
+		record.pinLocked = true;
+		let userTenant = checkUserTenantAccessPin(record, soajs.tenant);
+		if (userTenant && userTenant.pin && userTenant.pin.allowed) {
+			return cb(null, record);
+		}
+		else {
+			let error = bl.oauth_urac.handleError(soajs, 450, null);
+			error = new Error(error.msg);
+			return cb(error);
+		}
+	}
+	else {
+		return cb(null, record);
+	}
+}
+
 function thirdpartySaveAndGrantAccess(req, input, options, cb) {
 	let mode = req.soajs.inputmaskData.strategy;
 	if (req.soajs.servicesConfig && req.soajs.servicesConfig.oauth && req.soajs.servicesConfig.oauth.passportLogin && req.soajs.servicesConfig.oauth.passportLogin[mode]) {
@@ -280,22 +303,39 @@ function thirdpartySaveAndGrantAccess(req, input, options, cb) {
 		if (error) {
 			return cb(bl.oauth_urac.handleError(req.soajs, 602, error));
 		}
-		options.provision.generateSaveAccessRefreshToken(user, req, (err, accessData) => {
-			if (err) {
-				return cb(bl.oauth_urac.handleError(req.soajs, 600, err));
+		options.provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
+			req.soajs.tenantOauth = tenantOauth;
+			
+			let loginMode = bl.oauth_urac.localConfig.loginMode;
+			if (req.soajs && req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
+				loginMode = req.soajs.tenantOauth.loginMode;
 			}
 			
-			let returnRecord = {
-				"firstName": user.firstName,
-				"lastName": user.lastName,
-				"email": user.email,
-				"mode": input.mode,
-				"access": accessData
-			};
-			
-			return cb(null, returnRecord);
+			if (user) {
+				user.loginMode = loginMode;
+				user.id = user._id.toString();
+			}
+			pinCheck(user, req.soajs, (error, user) => {
+				if (error) {
+					return cb(error);
+				}
+				options.provision.generateSaveAccessRefreshToken(user, req, (err, accessData) => {
+					if (err) {
+						return cb(bl.oauth_urac.handleError(req.soajs, 600, err));
+					}
+					
+					let returnRecord = {
+						"firstName": user.firstName,
+						"lastName": user.lastName,
+						"email": user.email,
+						"mode": input.mode,
+						"access": accessData
+					};
+					
+					return cb(null, returnRecord);
+				});
+			});
 		});
-		
 	});
 }
 
