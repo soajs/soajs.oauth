@@ -273,7 +273,12 @@ function pinCheck(record, soajs, cb) {
 	if (soajs.tenant && soajs.tenant.application) {
 		product = soajs.tenant.application.product;
 	}
-	
+	if (soajs.tenant && soajs.tenant.key) {
+		record.key = {
+			"iKey": soajs.tenant.key.iKey,
+			"eKey": soajs.tenant.key.eKey
+		};
+	}
 	if (product && record.loginMode === 'urac' && soajs.tenantOauth.pin && soajs.tenantOauth.pin[product] && soajs.tenantOauth.pin[product].enabled) {
 		record.pinLocked = true;
 		let userTenant = checkUserTenantAccessPin(record, soajs.tenant);
