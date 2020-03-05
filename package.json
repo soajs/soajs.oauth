@@ -1,7 +1,7 @@
 {
   "name": "soajs.oauth",
   "description": "soajs oauth service",
-  "version": "2.6.14",
+  "version": "2.6.15",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -44,7 +44,7 @@
     "passport-github2": "0.1.11",
     "passport-google-oauth20": "2.0.0",
     "passport-twitter": "1.0.4",
-    "soajs": "2.6.9",
+    "soajs": "2.6.10",
     "soajs.urac.driver": "2.1.9"
   }
 }
