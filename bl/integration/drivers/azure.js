@@ -35,7 +35,7 @@ let lib = {
 		passport.use(new Strategy(options,
 			(accessToken, refreshToken, params, profile, done) => {
 				
-				if (params && params.id_token){
+				if (params && params.id_token) {
 					profile = jwt.decode(params.id_token);
 				}
 				
@@ -64,8 +64,8 @@ let lib = {
 	
 	"mapProfile": (soajsResponse, cb) => {
 		let profile = {
-			firstName: soajsResponse.profile.given_name,
-			lastName: soajsResponse.profile.family_name,
+			firstName: soajsResponse.profile.given_name || null,
+			lastName: soajsResponse.profile.family_name || null,
 			email: soajsResponse.profile.email || soajsResponse.profile.upn,
 			username: soajsResponse.profile.oid,
 			id: soajsResponse.profile.oid,
@@ -73,6 +73,17 @@ let lib = {
 			accessToken: soajsResponse.accessToken,
 			refreshToken: soajsResponse.refreshToken
 		};
+		if (!profile.firstName || !profile.lastName) {
+			if (soajsResponse.profile.name) {
+				let name_index = soajsResponse.profile.name.indexOf(" ");
+				if (name_index !== -1) {
+					profile.firstName = soajsResponse.profile.name.substr(0, name_index);
+					if (name_index + 1 < soajsResponse.profile.name.length) {
+						profile.lastName = soajsResponse.profile.name.substr(name_index + 1);
+					}
+				}
+			}
+		}
 		return cb(null, profile);
 	}
 };

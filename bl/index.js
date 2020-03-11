@@ -304,6 +304,9 @@ function thirdpartySaveAndGrantAccess(req, input, options, cb) {
 			input.user.groups = config.groups;
 		}
 	}
+	if (input && input.user.email) {
+		input.email = input.email.toLocaleLowerCase();
+	}
 	uracDriver.saveUser(req.soajs, input, (error, user) => {
 		if (error) {
 			return cb(bl.oauth_urac.handleError(req.soajs, 602, error));
