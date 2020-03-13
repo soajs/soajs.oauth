@@ -304,8 +304,8 @@ function thirdpartySaveAndGrantAccess(req, input, options, cb) {
 			input.user.groups = config.groups;
 		}
 	}
-	if (input && input.user.email) {
-		input.email = input.user.email.toLowerCase();
+	if (input && input.user && input.user.email) {
+		input.user.email = input.user.email.toLowerCase();
 	}
 	uracDriver.saveUser(req.soajs, input, (error, user) => {
 		if (error) {
