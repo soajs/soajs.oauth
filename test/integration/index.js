@@ -4,7 +4,7 @@ let helper = require("../helper.js");
 
 describe("starting OAUTH integration tests", () => {
 	
-	let oauth, controller;
+	let controller;
 	
 	before((done) => {
 		let rootPath = process.cwd();
@@ -18,11 +18,14 @@ describe("starting OAUTH integration tests", () => {
 			console.log("Starting Controller and OAUTH service");
 			controller = require("soajs.controller");
 			setTimeout(function () {
-				oauth = helper.requireModule('./index');
-				setTimeout(function () {
-					done();
-				}, 5000);
-			}, 1000);
+				
+				helper.requireModule('./index')(() => {
+					setTimeout(function () {
+						done();
+					}, 5000);
+				});
+				
+			}, 5000);
 		});
 	});
 	

@@ -20,6 +20,8 @@ const service = new soajs.server.service(config);
 const provision = require("soajs").provision;
 const oauthserver = require('oauth2-server');
 
+let serviceStartCb = null;
+
 service.init(() => {
 	bl.init(service, config, (error) => {
 		if (error) {
@@ -269,6 +271,10 @@ service.init(() => {
 			});
 		});
 		
-		service.start();
+		service.start(serviceStartCb);
 	});
 });
+
+module.exports = function (cb) {
+	serviceStartCb = cb;
+};
