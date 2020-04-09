@@ -19,7 +19,7 @@ describe("starting OAUTH integration tests", () => {
 			controller = require("soajs.controller");
 			setTimeout(function () {
 				
-				oauth = helper.requireModule('./_index');
+				oauth = helper.requireModule('./_index.js');
 				oauth.runService(() => {
 					setTimeout(function () {
 						done();
