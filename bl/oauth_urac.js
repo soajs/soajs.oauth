@@ -64,13 +64,11 @@ let bl = {
 			}
 			if (record) {
 				let hashConfig = {
-					"hashIterations": bl.localConfig.hashIterations,
-					"seedLength": bl.localConfig.seedLength
+					"hashIterations": bl.localConfig.hashIterations
 				};
-				if (soajs.servicesConfig && soajs.servicesConfig.hashIterations && soajs.servicesConfig.seedLength) {
+				if (soajs.servicesConfig && soajs.servicesConfig.hashIterations) {
 					hashConfig = {
-						"hashIterations": soajs.servicesConfig.hashIterations,
-						"seedLength": soajs.servicesConfig.seedLength
+						"hashIterations": soajs.servicesConfig.hashIterations
 					};
 				}
 				coreHasher.init(hashConfig);
