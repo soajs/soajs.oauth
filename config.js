@@ -9,10 +9,10 @@
  */
 
 module.exports = {
-	type: 'service',
-	prerequisites: {
-		cpu: '',
-		memory: ''
+	"type": 'service',
+	"prerequisites": {
+		"cpu": '',
+		"memory": ''
 	},
 	"serviceVersion": 1,
 	"serviceName": "oauth",
@@ -24,22 +24,23 @@ module.exports = {
 	"oauth": true,
 	'awareness': false,
 	"maintenance": {
+		"readiness": "/heartbeat",
+		"port": {"type": "maintenance"},
 		"commands": [
-			{"label": "Releoad Provision", "path": "/loadProvision", "icon": "provision"}
+			{"label": "Reload Provision", "path": "/loadProvision", "icon": "fas fa-download"},
+			{"label": "Reload Registry", "path": "/reloadRegistry", "icon": "fas fa-undo"},
+			{"label": "Resource Info", "path": "/resourceInfo", "icon": "fas fa-info"}
 		]
 	},
 	
-	"hashIterations": 1024,
-	"seedLength": 32,
-	
+	//-------------------------------------
+	"hashIterations": 12,
 	"loginMode": "oauth",
-	
 	"oauthService": {
 		"name": "oauth",
 		"tokenApi": "/token",
 		"authorizationApi": "/authorization"
 	},
-	
 	"oauthServer": {
 		"grants": [
 			"password",
