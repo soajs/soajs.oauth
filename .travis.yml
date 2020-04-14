@@ -17,6 +17,8 @@ jobs:
     - sleep 10
     script:
     - grunt
+    - ls /home/travis/build/soajs/soajs.oauth/node_modules/soajs.controller/
+    - cat /home/travis/build/soajs/soajs.oauth/node_modules/soajs.controller/package.json
     - if [ "$TRAVIS_BRANCH" != "master" ]; then grunt test; fi
     - if [ "$TRAVIS_BRANCH" = "master" ]; then grunt coverage; fi
 
