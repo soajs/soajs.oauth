@@ -16,7 +16,7 @@ describe("starting OAUTH integration tests", () => {
 				console.log(msg);
 			}
 			console.log("Starting Controller ...");
-			controller = require.resolve("soajs.controller/_index.js");
+			controller = require("soajs.controller/_index.js");
 			controller.runService(() => {
 				console.log("Starting OAUTH ...");
 				service = helper.requireModule('./_index.js');
