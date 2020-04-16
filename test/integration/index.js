@@ -8,7 +8,8 @@ describe("starting OAUTH integration tests", () => {
 	
 	before((done) => {
 		let rootPath = process.cwd();
-		imported(rootPath + "/test/data/soajs_profile.js", rootPath + "/test/data/integration/", (err, msg) => {
+		process.env.SOAJS_IMPORTER_DROPDB = true;
+		imported.runPath(rootPath + "/test/data/soajs_profile.js", rootPath + "/test/data/integration/", true, null, (err, msg) => {
 			if (err) {
 				console.log(err);
 			}
