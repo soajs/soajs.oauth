@@ -28,7 +28,7 @@ let main = {
 		let config = soajs.servicesConfig.oauth.passportLogin[mode];
 		driver.init(config, (error, passport) => {
 			if (error) {
-				soajs.log.error(error);
+				soajs.log.error(error.message);
 				return cb({"code": 421, "msg": driverConfig.errors[421]});
 			}
 			return cb(null, passport);
@@ -47,7 +47,7 @@ let main = {
 		}
 		driver.getLoginConfig((error, authentication, config) => {
 			if (error || !authentication) {
-				req.soajs.log.error(error);
+				req.soajs.log.error(error.message);
 				return cb({"code": 423, "msg": driverConfig.errors[423]});
 			}
 			if (!config) {
@@ -69,7 +69,7 @@ let main = {
 		}
 		driver.getValidateConfig((error, authentication, config) => {
 			if (error || !authentication) {
-				req.soajs.log.error(error);
+				req.soajs.log.error(error.message);
 				return cb({"code": 423, "msg": driverConfig.errors[423]});
 			}
 			if (!config) {
@@ -79,7 +79,7 @@ let main = {
 			let authorize = () => {
 				passport.authenticate(authentication, config, (err, soajsResponse) => {
 					if (err) {
-						req.soajs.log.error(err);
+						req.soajs.log.error(err.message);
 						return cb({"code": 720, "msg": driverConfig.errors[720]});
 					}
 					if (!soajsResponse) {
@@ -87,7 +87,7 @@ let main = {
 					}
 					driver.mapProfile(soajsResponse, (err, profile) => {
 						if (err) {
-							req.soajs.log.error(err);
+							req.soajs.log.error(err.message);
 							return cb({"code": 411, "msg": driverConfig.errors[411] + " - " + err.message});
 						}
 						if (!profile) {

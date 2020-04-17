@@ -44,7 +44,7 @@ let main = {
 		
 		ad.authenticate(fullFilter, password, (err, auth) => {
 			if (err) {
-				soajs.log.error(err);
+				soajs.log.error(err.message);
 				if (err.code && err.code === 'ECONNREFUSED') {
 					soajs.log.error("Connection Refused!");
 					return cb({"code": 700, "msg": driverConfig.errors[700]});
@@ -86,7 +86,7 @@ let main = {
 					}
 					driver.mapProfile(user.other[0], (err, profile) => {
 						if (err) {
-							soajs.log.error(err);
+							soajs.log.error(err.message);
 							return cb({"code": 411, "msg": driverConfig.errors[411] + " - " + err.message});
 						}
 						if (!profile) {

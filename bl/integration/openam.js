@@ -35,7 +35,7 @@ let main = {
 			let userRecord;
 			
 			if (error) {
-				soajs.log.error(error);
+				soajs.log.error(error.message);
 				return cb({"code": 710, "msg": driverConfig.errors[710]});
 			}
 			
@@ -63,7 +63,7 @@ let main = {
 			};
 			driver.mapProfile(user, (err, profile) => {
 				if (err) {
-					soajs.log.error(err);
+					soajs.log.error(err.message);
 					return cb({"code": 411, "msg": driverConfig.errors[411] + " - " + err.message});
 				}
 				if (!profile) {

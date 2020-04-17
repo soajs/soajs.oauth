@@ -20,7 +20,7 @@ let bl = {
 	
 	"handleError": (soajs, errCode, err) => {
 		if (err) {
-			soajs.log.error(err);
+			soajs.log.error(err.message);
 		}
 		return ({
 			"code": errCode,
