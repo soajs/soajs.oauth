@@ -39,9 +39,6 @@ let lib = {
 					profile = jwt.decode(params.id_token);
 				}
 				
-				console.log("------------- AZURE");
-				console.log(profile);
-				
 				let soajsResponse = {
 					"profile": profile,
 					"refreshToken": refreshToken,
