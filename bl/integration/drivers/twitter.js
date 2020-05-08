@@ -34,7 +34,9 @@ let lib = {
 			}));
 		return cb(null, passport);
 	},
-	
+	/*
+	{"result":true,"data":{"firstName":"soajs","lastName":"","email":"soajsorg@twitter.com","mode":"twitter","access":{"token_type":"bearer","access_token":"67bcc8231627f6325f7a8b7316f8cdceeb32e7b3","expires_in":7200,"refresh_token":"2a4a21773aa49a91f10cc217942a7f65412006b6"}}}¬
+	 */
 	"mapProfile": (soajsResponse, cb) => {
 		let profile = {
 			firstName: soajsResponse.profile.displayName,
@@ -42,7 +44,7 @@ let lib = {
 			email: soajsResponse.profile.username + '@twitter.com',
 			username: soajsResponse.profile.username + '_' + soajsResponse.profile.id,
 			id: soajsResponse.profile.id,
-			originalProfile: {},
+			originalProfile: soajsResponse.profile,
 			accessToken: soajsResponse.accessToken,
 			refreshToken: soajsResponse.refreshToken
 		};

@@ -31,6 +31,10 @@ let bl = {
 	oauth_token: null,
 	
 	"passportLogin": (req, res, options, cb, next) => {
+		//Twitter require session, if session is off mimic it here
+		if (!req.session && req.soajs.inputmaskData.strategy === "twitter") {
+			req.session = {};
+		}
 		passport.init(req.soajs, (error, _passport) => {
 			if (error) {
 				return cb(error, null);
@@ -44,6 +48,10 @@ let bl = {
 	},
 	
 	"passportValidate": (req, res, options, cb) => {
+		//Twitter require session, if session is off mimic it here
+		if (!req.session && req.soajs.inputmaskData.strategy === "twitter") {
+			req.session = {};
+		}
 		passport.init(req.soajs, (error, _passport) => {
 			if (error) {
 				return cb(error, null);

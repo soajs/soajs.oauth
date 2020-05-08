@@ -54,7 +54,7 @@ let lib = {
 			email: email,
 			username: soajsResponse.profile.id,
 			id: soajsResponse.profile.id,
-			originalProfile: soajsResponse.profile._json,
+			originalProfile: soajsResponse.profile,
 			accessToken: soajsResponse.accessToken,
 			refreshToken: soajsResponse.refreshToken
 		};
