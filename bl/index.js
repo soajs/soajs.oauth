@@ -30,7 +30,7 @@ let bl = {
 	oauth_urac: null,
 	oauth_token: null,
 	
-	"passportLogin": (req, res, options, cb) => {
+	"passportLogin": (req, res, options, cb, next) => {
 		passport.init(req.soajs, (error, _passport) => {
 			if (error) {
 				return cb(error, null);
@@ -39,7 +39,7 @@ let bl = {
 				if (error) {
 					return cb(error, null);
 				}
-			});
+			}, next);
 		});
 	},
 	

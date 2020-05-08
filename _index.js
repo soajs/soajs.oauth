@@ -145,10 +145,10 @@ function run(serviceStartCb) {
 				
 			});
 			
-			service.get('/passport/login/:strategy', (req, res) => {
+			service.get('/passport/login/:strategy', (req, res, next) => {
 				bl.passportLogin(req, res, null, (error, data) => {
 					return res.json(req.soajs.buildResponse(error, data));
-				});
+				}, next);
 			});
 			
 			service.get('/passport/validate/:strategy', (req, res) => {

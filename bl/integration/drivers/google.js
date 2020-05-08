@@ -14,7 +14,7 @@ let authentication = "google";
 let lib = {
 	"init": (config, cb) => {
 		if (!config || !config.clientID || !config.clientSecret || !config.callbackURL) {
-			return cb(new Error("Github passport configuration is not complete."));
+			return cb(new Error("Google passport configuration is not complete."));
 		}
 		passport.use(new Strategy({
 				"clientID": config.clientID,

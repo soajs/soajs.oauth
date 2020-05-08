@@ -39,7 +39,7 @@ let main = {
 	 * login through passport
 	 *
 	 */
-	"login": (req, res, passport, cb) => {
+	"login": (req, res, passport, cb, next) => {
 		let mode = req.soajs.inputmaskData.strategy;
 		let driver = lib.getDriver(mode);
 		if (!driver) {
@@ -53,7 +53,7 @@ let main = {
 			if (!config) {
 				config = {"session": false};
 			}
-			passport.authenticate(authentication, config)(req, res);
+			passport.authenticate(authentication, config)(req, res, next);
 		});
 	},
 	
