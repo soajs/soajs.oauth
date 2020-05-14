@@ -47,13 +47,16 @@ let lib = {
 	},
 	
 	"mapProfile": (soajsResponse, cb) => {
+		if (soajsResponse.profile && soajsResponse.profile._raw) {
+			delete soajsResponse.profile._raw;
+		}
 		let profile = {
 			firstName: soajsResponse.profile._json.first_name,
 			lastName: soajsResponse.profile._json.last_name,
 			email: soajsResponse.profile._json.email,
 			username: soajsResponse.profile.id,
 			id: soajsResponse.profile.id,
-			originalProfile: soajsResponse.profile,
+			originalProfile: soajsResponse.profile._json,
 			accessToken: soajsResponse.accessToken,
 			refreshToken: soajsResponse.refreshToken
 		};
