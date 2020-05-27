@@ -8,6 +8,8 @@
  * found in the LICENSE file at the root of this repository
  */
 
+const get = (p, o) => p.reduce((xs, x) => (xs && xs[x]) ? xs[x] : null, o);
+
 const soajsCoreModules = require('soajs');
 
 let coreHasher = soajsCoreModules.hasher;
@@ -63,15 +65,18 @@ let bl = {
 				return cb(bl.handleError(soajs, 602, err));
 			}
 			if (record) {
-				let hashConfig = {
+				let encryptionConfig = {
 					"hashIterations": bl.localConfig.hashIterations
 				};
 				if (soajs.servicesConfig && soajs.servicesConfig.hashIterations) {
-					hashConfig = {
-						"hashIterations": soajs.servicesConfig.hashIterations
-					};
+					encryptionConfig.hashIterations = soajs.servicesConfig.hashIterations;
+				} else {
+					let hashIterations = get(["registry", "custom", "urac", "value", "hashIterations"], soajs);
+					if (hashIterations) {
+						encryptionConfig.hashIterations = hashIterations;
+					}
 				}
-				coreHasher.init(hashConfig);
+				coreHasher.init(encryptionConfig);
 				//NOTE: oauth user does not use optionalAlgorithm, so no need to do coreHasher.update
 				coreHasher.compare(inputmaskData.password, record.password, function (err, result) {
 					if (err || !result) {
