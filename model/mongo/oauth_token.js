@@ -30,23 +30,24 @@ function Oauth(service, options, mongoCore) {
 		} else {
 			__self.mongoCore = new Mongo(registry.coreDB.provision);
 		}
-	}
-	let index = "default";
-	if (options && options.index) {
-		index = options.index;
-	}
-	if (indexing && !indexing[index]) {
-		indexing[index] = true;
 		
-		__self.mongoCore.createIndex(colName, {'user.loginMode': 1, 'user.id': 1}, {}, (err, index) => {
-			service.log.debug("Index: " + index + " created with error: " + err);
-		});
-		
-		__self.mongoCore.createIndex(colName, {'clientId': 1}, {}, (err, index) => {
-			service.log.debug("Index: " + index + " created with error: " + err);
-		});
-		
-		service.log.debug("Oauth: Indexes for " + index + " Updated!");
+		let index = "default";
+		if (options && options.index) {
+			index = options.index;
+		}
+		if (indexing && !indexing[index]) {
+			indexing[index] = true;
+			
+			__self.mongoCore.createIndex(colName, {'user.loginMode': 1, 'user.id': 1}, {}, (err, index) => {
+				service.log.debug("Index: " + index + " created with error: " + err);
+			});
+			
+			__self.mongoCore.createIndex(colName, {'clientId': 1}, {}, (err, index) => {
+				service.log.debug("Index: " + index + " created with error: " + err);
+			});
+			
+			service.log.debug("Oauth: Indexes for " + index + " Updated!");
+		}
 	}
 }
 

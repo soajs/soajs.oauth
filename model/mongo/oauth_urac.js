@@ -27,15 +27,16 @@ function Oauth_urac(service, options, mongoCore) {
 			let registry = service.registry.get();
 			__self.mongoCore = new Mongo(registry.coreDB.provision);
 		}
-	}
-	let index = "default";
-	if (options && options.index) {
-		index = options.index;
-	}
-	if (indexing && !indexing[index]) {
-		indexing[index] = true;
 		
-		service.log.debug("Oauth: Indexes for " + index + " Updated!");
+		let index = "default";
+		if (options && options.index) {
+			index = options.index;
+		}
+		if (indexing && !indexing[index]) {
+			indexing[index] = true;
+			
+			service.log.debug("Oauth: Indexes for " + index + " Updated!");
+		}
 	}
 }
 
