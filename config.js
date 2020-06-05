@@ -10,13 +10,15 @@
 
 module.exports = {
 	"type": 'service',
-	"prerequisites": {
+	'subType': 'soajs',
+	"description": "SOAJS oAuth provides out of the box oAuth 2.0 functionality to validate, refresh and kill generated access tokens without the effort of writing any code.",
+		"prerequisites": {
 		"cpu": '',
 		"memory": ''
 	},
 	"serviceVersion": 1,
 	"serviceName": "oauth",
-	"serviceGroup": "SOAJS Core Services",
+	"serviceGroup": "Gateway",
 	"servicePort": 4002,
 	"requestTimeout": 30,
 	"requestTimeoutRenewal": 5,
