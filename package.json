@@ -1,7 +1,7 @@
 {
   "name": "soajs.oauth",
   "description": "soajs oauth service",
-  "version": "3.0.10",
+  "version": "3.0.11",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -30,7 +30,7 @@
     "mocha": "6.2.2",
     "nock": "11.7.1",
     "request": "2.88.2",
-    "soajs.controller": "4.0.15",
+    "soajs.controller": "4.0.17",
     "sinon": "7.5.0"
   },
   "dependencies": {
