@@ -15,7 +15,9 @@
     "node": "*"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "devDependencies": {
     "grunt": "1.0.4",
@@ -45,6 +47,8 @@
     "passport-google-oauth20": "2.0.0",
     "passport-twitter": "1.0.4",
     "soajs": "4.0.13",
-    "soajs.urac.driver": "3.0.6"
-  }
+    "soajs.urac.driver": "3.0.6",
+    "snyk": "^1.359.1"
+  },
+  "snyk": true
 }
