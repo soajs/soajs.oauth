@@ -1,7 +1,7 @@
 {
   "name": "soajs.oauth",
   "description": "soajs oauth service",
-  "version": "3.0.11",
+  "version": "3.0.12",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -30,7 +30,7 @@
     "mocha": "6.2.2",
     "nock": "11.7.1",
     "request": "2.88.2",
-    "soajs.controller": "4.0.17",
+    "soajs.controller": "4.0.22",
     "sinon": "7.5.0"
   },
   "dependencies": {
@@ -41,10 +41,10 @@
     "passport-azure-ad": "4.2.1",
     "passport-azure-ad-oauth2": "0.0.4",
     "passport-facebook": "3.0.0",
-    "passport-github2": "0.1.11",
+    "passport-github2": "0.1.12",
     "passport-google-oauth20": "2.0.0",
     "passport-twitter": "1.0.4",
-    "soajs": "4.0.13",
-    "soajs.urac.driver": "3.0.6"
+    "soajs": "4.0.16",
+    "soajs.urac.driver": "3.0.7"
   }
 }
