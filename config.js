@@ -34,6 +34,16 @@ module.exports = {
 			{"label": "Resource Info", "path": "/resourceInfo", "icon": "fas fa-info"}
 		]
 	},
+	"tags": ["authentication", "oauth2", "jwt", "multitenant"],
+	"attributes": {
+		"thirdparty": ["facebook", "google", "twitter", "github"],
+		"active directory": ["LDAP", "Azure AD"]
+	},
+	"program": ["soajs"],
+	"documentation": {
+		"readme": "/README.md",
+		"release": "/RELEASE.md"
+	},
 	
 	//-------------------------------------
 	"hashIterations": 12,
