@@ -65,7 +65,7 @@ module.exports = {
 	
 	"errors": {
 		400: "Business logic required data are missing.",
-		401: "Unable to log in the user. User not found.",
+		401: "Unable to log in. Credential error or mismatch",
 		403: "User does not have access to this tenant",
 		404: "Unable to roam the provided request",
 		406: "Missing Tenant secret",
@@ -73,7 +73,7 @@ module.exports = {
 		411: "Third party integration mapProfile error",
 		412: "Third party integration profile is empty",
 		
-		413: "Problem with the provided password.",
+		413: "Unable to log in. Credential error or mismatch",
 		414: "Local login is not allowed",
 		
 		420: "Missing service key configuration for third party integration",
