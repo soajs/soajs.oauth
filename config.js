@@ -36,7 +36,7 @@ module.exports = {
 	},
 	"tags": ["authentication", "oauth2", "jwt", "multitenant"],
 	"attributes": {
-		"thirdparty": ["facebook", "google", "twitter", "github"],
+		"thirdparty": ["facebook", "google", "twitter", "github", "linkedin"],
 		"active directory": ["LDAP", "Azure AD"]
 	},
 	"program": ["soajs"],
@@ -136,7 +136,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["facebook", "google", "twitter", "github", "azure"]
+						"enum": ["facebook", "google", "twitter", "github", "azure", "linkedin"]
 					}
 				}
 			},
@@ -151,7 +151,7 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["facebook", "google", "twitter", "github", "azure"]
+						"enum": ["facebook", "google", "twitter", "github", "azure", "linkedin"]
 					}
 				},
 				"oauth_token": {

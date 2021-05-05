@@ -25,6 +25,8 @@ let model = process.env.SOAJS_SERVICE_MODEL || "mongo";
 
 const BLs = ["oauth_token", "oauth_urac"];
 
+const driver_with_session = ["twitter", "linkedin"];
+
 let bl = {
 	init: init,
 	oauth_urac: null,
@@ -32,7 +34,7 @@ let bl = {
 	
 	"passportLogin": (req, res, options, cb, next) => {
 		//Twitter require session, if session is off mimic it here
-		if (!req.session && req.soajs.inputmaskData.strategy === "twitter") {
+		if (!req.session && driver_with_session.includes(req.soajs.inputmaskData.strategy)) {
 			req.session = {};
 		}
 		passport.init(req.soajs, (error, _passport) => {
@@ -117,8 +119,7 @@ let bl = {
 				
 				let basic = Auth.generate(tenantId, secret);
 				return cb(null, basic);
-			}
-			else {
+			} else {
 				return cb(bl.oauth_urac.handleError(soajs, 406, err));
 			}
 		});
@@ -152,8 +153,7 @@ let bl = {
 					}
 					return cb(null, record);
 				});
-			}
-			else {
+			} else {
 				let error = bl.oauth_urac.handleError(soajs, 451, null);
 				error = new Error(error.msg);
 				return cb(error);
@@ -227,8 +227,7 @@ let bl = {
 					}
 					return pinCheck(record, soajs, cb);
 				});
-			}
-			else {
+			} else {
 				getLocal();
 			}
 		});
@@ -292,14 +291,12 @@ function pinCheck(record, soajs, cb) {
 		let userTenant = checkUserTenantAccessPin(record, soajs.tenant);
 		if (userTenant && userTenant.pin && userTenant.pin.allowed) {
 			return cb(null, record);
-		}
-		else {
+		} else {
 			let error = bl.oauth_urac.handleError(soajs, 450, null);
 			error = new Error(error.msg);
 			return cb(error);
 		}
-	}
-	else {
+	} else {
 		return cb(null, record);
 	}
 }

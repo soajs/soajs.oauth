@@ -14,7 +14,7 @@ let main = {
 	"loadDrivers": function () {
 		//load all drivers
 		let filePath = "./drivers/";
-		let availableDrivers = ["facebook", "github", "google", "twitter", "azure", "openam", "ldap"];
+		let availableDrivers = ["facebook", "github", "google", "twitter", "azure", "openam", "ldap", "linkedin"];
 		
 		for (let i = 0; i < availableDrivers.length; i++) {
 			let driver = availableDrivers[i];
