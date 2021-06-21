@@ -97,6 +97,7 @@ Oauth.prototype.validateId = function (id, cb) {
 
 Oauth.prototype.closeConnection = function () {
 	let __self = this;
+	console.log("**** oauth: closeConnection");
 	__self.mongoCore.closeDb();
 };
 
