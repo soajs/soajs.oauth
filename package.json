@@ -45,7 +45,7 @@
     "passport-google-oauth20": "2.0.0",
     "passport-linkedin-oauth2": "2.0.0",
     "passport-twitter": "1.0.4",
-    "soajs": "4.0.26",
+    "soajs": "4.0.27",
     "soajs.urac.driver": "3.0.17"
   }
 }
