@@ -61,14 +61,14 @@ let bl = {
 				"agent": "",
 				"tokenExpiryTTL": 2 * 24 * 3600000,
 				"service": "loginPhone"
-			}
+			};
 			let modelObj = bl.mp.getModel(soajs, options);
 			modelObj.addCode(data, (error, codeRecord) => {
 				bl.mp.closeModel(soajs, modelObj);
 				if (error || !codeRecord) {
 					return cb(bl.handleError(soajs, 413, error));
 				}
-				//TODO send code by sms
+				//TODO send code by sms with twilio
 				console.log(codeRecord);
 				return cb(null, true);
 			});
