@@ -69,8 +69,8 @@ let bl = {
 					return cb(bl.handleError(soajs, 413, error));
 				}
 				//TODO send code by sms with twilio
-				console.log(codeRecord);
-				return cb(null, true);
+				
+				return cb(null, codeRecord);
 			});
 		});
 	},
