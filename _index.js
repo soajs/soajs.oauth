@@ -169,6 +169,17 @@ function run(serviceStartCb) {
 				});
 			});
 			
+			service.post('/token/phone', (req, res) => {
+				bl.oauth_phone.login(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+			service.post('/token/phone/code', (req, res) => {
+				bl.oauth_phone.loginValidate(req, req.soajs.inputmaskData, {"provision": provision}, (error, data) => {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+			
 			service.get("/authorization", (req, res) => {
 				bl.authorization(req.soajs, req.soajs.inputmaskData, {"provision": provision}, (error, data) => {
 					return res.json(req.soajs.buildResponse(error, data));
