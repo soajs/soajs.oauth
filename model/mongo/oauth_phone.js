@@ -58,7 +58,7 @@ Oauth_phone.prototype.getCode = function (data, cb) {
 		'status': data.status,
 		'service': data.service
 	};
-	
+	console.log("getCode", condition);
 	__self.mongoCore.findOne(colName, condition, null, null, (err, record) => {
 		return cb(err, record);
 	});
@@ -82,13 +82,12 @@ Oauth_phone.prototype.addCode = function (data, cb) {
 	};
 	const condition = {
 		'phone': data.phone,
-		'service': data.service,
-		'status': data.status
+		'service': data.service
 	};
 	const options = {
 		'upsert': true
 	};
-	console.log(condition);
+	console.log("addCode", condition);
 	__self.mongoCore.updateOne(colName, condition, s, options, (err, record) => {
 		if (!record || (record && !(record.nModified || record.upsertedCount))) {
 			let error = new Error("code for [" + data.service + "] was not created.");
