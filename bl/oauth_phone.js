@@ -92,6 +92,10 @@ let bl = {
 				return cb(bl.handleError(req.soajs, 599, null));
 			}
 			//TODO: check agent
+			console.log("--------------------------");
+			console.log(req.get('user-agent'));
+			console.log(req.get('x-forwarded-for'));
+			console.log("--------------------------");
 			if (codeRecord.phone !== inputmaskData.phone) {
 				return cb(bl.handleError(req.soajs, 413, null));
 			}

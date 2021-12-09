@@ -70,7 +70,7 @@ Oauth_phone.prototype.addCode = function (data, cb) {
 	const ts = new Date().getTime();
 	const s = {
 		'$set': {
-			'code': Math.floor(100000 + Math.random() * 900000),
+			'code': Math.floor(100000 + Math.random() * 900000).toString(),
 			'phone': data.phone,
 			'user': data.user,
 			'agent': data.agent,
