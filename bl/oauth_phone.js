@@ -93,7 +93,7 @@ let bl = {
 				return cb(bl.handleError(req.soajs, 599, null));
 			}
 			const agent = req.get('user-agent');
-			const geo = req.get('x-forwarded-for');
+			const geo = req.get('x-real-ip');
 			if (codeRecord.agent !== agent) {
 				return cb(bl.handleError(req.soajs, 413, new Error("Agent mismatch " + agent)));
 			}

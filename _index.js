@@ -171,7 +171,7 @@ function run(serviceStartCb) {
 			
 			service.post('/token/phone', (req, res) => {
 				req.soajs.inputmaskData.agent = req.get('user-agent');
-				req.soajs.inputmaskData.geo = req.get('x-forwarded-for');
+				req.soajs.inputmaskData.geo = req.get('x-real-ip');
 				bl.oauth_phone.login(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
 					return res.json(req.soajs.buildResponse(error, data));
 				});
