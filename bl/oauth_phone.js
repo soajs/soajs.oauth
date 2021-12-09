@@ -58,7 +58,8 @@ let bl = {
 			let data = {
 				"user": record,
 				"phone": inputmaskData.phone,
-				"agent": "",
+				"agent": inputmaskData.agent,
+				"geo": inputmaskData.geo,
 				"tokenExpiryTTL": 2 * 24 * 3600000,
 				"service": "loginPhone"
 			};
@@ -91,13 +92,16 @@ let bl = {
 			if (new Date(codeRecord.expires).getTime() < new Date().getTime()) {
 				return cb(bl.handleError(req.soajs, 599, null));
 			}
-			//TODO: check agent
-			console.log("--------------------------");
-			console.log(req.get('user-agent'));
-			console.log(req.get('x-forwarded-for'));
-			console.log("--------------------------");
+			const agent = req.get('user-agent');
+			const geo = req.get('x-forwarded-for');
+			if (codeRecord.agent !== agent) {
+				return cb(bl.handleError(req.soajs, 413, new Error("Agent mismatch")));
+			}
+			if (codeRecord.geo !== geo) {
+				return cb(bl.handleError(req.soajs, 413, new Error("GEO mismatch")));
+			}
 			if (codeRecord.phone !== inputmaskData.phone) {
-				return cb(bl.handleError(req.soajs, 413, null));
+				return cb(bl.handleError(req.soajs, 413, new Error("Phone mismatch")));
 			}
 			let data = {
 				"code": inputmaskData.code,

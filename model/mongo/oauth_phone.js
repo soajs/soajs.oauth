@@ -74,6 +74,7 @@ Oauth_phone.prototype.addCode = function (data, cb) {
 			'phone': data.phone,
 			'user': data.user,
 			'agent': data.agent,
+			'geo': data.geo,
 			'expires': new Date(ts + data.tokenExpiryTTL),
 			'status': 'active',
 			'ts': ts,
