@@ -59,7 +59,7 @@ let bl = {
 				"user": record,
 				"phone": inputmaskData.phone,
 				"agent": inputmaskData.agent,
-				"geo": inputmaskData.geo,
+				"geo": inputmaskData.geo || null,
 				"tokenExpiryTTL": 2 * 24 * 3600000,
 				"service": "loginPhone"
 			};
@@ -93,12 +93,8 @@ let bl = {
 				return cb(bl.handleError(req.soajs, 599, null));
 			}
 			const agent = req.get('user-agent');
-			const geo = req.get('x-real-ip');
 			if (codeRecord.agent !== agent) {
 				return cb(bl.handleError(req.soajs, 413, new Error("Agent mismatch " + agent)));
-			}
-			if (codeRecord.geo !== geo) {
-				return cb(bl.handleError(req.soajs, 413, new Error("GEO mismatch " + geo)));
 			}
 			if (codeRecord.phone !== inputmaskData.phone) {
 				return cb(bl.handleError(req.soajs, 413, new Error("Phone mismatch")));
