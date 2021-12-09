@@ -77,7 +77,7 @@ Oauth_phone.prototype.addCode = function (data, cb) {
 			'expires': new Date(ts + data.tokenExpiryTTL),
 			'status': 'active',
 			'ts': ts,
-			'service': data.service,
+			'service': data.service
 		}
 	};
 	const condition = {
@@ -86,9 +86,9 @@ Oauth_phone.prototype.addCode = function (data, cb) {
 		'status': data.status
 	};
 	const options = {
-		'upsert': true,
-		'safe': true
+		'upsert': true
 	};
+	console.log(condition);
 	__self.mongoCore.updateOne(colName, condition, s, options, (err, record) => {
 		if (!record || (record && !(record.nModified || record.upsertedCount))) {
 			let error = new Error("code for [" + data.service + "] was not created.");

@@ -84,6 +84,8 @@ let bl = {
 		let modelObj = bl.mp.getModel(req.soajs, options);
 		modelObj.getCode(data, (error, codeRecord) => {
 			bl.mp.closeModel(req.soajs, modelObj);
+			console.log("codeRecord");
+			console.log(codeRecord);
 			if (error || !codeRecord) {
 				return cb(bl.handleError(req.soajs, 413, error));
 			}
