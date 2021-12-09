@@ -85,7 +85,7 @@ let bl = {
 		let modelObj = bl.mp.getModel(req.soajs, options);
 		modelObj.getCode(data, (error, codeRecord) => {
 			bl.mp.closeModel(req.soajs, modelObj);
-			console.log("codeRecord",codeRecord);
+			console.log("codeRecord", codeRecord);
 			if (error || !codeRecord) {
 				return cb(bl.handleError(req.soajs, 413, error));
 			}
@@ -95,10 +95,10 @@ let bl = {
 			const agent = req.get('user-agent');
 			const geo = req.get('x-forwarded-for');
 			if (codeRecord.agent !== agent) {
-				return cb(bl.handleError(req.soajs, 413, new Error("Agent mismatch")));
+				return cb(bl.handleError(req.soajs, 413, new Error("Agent mismatch " + agent)));
 			}
 			if (codeRecord.geo !== geo) {
-				return cb(bl.handleError(req.soajs, 413, new Error("GEO mismatch")));
+				return cb(bl.handleError(req.soajs, 413, new Error("GEO mismatch " + geo)));
 			}
 			if (codeRecord.phone !== inputmaskData.phone) {
 				return cb(bl.handleError(req.soajs, 413, new Error("Phone mismatch")));
