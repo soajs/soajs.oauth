@@ -84,7 +84,7 @@ let bl = {
 						soajs.log.info(data.service + ': No SMS was sent: ' + error.message);
 					}
 				});
-				return cb(null, codeRecord);
+				return cb(null, true);
 			});
 		});
 	},
