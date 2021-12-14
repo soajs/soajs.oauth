@@ -35,6 +35,10 @@ function Oauth_urac(service, options, mongoCore) {
 		if (indexing && !indexing[index]) {
 			indexing[index] = true;
 			
+			__self.mongoCore.createIndex(colName, {'userId': 1}, {}, (err, index) => {
+				service.log.debug("Index: " + index + " created with error: " + err);
+			});
+			
 			service.log.debug("Oauth: Indexes for " + index + " Updated!");
 		}
 	}
@@ -76,7 +80,6 @@ Oauth_urac.prototype.validateId = function (id, cb) {
 
 Oauth_urac.prototype.closeConnection = function () {
 	let __self = this;
-	__self.mongoCore.closeDb();
 	__self.mongoCore.closeDb();
 };
 

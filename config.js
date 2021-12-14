@@ -84,6 +84,8 @@ module.exports = {
 		450: "You do not have privileges to enable pin login",
 		451: "Pin login is not available for this account",
 		
+		599: "Token has expired.",
+		
 		600: "Error in generating oAUth Token.",
 		601: "Model not found.",
 		602: "Model error: ",
@@ -200,6 +202,40 @@ module.exports = {
 				},
 				"password": {
 					"source": ['body.password'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
+			"/token/phone": {
+				"_apiInfo": {
+					"l": "Create a verification code for that phone",
+					"group": "Guest"
+				},
+				"phone": {
+					"source": ['body.phone'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			"/token/phone/code": {
+				"_apiInfo": {
+					"l": "Create an access token for that phone",
+					"group": "Guest"
+				},
+				"code": {
+					"source": ['body.code'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"phone": {
+					"source": ['body.phone'],
 					"required": true,
 					"validation": {
 						"type": "string"
