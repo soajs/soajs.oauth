@@ -9,6 +9,9 @@
  */
 
 
+const lib = {
+	"message": require("../lib/message.js")
+};
 const uracDriver = require("soajs.urac.driver");
 
 let bl = {
@@ -63,6 +66,12 @@ let bl = {
 				"tokenExpiryTTL": 2 * 24 * 3600000,
 				"service": "loginPhone"
 			};
+			if (soajs.servicesConfig && soajs.servicesConfig.oauth && soajs.servicesConfig.oauth.tokenExpiryTTL) {
+				data.tokenExpiryTTL = soajs.servicesConfig.oauth.tokenExpiryTTL;
+			} else if (soajs.registry && soajs.registry.custom && soajs.registry.custom.oauth && soajs.registry.custom.oauth.value && soajs.registry.custom.oauth.value.tokenExpiryTTL) {
+				data.tokenExpiryTTL = soajs.registry.custom.oauth.value.tokenExpiryTTL;
+			}
+			
 			let modelObj = bl.mp.getModel(soajs, options);
 			modelObj.addCode(data, (error, codeRecord) => {
 				bl.mp.closeModel(soajs, modelObj);
@@ -70,7 +79,11 @@ let bl = {
 					return cb(bl.handleError(soajs, 413, error));
 				}
 				//TODO send code by sms with twilio
-				
+				lib.message.send(soajs, data.service, data.user, codeRecord, function (error) {
+					if (error) {
+						soajs.log.info(data.service + ': No SMS was sent: ' + error.message);
+					}
+				});
 				return cb(null, codeRecord);
 			});
 		});
