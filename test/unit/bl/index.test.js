@@ -75,7 +75,7 @@ describe("Unit test for: BL - oauth", () => {
 						"batchSize": 1000
 					},
 					"URLParam": {
-						"bufferMaxEntries": 0
+						"useUnifiedTopology": true
 					},
 					"timeConnected": 1552747598093
 				}
@@ -94,8 +94,7 @@ describe("Unit test for: BL - oauth", () => {
 							],
 							"credentials": null,
 							"URLParam": {
-								"poolSize": 5,
-								"autoReconnect": true
+								"useUnifiedTopology": true
 							}
 						}
 					}

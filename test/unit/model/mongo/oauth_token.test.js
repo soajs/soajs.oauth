@@ -32,8 +32,6 @@ describe("Starting OAUTH model Unit test", () => {
 							],
 							"credentials": null,
 							"URLParam": {
-								"poolSize": 5,
-								"autoReconnect": true
 							}
 						}
 					}
@@ -66,8 +64,7 @@ describe("Starting OAUTH model Unit test", () => {
 				],
 				"credentials": null,
 				"URLParam": {
-					"poolSize": 5,
-					"autoReconnect": true
+					"useUnifiedTopology": true
 				}
 			}, null);
 			done();

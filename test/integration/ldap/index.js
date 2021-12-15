@@ -42,7 +42,7 @@ describe("Integration test for: ldap", () => {
 						"batchSize": 1000
 					},
 					"URLParam": {
-						"bufferMaxEntries": 0
+						"useUnifiedTopology": true
 					},
 					"timeConnected": 1552747598093
 				}
