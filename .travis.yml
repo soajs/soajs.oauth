@@ -56,6 +56,8 @@ jobs:
     - docker tag soajsorg/oauth:latest soajsorg/oauth:${MAJOR_VERSION}.x
 
     - docker push soajsorg/oauth
+    - docker push soajsorg/oauth:${PACKAGE_VERSION}
+    - docker push soajsorg/oauth:${MAJOR_VERSION}.x
     deploy:
       on:
         all_branches: true
