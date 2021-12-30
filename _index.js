@@ -180,7 +180,11 @@ function run(serviceStartCb) {
 					return res.json(req.soajs.buildResponse(error, data));
 				});
 			});
-			
+			service.post('/token/auto/:id', (req, res) => {
+				bl.autoLogin(req, req.soajs.inputmaskData, {"provision": provision}, (error, data) => {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
 			service.get("/authorization", (req, res) => {
 				bl.authorization(req.soajs, req.soajs.inputmaskData, {"provision": provision}, (error, data) => {
 					return res.json(req.soajs.buildResponse(error, data));

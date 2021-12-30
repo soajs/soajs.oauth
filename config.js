@@ -243,6 +243,20 @@ module.exports = {
 				}
 			},
 			
+			"/token/auto/:id": {
+				"_apiInfo": {
+					"l": "Create an access token",
+					"group": "Internal"
+				},
+				"id": {
+					"source": ['params.id'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			
 			"/token": {
 				"_apiInfo": {
 					"l": "Create an access token",
