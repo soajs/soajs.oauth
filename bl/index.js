@@ -232,6 +232,28 @@ let bl = {
 				getLocal();
 			}
 		});
+	},
+	
+	"autoLogin": (req, inputmaskData, options, cb) => {
+		if (!inputmaskData) {
+			return cb(bl.oauth_urac.handleError(req.soajs, 400, null));
+		}
+		
+		let data = {
+			'id': inputmaskData.id
+		};
+		uracDriver.getRecord(req.soajs, data, function (error, record) {
+			if (error || !record) {
+				error = new Error(error.msg);
+				return cb(bl.handleError(req.soajs, 413, error));
+			}
+			options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
+				if (err) {
+					return cb(bl.handleError(req.soajs, 600, err));
+				}
+				return cb(null, accessData);
+			});
+		});
 	}
 };
 
