@@ -78,13 +78,15 @@ let bl = {
 				if (error || !codeRecord) {
 					return cb(bl.handleError(soajs, 413, error));
 				}
+				
+				return cb(null, codeRecord);
 				//TODO send code by sms with twilio
 				lib.message.send(soajs, data.service, data.user, codeRecord, function (error) {
 					if (error) {
 						soajs.log.info(data.service + ': No SMS was sent: ' + error.message);
 						return cb(bl.handleError(soajs, 413, error));
 					}
-					return cb(null, codeRecord);
+					return cb(null, true);
 				});
 			});
 		});
