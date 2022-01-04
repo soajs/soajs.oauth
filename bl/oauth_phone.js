@@ -81,7 +81,6 @@ let bl = {
 				if (soajs.registry && soajs.registry.custom && soajs.registry.custom.oauth && soajs.registry.custom.oauth.value && soajs.registry.custom.oauth.value.skipSMS) {
 					return cb(null, codeRecord);
 				} else {
-					//TODO send code by sms with twilio
 					lib.message.send(soajs, data.service, data.user, codeRecord, function (error) {
 						if (error) {
 							soajs.log.info(data.service + ': No SMS was sent: ' + error.message);
