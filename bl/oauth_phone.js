@@ -103,6 +103,8 @@ let bl = {
 		modelObj.getCode(data, (error, codeRecord) => {
 			bl.mp.closeModel(req.soajs, modelObj);
 			if (error || !codeRecord) {
+				console.log(req.soajs.servicesConfig.oauth.demoAccount)
+				console.log(inputmaskData)
 				if (req.soajs.servicesConfig &&
 					req.soajs.servicesConfig.oauth &&
 					req.soajs.servicesConfig.oauth.demoAccount &&
