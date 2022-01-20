@@ -103,8 +103,6 @@ let bl = {
 		modelObj.getCode(data, (error, codeRecord) => {
 			bl.mp.closeModel(req.soajs, modelObj);
 			if (error || !codeRecord) {
-				console.log(req.soajs.registry.custom.oauth.value.demoAccount)
-				console.log(inputmaskData)
 				if (
 					req.soajs.registry &&
 					req.soajs.registry.custom &&
@@ -131,30 +129,31 @@ let bl = {
 				} else {
 					return cb(bl.handleError(req.soajs, 413, error));
 				}
-			}
-			if (new Date(codeRecord.expires).getTime() < new Date().getTime()) {
-				return cb(bl.handleError(req.soajs, 599, null));
-			}
-			const agent = req.get('user-agent');
-			if (codeRecord.agent !== agent) {
-				return cb(bl.handleError(req.soajs, 413, new Error("Agent mismatch " + agent)));
-			}
-			if (codeRecord.phone !== inputmaskData.phone) {
-				return cb(bl.handleError(req.soajs, 413, new Error("Phone mismatch")));
-			}
-			let data = {
-				"code": inputmaskData.code,
-				"status": "used"
-			};
-			modelObj.updateStatus(data, () => {
-				// no need to do anything here.
-			});
-			options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
-				if (err) {
-					return cb(bl.handleError(req.soajs, 600, err));
+			} else {
+				if (new Date(codeRecord.expires).getTime() < new Date().getTime()) {
+					return cb(bl.handleError(req.soajs, 599, null));
 				}
-				return cb(null, accessData);
-			});
+				const agent = req.get('user-agent');
+				if (codeRecord.agent !== agent) {
+					return cb(bl.handleError(req.soajs, 413, new Error("Agent mismatch " + agent)));
+				}
+				if (codeRecord.phone !== inputmaskData.phone) {
+					return cb(bl.handleError(req.soajs, 413, new Error("Phone mismatch")));
+				}
+				let data = {
+					"code": inputmaskData.code,
+					"status": "used"
+				};
+				modelObj.updateStatus(data, () => {
+					// no need to do anything here.
+				});
+				options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
+					if (err) {
+						return cb(bl.handleError(req.soajs, 600, err));
+					}
+					return cb(null, accessData);
+				});
+			}
 		});
 	}
 };
