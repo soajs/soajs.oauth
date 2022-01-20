@@ -103,7 +103,29 @@ let bl = {
 		modelObj.getCode(data, (error, codeRecord) => {
 			bl.mp.closeModel(req.soajs, modelObj);
 			if (error || !codeRecord) {
-				return cb(bl.handleError(req.soajs, 413, error));
+				if (req.soajs.servicesConfig &&
+					req.soajs.servicesConfig.oauth &&
+					req.soajs.servicesConfig.oauth.demoAccount &&
+					req.soajs.servicesConfig.oauth.demoAccount.phone === inputmaskData.phone &&
+					req.soajs.servicesConfig.oauth.demoAccount.code === inputmaskData.code) {
+					let data = {
+						'username': inputmaskData.phone
+					};
+					uracDriver.getRecord(req.soajs, data, function (error, record) {
+						if (error || !record) {
+							error = new Error(error.msg);
+							return cb(bl.handleError(req.soajs, 413, error));
+						}
+						options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
+							if (err) {
+								return cb(bl.handleError(req.soajs, 600, err));
+							}
+							return cb(null, accessData);
+						});
+					});
+				} else {
+					return cb(bl.handleError(req.soajs, 413, error));
+				}
 			}
 			if (new Date(codeRecord.expires).getTime() < new Date().getTime()) {
 				return cb(bl.handleError(req.soajs, 599, null));
