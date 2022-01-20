@@ -103,13 +103,16 @@ let bl = {
 		modelObj.getCode(data, (error, codeRecord) => {
 			bl.mp.closeModel(req.soajs, modelObj);
 			if (error || !codeRecord) {
-				console.log(req.soajs.servicesConfig.oauth.demoAccount)
+				console.log(req.soajs.registry.custom.oauth.value.demoAccount)
 				console.log(inputmaskData)
-				if (req.soajs.servicesConfig &&
-					req.soajs.servicesConfig.oauth &&
-					req.soajs.servicesConfig.oauth.demoAccount &&
-					req.soajs.servicesConfig.oauth.demoAccount.phone === inputmaskData.phone &&
-					req.soajs.servicesConfig.oauth.demoAccount.code === inputmaskData.code) {
+				if (
+					req.soajs.registry &&
+					req.soajs.registry.custom &&
+					req.soajs.registry.custom.oauth &&
+					req.soajs.registry.custom.oauth.value &&
+					req.soajs.registry.custom.oauth.value.demoAccount  &&
+					req.soajs.registry.custom.oauth.value.demoAccount.phone === inputmaskData.phone &&
+					req.soajs.registry.custom.oauth.value.demoAccount.code === inputmaskData.code) {
 					let data = {
 						'username': inputmaskData.phone
 					};
