@@ -58,6 +58,15 @@ let bl = {
 				error = new Error(error.msg);
 				return cb(bl.handleError(soajs, 413, error));
 			}
+			if (
+				soajs.registry &&
+				soajs.registry.custom &&
+				soajs.registry.custom.oauth &&
+				soajs.registry.custom.oauth.value &&
+				soajs.registry.custom.oauth.value.demoAccount &&
+				soajs.registry.custom.oauth.value.demoAccount.phone === inputmaskData.phone) {
+				return cb(null, true);
+			}
 			let data = {
 				"user": record,
 				"phone": inputmaskData.phone,
@@ -108,7 +117,7 @@ let bl = {
 					req.soajs.registry.custom &&
 					req.soajs.registry.custom.oauth &&
 					req.soajs.registry.custom.oauth.value &&
-					req.soajs.registry.custom.oauth.value.demoAccount  &&
+					req.soajs.registry.custom.oauth.value.demoAccount &&
 					req.soajs.registry.custom.oauth.value.demoAccount.phone === inputmaskData.phone &&
 					req.soajs.registry.custom.oauth.value.demoAccount.code === inputmaskData.code) {
 					let data = {
