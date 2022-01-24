@@ -58,6 +58,15 @@ let bl = {
 				error = new Error(error.msg);
 				return cb(bl.handleError(soajs, 413, error));
 			}
+			if (
+				soajs.registry &&
+				soajs.registry.custom &&
+				soajs.registry.custom.oauth &&
+				soajs.registry.custom.oauth.value &&
+				soajs.registry.custom.oauth.value.demoAccount &&
+				soajs.registry.custom.oauth.value.demoAccount.phone === inputmaskData.phone) {
+				return cb(null, true);
+			}
 			let data = {
 				"user": record,
 				"phone": inputmaskData.phone,
@@ -103,31 +112,57 @@ let bl = {
 		modelObj.getCode(data, (error, codeRecord) => {
 			bl.mp.closeModel(req.soajs, modelObj);
 			if (error || !codeRecord) {
-				return cb(bl.handleError(req.soajs, 413, error));
-			}
-			if (new Date(codeRecord.expires).getTime() < new Date().getTime()) {
-				return cb(bl.handleError(req.soajs, 599, null));
-			}
-			const agent = req.get('user-agent');
-			if (codeRecord.agent !== agent) {
-				return cb(bl.handleError(req.soajs, 413, new Error("Agent mismatch " + agent)));
-			}
-			if (codeRecord.phone !== inputmaskData.phone) {
-				return cb(bl.handleError(req.soajs, 413, new Error("Phone mismatch")));
-			}
-			let data = {
-				"code": inputmaskData.code,
-				"status": "used"
-			};
-			modelObj.updateStatus(data, () => {
-				// no need to do anything here.
-			});
-			options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
-				if (err) {
-					return cb(bl.handleError(req.soajs, 600, err));
+				if (
+					req.soajs.registry &&
+					req.soajs.registry.custom &&
+					req.soajs.registry.custom.oauth &&
+					req.soajs.registry.custom.oauth.value &&
+					req.soajs.registry.custom.oauth.value.demoAccount &&
+					req.soajs.registry.custom.oauth.value.demoAccount.phone === inputmaskData.phone &&
+					req.soajs.registry.custom.oauth.value.demoAccount.code === inputmaskData.code) {
+					let data = {
+						'username': inputmaskData.phone
+					};
+					uracDriver.getRecord(req.soajs, data, function (error, record) {
+						if (error || !record) {
+							error = new Error(error.msg);
+							return cb(bl.handleError(req.soajs, 413, error));
+						}
+						options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
+							if (err) {
+								return cb(bl.handleError(req.soajs, 600, err));
+							}
+							return cb(null, accessData);
+						});
+					});
+				} else {
+					return cb(bl.handleError(req.soajs, 413, error));
 				}
-				return cb(null, accessData);
-			});
+			} else {
+				if (new Date(codeRecord.expires).getTime() < new Date().getTime()) {
+					return cb(bl.handleError(req.soajs, 599, null));
+				}
+				const agent = req.get('user-agent');
+				if (codeRecord.agent !== agent) {
+					return cb(bl.handleError(req.soajs, 413, new Error("Agent mismatch " + agent)));
+				}
+				if (codeRecord.phone !== inputmaskData.phone) {
+					return cb(bl.handleError(req.soajs, 413, new Error("Phone mismatch")));
+				}
+				let data = {
+					"code": inputmaskData.code,
+					"status": "used"
+				};
+				modelObj.updateStatus(data, () => {
+					// no need to do anything here.
+				});
+				options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
+					if (err) {
+						return cb(bl.handleError(req.soajs, 600, err));
+					}
+					return cb(null, accessData);
+				});
+			}
 		});
 	}
 };
