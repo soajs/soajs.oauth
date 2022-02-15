@@ -128,6 +128,15 @@ let bl = {
 							error = new Error(error.msg);
 							return cb(bl.handleError(req.soajs, 413, error));
 						}
+						let loginMode = bl.localConfig.loginMode;
+						if (req.soajs && req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
+							loginMode = req.soajs.tenantOauth.loginMode;
+						}
+						
+						if (record) {
+							record.loginMode = loginMode;
+							record.id = record._id.toString();
+						}
 						options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
 							if (err) {
 								return cb(bl.handleError(req.soajs, 600, err));
@@ -156,6 +165,15 @@ let bl = {
 				modelObj.updateStatus(data, () => {
 					// no need to do anything here.
 				});
+				let loginMode = bl.localConfig.loginMode;
+				if (req.soajs && req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
+					loginMode = req.soajs.tenantOauth.loginMode;
+				}
+				
+				if (codeRecord.user) {
+					codeRecord.user.loginMode = loginMode;
+					codeRecord.user.id = codeRecord.user._id.toString();
+				}
 				options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
 					if (err) {
 						return cb(bl.handleError(req.soajs, 600, err));
