@@ -247,6 +247,15 @@ let bl = {
 				error = new Error(error.msg);
 				return cb(bl.handleError(req.soajs, 413, error));
 			}
+			let loginMode = bl.oauth_urac.localConfig.loginMode;
+			if (req.soajs && req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
+				loginMode = req.soajs.tenantOauth.loginMode;
+			}
+			
+			if (record) {
+				record.loginMode = loginMode;
+				record.id = record._id.toString();
+			}
 			options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
 				if (err) {
 					return cb(bl.handleError(req.soajs, 600, err));
