@@ -192,6 +192,7 @@ function run(serviceStartCb) {
 			});
 			
 			service.post("/token", (req, res, next) => {
+				req.body = req.body || {};
 				req.body.grant_type = req.soajs.inputmaskData.grant_type;
 				let allowed = true;
 				if (req.soajs.servicesConfig.oauth && req.soajs.servicesConfig.oauth.local) {
