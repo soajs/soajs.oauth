@@ -192,6 +192,8 @@ function run(serviceStartCb) {
 			});
 			
 			service.post("/token", (req, res, next) => {
+				req.body = req.body || {};
+				req.body.grant_type = req.soajs.inputmaskData.grant_type;
 				let allowed = true;
 				if (req.soajs.servicesConfig.oauth && req.soajs.servicesConfig.oauth.local) {
 					let local = req.soajs.servicesConfig.oauth.local;
@@ -241,6 +243,7 @@ function run(serviceStartCb) {
 				// we should add authorization to be able to generate a new access token
 				//      or set req.body.client_id, req.body.client_secret instead
 				req.body = req.body || {};
+				req.body.grant_type = req.soajs.inputmaskData.grant_type;
 				req.body.username = "NA";
 				req.body.password = "NA";
 				if (req.query.access_token) {
