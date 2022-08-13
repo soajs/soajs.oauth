@@ -245,7 +245,7 @@ let bl = {
 		uracDriver.getRecord(req.soajs, data, function (error, record) {
 			if (error || !record) {
 				error = new Error(error.msg);
-				return cb(bl.handleError(req.soajs, 413, error));
+				return cb(bl.oauth_urac.handleError(req.soajs, 413, error));
 			}
 			let loginMode = bl.oauth_urac.localConfig.loginMode;
 			if (req.soajs && req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
@@ -258,7 +258,7 @@ let bl = {
 			}
 			options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
 				if (err) {
-					return cb(bl.handleError(req.soajs, 600, err));
+					return cb(bl.oauth_urac.handleError(req.soajs, 600, err));
 				}
 				return cb(null, accessData);
 			});
