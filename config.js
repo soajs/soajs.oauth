@@ -220,6 +220,14 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"type": {
+					"source": ["body.type"],
+					"default" : "sms",
+					"validation": {
+						"type": "string",
+						"enum": ["sms", "whatsapp"]
+					}
 				}
 			},
 			"/token/phone/code": {
