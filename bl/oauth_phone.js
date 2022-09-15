@@ -69,6 +69,7 @@ let bl = {
 			}
 			let data = {
 				"user": record,
+				"type": inputmaskData.type,
 				"phone": inputmaskData.phone,
 				"agent": inputmaskData.agent,
 				"geo": inputmaskData.geo || null,
@@ -92,7 +93,7 @@ let bl = {
 				} else {
 					lib.message.send(soajs, data.service, data.user, codeRecord, function (error) {
 						if (error) {
-							soajs.log.info(data.service + ': No SMS was sent: ' + error.message);
+							soajs.log.info(data.service + ': No ' + codeRecord.type + ' sent: ' + error.message);
 							return cb(bl.handleError(soajs, 413, error));
 						}
 						return cb(null, true);
