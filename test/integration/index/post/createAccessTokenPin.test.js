@@ -148,8 +148,8 @@ describe("Testing create access token with pin API", () => {
 		requester('/pin', 'post', params, (error, body) => {
 			assert.ok(body);
 			assert.ok(body.errors);
-			assert.deepEqual(body.errors.details, [ { code: 158,
-				message: 'You need to be logged in to access this System.' } ]);
+			assert.deepEqual(body.errors.details, [ { code: 503,
+				message: 'Pin login is not available for this account' } ]);
 			done();
 		});
 	});

@@ -109,7 +109,7 @@ module.exports = function (grunt) {
 				SOAJS_TEST: true,
 				SOAJS_ENV: 'DASHBOARD',
 				SOAJS_DEPLOY_MANUAL: true,
-				SOAJS_REGISTRY_API: '127.0.0.1:5000'
+				SOAJS_REGISTRY_API: '127.0.0.1:11000'
 			},
 			coverage: {
 				SOAJS_IMPORTER_DROPDB: true,
@@ -118,7 +118,7 @@ module.exports = function (grunt) {
 				SOAJS_TEST: true,
 				SOAJS_ENV: 'DASHBOARD',
 				SOAJS_DEPLOY_MANUAL: true,
-				SOAJS_REGISTRY_API: '127.0.0.1:5000'
+				SOAJS_REGISTRY_API: '127.0.0.1:11000'
 			}
 		},
 		
