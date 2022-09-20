@@ -20,18 +20,17 @@ let user = {
         allowedTenants: [
 					{
 						tenant: {
-							id: "5da6d6280067e20d5fe67667",
-							code: "SOME"
+							id: "5db990da1799605e8d4d7cbc",
+							code: "TETE"
 						},
 						groups: [
 							'group1'
 						]
-					}
-					]
+					}]
     },
     tenant: {
-        id: "5c0e74ba9acc3c5a84a51259",
-        code: "DBTN",
+			id: "5db990da1799605e8d4d7cbc",
+			code: "TETE",
         pin: {
             code: "1235",
             allowed: true

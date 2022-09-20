@@ -21,17 +21,16 @@ let user = {
 					{
 						tenant: {
 							id: "5da6d6280067e20d5fe67667",
-							code: "SOME"
+							code: "SOME",
 						},
 						groups: [
 							'group1'
 						]
-					}
-					]
+					}]
     },
     tenant: {
-        id: "5c0e74ba9acc3c5a84a51259",
-        code: "DBTN",
+			id: "5da6d6280067e20d5fe67667",
+			code: "SOME",
         pin: {
             code: "1235",
             allowed: true
