@@ -3,12 +3,13 @@
 const OAuth2Server = require('oauth2-server');
 const Request = require('oauth2-server').Request;
 const Response = require('oauth2-server').Response;
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const sApp = express();
 
 const oauthOptions = {
-	"accessTokenLifetime": 7200,
+	"accessTokenLifetime": 1209600,
 	"refreshTokenLifetime": 1209600,
 	"model": require("./model")
 };
@@ -39,10 +40,13 @@ function tokenHandler(options) {
 		let response = new Response(res);
 		return oauth.token(request, response, options)
 			.then(function (token) {
-				console.log(token)
+				res.locals.oauth = {token: token};
+				console.log(token);
+				next();
 			})
 			.catch(function (err) {
 				console.log(err)
+				next();
 			});
 	}
 }
@@ -53,8 +57,10 @@ sApp.use(bodyParser.urlencoded({extended: false}));
 sApp.post("/token", (req, res) => {
 	req.headers['content-type'] = 'application/x-www-form-urlencoded';
 	req.headers['authorization'] = bearerToken("11111", "secret");
-	tokenHandler({})(req, res);
-	res.json({});
+	tokenHandler({})(req, res, ()=>{
+		
+		res.json({});
+	});
 });
 sApp.get("/user", (req, res) => {
 	authenticateHandler({"allowBearerTokensInQueryString": true})(req, res);

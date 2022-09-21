@@ -17,10 +17,13 @@ const model = {
 			cb(null, token);
 		});
 	},
+	
 	generateAccessToken: function (client, user, scope, cb) {
+		console.log("generateAccessToken")
 		model.generateToken(cb);
 	},
 	generateRefreshToken: function (client, user, scope, cb) {
+		console.log("generateRefreshToken")
 		model.generateToken(cb);
 	},
 	revokeToken: function (token, cb) {
@@ -30,9 +33,10 @@ const model = {
 		return cb(null, true);
 	},
 	getAccessToken: function (accessToken, cb) {
+		console.log("getAccessToken")
 		return cb(null, {
-			"accessToken": "475851f05a10e332a552a4b4e77b0f8b08a901f1",
-			"accessTokenExpiresAt": new Date("2021-05-20T21:06:16.998Z"),
+			"accessToken": "3f89000a698de8d549f1d1e7274f0b774756f440",
+			"accessTokenExpiresAt": new Date("2022-09-21T19:41:10.588Z"),
 			"client": {
 				"id": "11111"
 			},
@@ -42,9 +46,10 @@ const model = {
 		});
 	},
 	getRefreshToken: function (refreshToken, cb) {
+		console.log("getRefreshToken")
 		return cb(null, {
-			"refreshToken": "475851f05a10e332a552a4b4e77b0f8b08a901f2",
-			"refreshTokenExpiresAt": new Date("2021-05-20T21:06:16.998Z"),
+			"refreshToken": "388784d6345bc9aaf4a5533460e1910254b1fbdb",
+			"refreshTokenExpiresAt": new Date("2022-10-05T17:41:10.588Z"),
 			"client": {
 				"id": "11111"
 			},

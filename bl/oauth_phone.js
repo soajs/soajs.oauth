@@ -129,20 +129,24 @@ let bl = {
 							error = new Error(error.msg);
 							return cb(bl.handleError(req.soajs, 413, error));
 						}
-						let loginMode = bl.localConfig.loginMode;
-						if (req.soajs && req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
-							loginMode = req.soajs.tenantOauth.loginMode;
-						}
-						
-						if (record) {
-							record.loginMode = loginMode;
-							record.id = record._id.toString();
-						}
-						options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
-							if (err) {
-								return cb(bl.handleError(req.soajs, 600, err));
+						options.provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
+							req.soajs.tenantOauth = tenantOauth;
+							
+							let loginMode = bl.localConfig.loginMode;
+							if (req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
+								loginMode = req.soajs.tenantOauth.loginMode;
 							}
-							return cb(null, accessData);
+							
+							if (record) {
+								record.loginMode = loginMode;
+								record.id = record._id.toString();
+							}
+							options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
+								if (err) {
+									return cb(bl.handleError(req.soajs, 600, err));
+								}
+								return cb(null, accessData);
+							});
 						});
 					});
 				} else {
