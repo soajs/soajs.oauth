@@ -170,20 +170,24 @@ let bl = {
 				modelObj.updateStatus(data, () => {
 					// no need to do anything here.
 				});
-				let loginMode = bl.localConfig.loginMode;
-				if (req.soajs && req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
-					loginMode = req.soajs.tenantOauth.loginMode;
-				}
-				
-				if (codeRecord.user) {
-					codeRecord.user.loginMode = loginMode;
-					codeRecord.user.id = codeRecord.user._id.toString();
-				}
-				options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
-					if (err) {
-						return cb(bl.handleError(req.soajs, 600, err));
+				options.provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
+					req.soajs.tenantOauth = tenantOauth;
+					
+					let loginMode = bl.localConfig.loginMode;
+					if (req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
+						loginMode = req.soajs.tenantOauth.loginMode;
 					}
-					return cb(null, accessData);
+					
+					if (codeRecord.user) {
+						codeRecord.user.loginMode = loginMode;
+						codeRecord.user.id = codeRecord.user._id.toString();
+					}
+					options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
+						if (err) {
+							return cb(bl.handleError(req.soajs, 600, err));
+						}
+						return cb(null, accessData);
+					});
 				});
 			}
 		});
