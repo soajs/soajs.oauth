@@ -32,7 +32,7 @@ let bl = {
 	oauth_urac: null,
 	oauth_token: null,
 	oauth_phone: null,
-	
+
 	"passportLogin": (req, res, options, cb, next) => {
 		//Twitter require session, if session is off mimic it here
 		if (!req.session && driver_with_session.includes(req.soajs.inputmaskData.strategy)) {
@@ -49,7 +49,7 @@ let bl = {
 			}, next);
 		});
 	},
-	
+
 	"passportValidate": (req, res, options, cb) => {
 		//Twitter require session, if session is off mimic it here
 		if (!req.session && req.soajs.inputmaskData.strategy === "twitter") {
@@ -72,7 +72,7 @@ let bl = {
 			});
 		});
 	},
-	
+
 	"openam": (req, inputmaskData, options, cb) => {
 		let data = {
 			'token': inputmaskData.token
@@ -89,13 +89,13 @@ let bl = {
 			thirdpartySaveAndGrantAccess(req, input, options, cb);
 		});
 	},
-	
+
 	"ldap": (req, inputmaskData, options, cb) => {
 		let data = {
 			'username': inputmaskData.username,
 			'password': inputmaskData.password
 		};
-		
+
 		ldap.login(req.soajs, data, function (error, profile) {
 			if (error) {
 				return cb(error, null);
@@ -108,16 +108,16 @@ let bl = {
 			thirdpartySaveAndGrantAccess(req, input, options, cb);
 		});
 	},
-	
+
 	"authorization": (soajs, inputmaskData, options, cb) => {
 		options.provision.getTenantOauth(soajs.tenant.id, (err, tenantOauth) => {
-			
+
 			soajs.tenantOauth = tenantOauth;
-			
+
 			if (soajs && soajs.tenantOauth && soajs.tenantOauth.secret && soajs.tenant && soajs.tenant.id) {
 				let secret = soajs.tenantOauth.secret;
 				let tenantId = soajs.tenant.id;
-				
+
 				let basic = Auth.generate(tenantId, secret);
 				return cb(null, basic);
 			} else {
@@ -125,7 +125,7 @@ let bl = {
 			}
 		});
 	},
-	
+
 	"getUserRecordByPin": (soajs, inputmaskData, options, cb) => {
 		if (!inputmaskData) {
 			return cb(bl.oauth_urac.handleError(soajs, 400, null));
@@ -136,9 +136,9 @@ let bl = {
 			if (soajs && soajs.tenantOauth && soajs.tenantOauth.loginMode) {
 				loginMode = soajs.tenantOauth.loginMode;
 			}
-			
+
 			if (loginMode === 'urac') {
-				
+
 				let data = {
 					'pin': inputmaskData.pin
 				};
@@ -161,14 +161,14 @@ let bl = {
 			}
 		});
 	},
-	
+
 	"getUserRecord": (soajs, inputmaskData, options, cb) => {
 		if (!inputmaskData) {
 			return cb(bl.oauth_urac.handleError(soajs, 400, null));
 		}
 		options.provision.getTenantOauth(soajs.tenant.id, (err, tenantOauth) => {
 			soajs.tenantOauth = tenantOauth;
-			
+
 			let loginMode = bl.oauth_urac.localConfig.loginMode;
 			if (soajs && soajs.tenantOauth && soajs.tenantOauth.loginMode) {
 				loginMode = soajs.tenantOauth.loginMode;
@@ -211,7 +211,7 @@ let bl = {
 					return pinCheck(record, soajs, cb);
 				});
 			};
-			
+
 			if (loginMode === 'urac') {
 				let data = {
 					'username': inputmaskData.username,
@@ -233,12 +233,12 @@ let bl = {
 			}
 		});
 	},
-	
+
 	"autoLogin": (req, inputmaskData, options, cb) => {
 		if (!inputmaskData) {
 			return cb(bl.oauth_urac.handleError(req.soajs, 400, null));
 		}
-		
+
 		let data = {
 			'id': inputmaskData.id
 		};
@@ -247,32 +247,35 @@ let bl = {
 				error = new Error(error.msg);
 				return cb(bl.oauth_urac.handleError(req.soajs, 413, error));
 			}
-			console.log (req.soajs.tenant)
-			console.log (req.soajs.tenantOauth)
-			let loginMode = bl.oauth_urac.localConfig.loginMode;
-			if (req.soajs && req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
-				loginMode = req.soajs.tenantOauth.loginMode;
-			}
-			
-			if (record) {
-				record.loginMode = loginMode;
-				record.id = record._id.toString();
-			}
-			options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
-				if (err) {
-					return cb(bl.oauth_urac.handleError(req.soajs, 600, err));
+			options.provision.getTenantOauth(soajs.tenant.id, (err, tenantOauth) => {
+				req.soajs.tenantOauth = tenantOauth;
+				console.log(req.soajs.tenant)
+				console.log(req.soajs.tenantOauth)
+				let loginMode = bl.oauth_urac.localConfig.loginMode;
+				if (req.soajs && req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
+					loginMode = req.soajs.tenantOauth.loginMode;
 				}
-				return cb(null, accessData);
+
+				if (record) {
+					record.loginMode = loginMode;
+					record.id = record._id.toString();
+				}
+				options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
+					if (err) {
+						return cb(bl.oauth_urac.handleError(req.soajs, 600, err));
+					}
+					return cb(null, accessData);
+				});
 			});
 		});
 	}
 };
 
 function init(service, localConfig, cb) {
-	
+
 	let fillModels = (blName, cb) => {
 		let typeModel = __dirname + `/../model/${model}/${blName}.js`;
-		
+
 		if (fs.existsSync(typeModel)) {
 			SSOT[`${blName}Model`] = require(typeModel);
 			SSOT[`${blName}ModelObj`] = new SSOT[`${blName}Model`](service, null, null);
@@ -286,17 +289,17 @@ function init(service, localConfig, cb) {
 			bl[blName] = temp;
 			return cb(null);
 		} else {
-			return cb({name: blName, model: typeModel});
+			return cb({ name: blName, model: typeModel });
 		}
 	};
 	async.each(BLs, fillModels, function (err) {
 		if (err) {
 			service.log.error(`Requested model not found. make sure you have a model for ${err.name} @ ${err.model}`);
-			return cb({"code": 601, "msg": localConfig.errors[601]});
+			return cb({ "code": 601, "msg": localConfig.errors[601] });
 		}
 		integrationLib.loadDrivers(service);
 		return cb(null);
-		
+
 	});
 }
 
@@ -352,12 +355,12 @@ function thirdpartySaveAndGrantAccess(req, input, options, cb) {
 		}
 		options.provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
 			req.soajs.tenantOauth = tenantOauth;
-			
+
 			let loginMode = bl.oauth_urac.localConfig.loginMode;
 			if (req.soajs && req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
 				loginMode = req.soajs.tenantOauth.loginMode;
 			}
-			
+
 			if (user) {
 				user.loginMode = loginMode;
 				user.id = user._id.toString();
@@ -370,7 +373,7 @@ function thirdpartySaveAndGrantAccess(req, input, options, cb) {
 					if (err) {
 						return cb(bl.oauth_urac.handleError(req.soajs, 600, err));
 					}
-					
+
 					let returnRecord = {
 						"firstName": user.firstName,
 						"lastName": user.lastName,
@@ -378,7 +381,7 @@ function thirdpartySaveAndGrantAccess(req, input, options, cb) {
 						"mode": input.mode,
 						"access": accessData
 					};
-					
+
 					return cb(null, returnRecord);
 				});
 			});
