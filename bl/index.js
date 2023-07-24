@@ -247,6 +247,8 @@ let bl = {
 				error = new Error(error.msg);
 				return cb(bl.oauth_urac.handleError(req.soajs, 413, error));
 			}
+			console.log (req.soajs.tenant)
+			console.log (req.soajs.tenantOauth)
 			let loginMode = bl.oauth_urac.localConfig.loginMode;
 			if (req.soajs && req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
 				loginMode = req.soajs.tenantOauth.loginMode;
