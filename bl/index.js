@@ -249,8 +249,6 @@ let bl = {
 			}
 			options.provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
 				req.soajs.tenantOauth = tenantOauth;
-				console.log(req.soajs.tenant)
-				console.log(req.soajs.tenantOauth)
 				let loginMode = bl.oauth_urac.localConfig.loginMode;
 				if (req.soajs && req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
 					loginMode = req.soajs.tenantOauth.loginMode;
