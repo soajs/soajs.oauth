@@ -247,7 +247,7 @@ let bl = {
 				error = new Error(error.msg);
 				return cb(bl.oauth_urac.handleError(req.soajs, 413, error));
 			}
-			options.provision.getTenantOauth(soajs.tenant.id, (err, tenantOauth) => {
+			options.provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
 				req.soajs.tenantOauth = tenantOauth;
 				console.log(req.soajs.tenant)
 				console.log(req.soajs.tenantOauth)
