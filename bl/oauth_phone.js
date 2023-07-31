@@ -19,7 +19,7 @@ let bl = {
 	"model": null,
 	"soajs_service": null,
 	"localConfig": null,
-	
+
 	"handleError": (soajs, errCode, err) => {
 		if (err) {
 			soajs.log.error(err.message);
@@ -29,7 +29,7 @@ let bl = {
 			"msg": bl.localConfig.errors[errCode] + ((err && errCode === 602) ? err.message : "")
 		});
 	},
-	
+
 	"mp": {
 		"getModel": (soajs) => {
 			let modelObj = bl.modelObj;
@@ -48,7 +48,7 @@ let bl = {
 			}
 		}
 	},
-	
+
 	"login": (soajs, inputmaskData, options, cb) => {
 		let data = {
 			'username': inputmaskData.phone
@@ -63,9 +63,17 @@ let bl = {
 				soajs.registry.custom &&
 				soajs.registry.custom.oauth &&
 				soajs.registry.custom.oauth.value &&
-				soajs.registry.custom.oauth.value.demoAccount &&
-				soajs.registry.custom.oauth.value.demoAccount.phone === inputmaskData.phone) {
-				return cb(null, true);
+				soajs.registry.custom.oauth.value.demoAccount) {
+				let demoPhones = [];
+				if (soajs.registry.custom.oauth.value.demoAccount.phones && Array.isArray(soajs.registry.custom.oauth.value.demoAccount.phones)) {
+					demoPhones = soajs.registry.custom.oauth.value.demoAccount.phones;
+				}
+				if (soajs.registry.custom.oauth.value.demoAccount.phone) {
+					demoPhones.push(soajs.registry.custom.oauth.value.demoAccount.phone);
+				}
+				if (demoPhones.includes(inputmaskData.phone)) {
+					return cb(null, true);
+				}
 			}
 			let data = {
 				"user": record,
@@ -81,7 +89,7 @@ let bl = {
 			} else if (soajs.registry && soajs.registry.custom && soajs.registry.custom.oauth && soajs.registry.custom.oauth.value && soajs.registry.custom.oauth.value.tokenExpiryTTL) {
 				data.tokenExpiryTTL = soajs.registry.custom.oauth.value.tokenExpiryTTL;
 			}
-			
+
 			let modelObj = bl.mp.getModel(soajs, options);
 			modelObj.addCode(data, (error, codeRecord) => {
 				bl.mp.closeModel(soajs, modelObj);
@@ -102,7 +110,7 @@ let bl = {
 			});
 		});
 	},
-	
+
 	"loginValidate": (req, inputmaskData, options, cb) => {
 		let data = {
 			"code": inputmaskData.code,
@@ -119,36 +127,55 @@ let bl = {
 					req.soajs.registry.custom.oauth &&
 					req.soajs.registry.custom.oauth.value &&
 					req.soajs.registry.custom.oauth.value.demoAccount &&
-					req.soajs.registry.custom.oauth.value.demoAccount.phone === inputmaskData.phone &&
 					req.soajs.registry.custom.oauth.value.demoAccount.code === inputmaskData.code) {
-					let data = {
-						'username': inputmaskData.phone
-					};
-					uracDriver.getRecord(req.soajs, data, function (error, record) {
-						if (error || !record) {
-							error = new Error(error.msg);
-							return cb(bl.handleError(req.soajs, 413, error));
-						}
-						options.provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
-							req.soajs.tenantOauth = tenantOauth;
-							
-							let loginMode = bl.localConfig.loginMode;
-							if (req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
-								loginMode = req.soajs.tenantOauth.loginMode;
+					let demoPhones = [];
+					if (req.soajs.registry.custom.oauth.value.demoAccount.phones && Array.isArray(req.soajs.registry.custom.oauth.value.demoAccount.phones)) {
+						demoPhones = req.soajs.registry.custom.oauth.value.demoAccount.phones;
+					}
+					if (req.soajs.registry.custom.oauth.value.demoAccount.phone) {
+						demoPhones.push(req.soajs.registry.custom.oauth.value.demoAccount.phone);
+					}
+					if (demoPhones.includes(inputmaskData.phone)) {
+						// if (
+						// 	req.soajs.registry &&
+						// 	req.soajs.registry.custom &&
+						// 	req.soajs.registry.custom.oauth &&
+						// 	req.soajs.registry.custom.oauth.value &&
+						// 	req.soajs.registry.custom.oauth.value.demoAccount &&
+						// 	req.soajs.registry.custom.oauth.value.demoAccount.phone === inputmaskData.phone &&
+						// 	req.soajs.registry.custom.oauth.value.demoAccount.code === inputmaskData.code) {
+
+						let data = {
+							'username': inputmaskData.phone
+						};
+						uracDriver.getRecord(req.soajs, data, function (error, record) {
+							if (error || !record) {
+								error = new Error(error.msg);
+								return cb(bl.handleError(req.soajs, 413, error));
 							}
-							
-							if (record) {
-								record.loginMode = loginMode;
-								record.id = record._id.toString();
-							}
-							options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
-								if (err) {
-									return cb(bl.handleError(req.soajs, 600, err));
+							options.provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
+								req.soajs.tenantOauth = tenantOauth;
+
+								let loginMode = bl.localConfig.loginMode;
+								if (req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
+									loginMode = req.soajs.tenantOauth.loginMode;
 								}
-								return cb(null, accessData);
+
+								if (record) {
+									record.loginMode = loginMode;
+									record.id = record._id.toString();
+								}
+								options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
+									if (err) {
+										return cb(bl.handleError(req.soajs, 600, err));
+									}
+									return cb(null, accessData);
+								});
 							});
 						});
-					});
+					} else {
+						return cb(bl.handleError(req.soajs, 413, error));
+					}
 				} else {
 					return cb(bl.handleError(req.soajs, 413, error));
 				}
@@ -172,12 +199,12 @@ let bl = {
 				});
 				options.provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
 					req.soajs.tenantOauth = tenantOauth;
-					
+
 					let loginMode = bl.localConfig.loginMode;
 					if (req.soajs.tenantOauth && req.soajs.tenantOauth.loginMode) {
 						loginMode = req.soajs.tenantOauth.loginMode;
 					}
-					
+
 					if (codeRecord.user) {
 						codeRecord.user.loginMode = loginMode;
 						codeRecord.user.id = codeRecord.user._id.toString();
