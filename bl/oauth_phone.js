@@ -53,7 +53,9 @@ let bl = {
 		let data = {
 			'username': inputmaskData.phone
 		};
+		console.log("data", data);
 		uracDriver.getRecord(soajs, data, function (error, record) {
+			console.log("record", record);
 			if (error || !record) {
 				error = new Error(error.msg);
 				return cb(bl.handleError(soajs, 413, error));
