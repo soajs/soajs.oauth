@@ -64,6 +64,7 @@ let bl = {
 				soajs.registry.custom.oauth &&
 				soajs.registry.custom.oauth.value &&
 				soajs.registry.custom.oauth.value.demoAccount) {
+				console.log(soajs.registry.custom.oauth.value.demoAccount);
 				let demoPhones = [];
 				if (soajs.registry.custom.oauth.value.demoAccount.phones && Array.isArray(soajs.registry.custom.oauth.value.demoAccount.phones)) {
 					demoPhones = soajs.registry.custom.oauth.value.demoAccount.phones;
@@ -71,6 +72,7 @@ let bl = {
 				if (soajs.registry.custom.oauth.value.demoAccount.phone) {
 					demoPhones.push(soajs.registry.custom.oauth.value.demoAccount.phone);
 				}
+				console.log(demoPhones);
 				if (demoPhones.includes(inputmaskData.phone)) {
 					return cb(null, true);
 				}
