@@ -71,7 +71,6 @@ let bl = {
 				if (soajs.registry.custom.oauth.value.demoAccount.phone) {
 					demoPhones.push(soajs.registry.custom.oauth.value.demoAccount.phone);
 				}
-				console.log(demoPhones);
 				if (demoPhones.includes(inputmaskData.phone)) {
 					return cb(null, true);
 				}
