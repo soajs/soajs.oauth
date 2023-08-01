@@ -106,8 +106,6 @@ describe("Integration test for: ldap", () => {
 				"password": "password"
 			};
 			driver.login(soajs, data, (error, record) => {
-				console.log(error);
-				console.log(record);
 				assert.equal(record.email, 'antoine@soajs.org');
 				ldapServer.killServer(server);
 				done();
