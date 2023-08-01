@@ -53,9 +53,7 @@ let bl = {
 		let data = {
 			'username': inputmaskData.phone
 		};
-		console.log("data", data);
 		uracDriver.getRecord(soajs, data, function (error, record) {
-			console.log("record", record);
 			if (error || !record) {
 				error = new Error(error.msg);
 				return cb(bl.handleError(soajs, 413, error));
@@ -66,13 +64,14 @@ let bl = {
 				soajs.registry.custom.oauth &&
 				soajs.registry.custom.oauth.value &&
 				soajs.registry.custom.oauth.value.demoAccount) {
-				console.log(soajs.registry.custom.oauth.value.demoAccount);
 				let demoPhones = [];
 				if (soajs.registry.custom.oauth.value.demoAccount.phones && Array.isArray(soajs.registry.custom.oauth.value.demoAccount.phones)) {
 					demoPhones = soajs.registry.custom.oauth.value.demoAccount.phones;
 				}
 				if (soajs.registry.custom.oauth.value.demoAccount.phone) {
-					demoPhones.push(soajs.registry.custom.oauth.value.demoAccount.phone);
+					if (!demoPhones.includes(soajs.registry.custom.oauth.value.demoAccount.phone)) {
+						demoPhones.push(soajs.registry.custom.oauth.value.demoAccount.phone);
+					}
 				}
 				console.log(demoPhones);
 				if (demoPhones.includes(inputmaskData.phone)) {
