@@ -51,7 +51,7 @@ let bl = {
 
 	"login": (soajs, inputmaskData, options, cb) => {
 		let data = {
-			'username': inputmaskData.phone
+			'phone': inputmaskData.phone
 		};
 		uracDriver.getRecord(soajs, data, function (error, record) {
 			if (error || !record) {
@@ -146,7 +146,7 @@ let bl = {
 						// 	req.soajs.registry.custom.oauth.value.demoAccount.code === inputmaskData.code) {
 
 						let data = {
-							'username': inputmaskData.phone
+							'phone': inputmaskData.phone
 						};
 						uracDriver.getRecord(req.soajs, data, function (error, record) {
 							if (error || !record) {
