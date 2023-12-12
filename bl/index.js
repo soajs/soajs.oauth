@@ -151,6 +151,7 @@ let bl = {
 						record.pinLogin = true;
 						record.loginMode = loginMode;
 						record.id = record._id.toString();
+						record.agent = options.agent || null;
 					}
 					return cb(null, record);
 				});
@@ -208,6 +209,9 @@ let bl = {
 						error = new Error(error.msg);
 						return cb(error);
 					}
+					if (record) {
+						record.agent = options.agent || null;
+					}
 					return pinCheck(record, soajs, cb);
 				});
 			};
@@ -225,6 +229,7 @@ let bl = {
 					if (record) {
 						record.loginMode = loginMode;
 						record.id = record._id.toString();
+						record.agent = options.agent || null;
 					}
 					return pinCheck(record, soajs, cb);
 				});
@@ -257,6 +262,7 @@ let bl = {
 				if (record) {
 					record.loginMode = loginMode;
 					record.id = record._id.toString();
+					record.agent = req.get('user-agent');
 				}
 				options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
 					if (err) {
@@ -362,6 +368,7 @@ function thirdpartySaveAndGrantAccess(req, input, options, cb) {
 			if (user) {
 				user.loginMode = loginMode;
 				user.id = user._id.toString();
+				user.agent = req.get('user-agent');
 			}
 			pinCheck(user, req.soajs, (error, user) => {
 				if (error) {

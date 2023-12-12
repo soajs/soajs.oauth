@@ -11,12 +11,12 @@ describe("Testing create access token API", () => {
 	before(function (done) {
 		done();
 	});
-	
+
 	afterEach((done) => {
 		console.log("=======================================");
 		done();
 	});
-	
+
 	it("Success - will create authorization token", (done) => {
 		let params = {
 			"noaccesstoken": true,
@@ -40,7 +40,7 @@ describe("Testing create access token API", () => {
 			done();
 		});
 	});
-	
+
 	it("Fails - will not create authorization token - user has pin allowed false", (done) => {
 		let params = {
 			"noaccesstoken": true,
@@ -52,12 +52,14 @@ describe("Testing create access token API", () => {
 		};
 		requester('/token', 'post', params, (error, body) => {
 			assert.ok(body.errors);
-			assert.deepEqual(body.errors.details, [ { code: 503,
-				message: 'You do not have privileges to enable pin login' } ]);
+			assert.deepEqual(body.errors.details, [{
+				code: 503,
+				message: 'You do not have privileges to enable pin login'
+			}]);
 			done();
 		});
 	});
-	
+
 	it("Success - will create authorization token - oauth login", (done) => {
 		let params = {
 			"noaccesstoken": true,
@@ -76,11 +78,50 @@ describe("Testing create access token API", () => {
 			assert.ok(body.access_token);
 			assert.ok(body.expires_in);
 			assert.ok(body.refresh_token);
-			
+
 			done();
 		});
 	});
-	
+
+	it("Success - will create authorization token & refresh it - /access/token /refresh/token", (done) => {
+		let params = {
+			"noaccesstoken": true,
+			"headers": {
+				"key": extKey
+			},
+			"body": {
+				"username": 'user2',
+				"password": 'password'
+			}
+		};
+		requester('/access/token', 'post', params, (error, body) => {
+			assert.ok(body);
+			assert.ok(body.token_type);
+			assert.ok(body.access_token);
+			assert.ok(body.expires_in);
+			assert.ok(body.refresh_token);
+
+			let params = {
+				"noaccesstoken": true,
+				"headers": {
+					"key": extKey
+				},
+				"body": {
+					"refresh_token": body.refresh_token,
+				}
+			};
+			requester('/refresh/token', 'post', params, (error, body) => {
+				assert.ok(body);
+				assert.ok(body.token_type);
+				assert.ok(body.access_token);
+				assert.ok(body.expires_in);
+				assert.ok(body.refresh_token);
+
+				done();
+			});
+		});
+	});
+
 	it.skip("Fails - will not create authorization token - No data", (done) => {
 		let params = {
 			"noaccesstoken": true
@@ -88,7 +129,7 @@ describe("Testing create access token API", () => {
 		requester('/token', 'post', params, (error, body) => {
 			assert.ok(body);
 			assert.ok(body.errors);
-			assert.deepEqual(body.errors.details, [{code: 172, message: 'Missing required field: grant_type'}]);
+			assert.deepEqual(body.errors.details, [{ code: 172, message: 'Missing required field: grant_type' }]);
 			done();
 		});
 	});

@@ -47,6 +47,12 @@ let lib = {
 						}, {
 							"group": "Guest",
 							"apis": {
+								"/access/token": {
+									"access": false
+								},
+								"/refresh/token": {
+									"access": false
+								},
 								"/token": {
 									"access": false
 								}
