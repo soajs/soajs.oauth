@@ -68,7 +68,7 @@ let bl = {
 		}
 		let modelObj = bl.mp.getModel(soajs, options);
 		let data = {
-			"token": inputmaskData.token,
+			"token": inputmaskData.token ||  inputmaskData.refresh_token,
 			"type": "refreshToken"
 		};
 		modelObj.delete(data, (err, count) => {
