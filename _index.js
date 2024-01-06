@@ -275,7 +275,7 @@ function run(serviceStartCb) {
 				tokenFn(req, res, next);
 			}, checkRefreshTokenAgent(), service.oauth.grant(), deleteRefreshToken());
 
-			service.post("/access/token", (req, res, next) => {
+			service.post("/token/email", (req, res, next) => {
 				req.body = req.body || {};
 				req.body.grant_type = req.soajs.inputmaskData.grant_type;
 				tokenFn(req, res, next);

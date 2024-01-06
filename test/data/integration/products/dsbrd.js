@@ -48,7 +48,7 @@ let prod = {
 							{
 								"group": "Guest",
 								"apis": {
-									"/access/token": {
+									"/token/email": {
 										"access": false
 									},
 									"/refresh/token": {

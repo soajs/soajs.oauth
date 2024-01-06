@@ -301,9 +301,9 @@ module.exports = {
 					}
 				}
 			},
-			"/access/token": {
+			"/token/email": {
 				"_apiInfo": {
-					"l": "Create an access token",
+					"l": "Create an access token by email or username",
 					"group": "Guest"
 				},
 				"username": {

@@ -83,7 +83,7 @@ describe("Testing create access token API", () => {
 		});
 	});
 
-	it("Success - will create authorization token & refresh it - /access/token /refresh/token", (done) => {
+	it("Success - will create authorization token & refresh it - /token/email /refresh/token", (done) => {
 		let params = {
 			"noaccesstoken": true,
 			"headers": {
@@ -94,7 +94,7 @@ describe("Testing create access token API", () => {
 				"password": 'password'
 			}
 		};
-		requester('/access/token', 'post', params, (error, body) => {
+		requester('/token/email', 'post', params, (error, body) => {
 			assert.ok(body);
 			assert.ok(body.token_type);
 			assert.ok(body.access_token);
