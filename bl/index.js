@@ -302,6 +302,7 @@ function init(service, localConfig, cb) {
 			return cb({ "code": 601, "msg": localConfig.errors[601] });
 		}
 		integrationLib.loadDrivers(service);
+		bl.oauth_phone.modelObj_token = SSOT.oauth_tokenModelObj;
 		return cb(null);
 
 	});

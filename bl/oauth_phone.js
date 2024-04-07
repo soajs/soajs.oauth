@@ -16,6 +16,7 @@ const uracDriver = require("soajs.urac.driver");
 
 let bl = {
 	"modelObj": null,
+	"modelObj_token": null,
 	"model": null,
 	"soajs_service": null,
 	"localConfig": null,
@@ -209,12 +210,33 @@ let bl = {
 						codeRecord.user.loginMode = loginMode;
 						codeRecord.user.id = codeRecord.user._id.toString();
 					}
-					options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
-						if (err) {
-							return cb(bl.handleError(req.soajs, 600, err));
-						}
-						return cb(null, accessData);
-					});
+
+					if (inputmaskData.unique) {
+						let data = {
+							"user": {
+								"id": codeRecord.user.id,
+								"loginMode": codeRecord.user.loginMode
+							}
+						};
+						bl.modelObj_token.delete(data, (err) => {
+							if (err) {
+								return cb(bl.handleError(req.soajs, 600, err));
+							}
+							options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
+								if (err) {
+									return cb(bl.handleError(req.soajs, 600, err));
+								}
+								return cb(null, accessData);
+							});
+						});
+					} else {
+						options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
+							if (err) {
+								return cb(bl.handleError(req.soajs, 600, err));
+							}
+							return cb(null, accessData);
+						});
+					}
 				});
 			}
 		});

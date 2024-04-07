@@ -248,6 +248,13 @@ module.exports = {
 					"validation": {
 						"type": "string"
 					}
+				},
+				"unique": {
+					"source": ['body.unique'],
+					"default": false,
+					"validation": {
+						"type": "boolean"
+					}
 				}
 			},
 
