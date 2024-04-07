@@ -210,7 +210,7 @@ let bl = {
 						codeRecord.user.loginMode = loginMode;
 						codeRecord.user.id = codeRecord.user._id.toString();
 					}
-
+					console.log(inputmaskData);
 					if (inputmaskData.unique) {
 						let data = {
 							"user": {
@@ -218,10 +218,11 @@ let bl = {
 								"loginMode": codeRecord.user.loginMode
 							}
 						};
-						bl.modelObj_token.delete(data, (err) => {
+						bl.modelObj_token.delete(data, (err, deleteResponse) => {
 							if (err) {
 								return cb(bl.handleError(req.soajs, 600, err));
 							}
+							soajs.log.debug("Number of logged in session deleted", deleteResponse);
 							options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
 								if (err) {
 									return cb(bl.handleError(req.soajs, 600, err));
