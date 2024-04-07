@@ -254,7 +254,6 @@ function run(serviceStartCb) {
 				});
 			});
 			service.post('/token/phone/code', (req, res) => {
-				console.log(req.soajs.inputmaskData);
 				bl.oauth_phone.loginValidate(req, req.soajs.inputmaskData, { "provision": provision }, (error, data) => {
 					return res.json(req.soajs.buildResponse(error, data));
 				});

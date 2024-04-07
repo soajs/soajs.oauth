@@ -166,12 +166,33 @@ let bl = {
 									record.loginMode = loginMode;
 									record.id = record._id.toString();
 								}
-								options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
-									if (err) {
-										return cb(bl.handleError(req.soajs, 600, err));
-									}
-									return cb(null, accessData);
-								});
+								if (inputmaskData.unique) {
+									let data = {
+										"user": {
+											"id": record.user.id,
+											"loginMode": record.user.loginMode
+										}
+									};
+									bl.modelObj_token.delete(data, (err, deleteResponse) => {
+										if (err) {
+											return cb(bl.handleError(req.soajs, 600, err));
+										}
+										req.soajs.log.debug("Number of logged in session deleted", deleteResponse);
+										options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
+											if (err) {
+												return cb(bl.handleError(req.soajs, 600, err));
+											}
+											return cb(null, accessData);
+										});
+									});
+								} else {
+									options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
+										if (err) {
+											return cb(bl.handleError(req.soajs, 600, err));
+										}
+										return cb(null, accessData);
+									});
+								}
 							});
 						});
 					} else {
@@ -210,7 +231,6 @@ let bl = {
 						codeRecord.user.loginMode = loginMode;
 						codeRecord.user.id = codeRecord.user._id.toString();
 					}
-					console.log(inputmaskData);
 					if (inputmaskData.unique) {
 						let data = {
 							"user": {
@@ -222,7 +242,7 @@ let bl = {
 							if (err) {
 								return cb(bl.handleError(req.soajs, 600, err));
 							}
-							soajs.log.debug("Number of logged in session deleted", deleteResponse);
+							req.soajs.log.debug("Number of logged in session deleted", deleteResponse);
 							options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
 								if (err) {
 									return cb(bl.handleError(req.soajs, 600, err));
