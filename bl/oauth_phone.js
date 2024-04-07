@@ -169,8 +169,8 @@ let bl = {
 								if (inputmaskData.unique) {
 									let data = {
 										"user": {
-											"id": record.user.id,
-											"loginMode": record.user.loginMode
+											"id": record.id,
+											"loginMode": record.loginMode
 										}
 									};
 									bl.modelObj_token.delete(data, (err, deleteResponse) => {
@@ -186,7 +186,7 @@ let bl = {
 										});
 									});
 								} else {
-									options.provision.generateSaveAccessRefreshToken(codeRecord.user, req, (err, accessData) => {
+									options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
 										if (err) {
 											return cb(bl.handleError(req.soajs, 600, err));
 										}
