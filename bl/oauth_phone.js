@@ -170,7 +170,8 @@ let bl = {
 									let data = {
 										"user": {
 											"id": record.id,
-											"loginMode": record.loginMode
+											"loginMode": record.loginMode,
+											"clientId": req.soajs.tenant.id
 										}
 									};
 									bl.modelObj_token.delete(data, (err, deleteResponse) => {
@@ -235,7 +236,8 @@ let bl = {
 						let data = {
 							"user": {
 								"id": codeRecord.user.id,
-								"loginMode": codeRecord.user.loginMode
+								"loginMode": codeRecord.user.loginMode,
+								"clientId": req.soajs.tenant.id
 							}
 						};
 						bl.modelObj_token.delete(data, (err, deleteResponse) => {
