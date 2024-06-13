@@ -42,7 +42,7 @@ const checkRefreshTokenAgent = function () {
 						res.json(req.soajs.buildResponse({ "code": 413, "msg": config.errors[413] }, null));
 						bl.oauth_token.deleteRefreshToken(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
 							if (data) {
-								service.log.debug("Refresh token deleted possible tampering");
+								service.log.debug("Refresh token deleted possible tampering [agent: " + req.get('user-agent') + "]");
 							}
 						});
 					} else {

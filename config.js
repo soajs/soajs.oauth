@@ -265,7 +265,7 @@ module.exports = {
 				},
 				"id": {
 					"source": ['params.id'],
-					"required": false,
+					"required": true,
 					"validation": {
 						"type": "string"
 					}
