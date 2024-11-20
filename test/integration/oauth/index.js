@@ -17,6 +17,7 @@ describe("starting oauth integration tests", () => {
 		require('./delete/deleteRefreshToken.test');
 		require('./delete/deleteAccessToken.test');
 		require('./delete/deleteTenantToken.test');
+		require("./post/autologin.test.js");
 		
 		done();
 	});

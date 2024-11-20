@@ -264,12 +264,36 @@ let bl = {
 					record.id = record._id.toString();
 					record.agent = req.get('user-agent');
 				}
-				options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
-					if (err) {
-						return cb(bl.oauth_urac.handleError(req.soajs, 600, err));
-					}
-					return cb(null, accessData);
-				});
+
+				if (inputmaskData.unique) {
+					let data = {
+						"user": {
+							"id": record.id,
+							"loginMode": record.loginMode,
+							"clientId": req.soajs.tenant.id
+						}
+					};
+					bl.oauth_phone.modelObj_token.delete(data, (err, deleteResponse) => {
+						if (err) {
+							return cb(bl.handleError(req.soajs, 600, err));
+						}
+
+						req.soajs.log.debug("Number of logged in session deleted", deleteResponse);
+						options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
+							if (err) {
+								return cb(bl.oauth_urac.handleError(req.soajs, 600, err));
+							}
+							return cb(null, accessData);
+						});
+					});
+				} else {
+					options.provision.generateSaveAccessRefreshToken(record, req, (err, accessData) => {
+						if (err) {
+							return cb(bl.oauth_urac.handleError(req.soajs, 600, err));
+						}
+						return cb(null, accessData);
+					});
+				}
 			});
 		});
 	}

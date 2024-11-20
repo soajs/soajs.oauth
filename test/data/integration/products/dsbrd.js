@@ -36,29 +36,36 @@ let prod = {
 								}
 							}
 						}],
-						"post": [
-							{
-								"group": "Tokenization",
-								"apis": {
-									"/pin": {
-										"access": true
-									}
+						"post": [{
+							"group": "Internal",
+							"apis": {
+								"/token/auto/:id": {
+									"access": false
 								}
-							},
-							{
-								"group": "Guest",
-								"apis": {
-									"/token/email": {
-										"access": false
-									},
-									"/refresh/token": {
-										"access": false
-									},
-									"/token": {
-										"access": false
-									}
+							}
+						},
+						{
+							"group": "Tokenization",
+							"apis": {
+								"/pin": {
+									"access": true
 								}
-							}],
+							}
+						},
+						{
+							"group": "Guest",
+							"apis": {
+								"/token/email": {
+									"access": false
+								},
+								"/refresh/token": {
+									"access": false
+								},
+								"/token": {
+									"access": false
+								}
+							}
+						}],
 						"get": [{
 							"group": "Guest",
 							"apis": {
@@ -83,7 +90,7 @@ let prod = {
 					"oauth": [{
 						"version": "1",
 						"get": ["Guest"],
-						"post": ["Guest", "Tokenization"],
+						"post": ["Guest", "Tokenization", "Internal"],
 						"delete": ["Tokenization"]
 					}]
 				}
@@ -100,7 +107,7 @@ let prod = {
 					"oauth": [{
 						"version": "1",
 						"get": ["Guest"],
-						"post": ["Guest", "Tokenization"],
+						"post": ["Guest", "Tokenization", "Internal"],
 						"delete": ["Tokenization", "User Tokenization", "Cient Tokenization"]
 					}]
 				}
