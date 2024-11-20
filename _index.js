@@ -258,6 +258,19 @@ function run(serviceStartCb) {
 					return res.json(req.soajs.buildResponse(error, data));
 				});
 			});
+
+			service.post('/token/username', (req, res) => {
+				req.soajs.inputmaskData.agent = req.get('user-agent');
+				bl.oauth_username.login(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+			service.post('/token/username/code', (req, res) => {
+				bl.oauth_username.loginValidate(req, req.soajs.inputmaskData, { "provision": provision }, (error, data) => {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+
 			service.post('/token/auto/:id', (req, res) => {
 				bl.autoLogin(req, req.soajs.inputmaskData, { "provision": provision }, (error, data) => {
 					return res.json(req.soajs.buildResponse(error, data));

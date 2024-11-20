@@ -23,7 +23,7 @@ const uracDriver = require("soajs.urac.driver");
 let SSOT = {};
 let model = process.env.SOAJS_SERVICE_MODEL || "mongo";
 
-const BLs = ["oauth_token", "oauth_urac", "oauth_phone"];
+const BLs = ["oauth_token", "oauth_urac", "oauth_phone", "oauth_username"];
 
 const driver_with_session = ["twitter", "linkedin"];
 
@@ -32,6 +32,7 @@ let bl = {
 	oauth_urac: null,
 	oauth_token: null,
 	oauth_phone: null,
+	oauth_username: null,
 
 	"passportLogin": (req, res, options, cb, next) => {
 		//Twitter require session, if session is off mimic it here
@@ -303,6 +304,7 @@ function init(service, localConfig, cb) {
 		}
 		integrationLib.loadDrivers(service);
 		bl.oauth_phone.modelObj_token = SSOT.oauth_tokenModelObj;
+		bl.oauth_username.modelObj_token = SSOT.oauth_tokenModelObj;
 		return cb(null);
 
 	});

@@ -258,6 +258,58 @@ module.exports = {
 				}
 			},
 
+			"/token/username": {
+				"_apiInfo": {
+					"l": "Create a verification code for that username or email",
+					"group": "Guest"
+				},
+				"username": {
+					"source": ['body.username'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			"/token/username/code": {
+				"_apiInfo": {
+					"l": "Create an access token for that username or email",
+					"group": "Guest"
+				},
+				"id": {
+					"source": ['body.id'],
+					"required": true,
+					"validation": {
+						"type": "string",
+						"pattern": `^[a-f\\d]{24}$`,
+						"errorMessage": {
+							"pattern": "User Id provided is not valid."
+						}
+					}
+				},
+				"code": {
+					"source": ['body.code'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"username": {
+					"source": ['body.username'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"unique": {
+					"source": ['body.unique'],
+					"default": false,
+					"validation": {
+						"type": "boolean"
+					}
+				}
+			},
+
 			"/token/auto/:id": {
 				"_apiInfo": {
 					"l": "Create an access token",
@@ -329,7 +381,6 @@ module.exports = {
 				},
 				"grant_type": {
 					"source": ['body.grant_type'],
-					"required": false,
 					"default": "password",
 					"validation": {
 						"type": "string",
