@@ -59,6 +59,12 @@ jobs:
     - docker push soajsorg/oauth
     - docker push soajsorg/oauth:${PACKAGE_VERSION}
     - docker push soajsorg/oauth:${MAJOR_VERSION}.x
+    before_deploy:
+      - yes | gem update --system --force
+      - gem install bundler
+      - gem install faraday-net_http -v '3.3.0'
+      - gem install uri
+      - gem install logger
     deploy:
       on:
         all_branches: true
