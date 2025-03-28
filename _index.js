@@ -34,7 +34,7 @@ const deleteRefreshToken = function () {
 const checkRefreshTokenAgent = function () {
 	return function (req, res, next) {
 		if (req.body.grant_type === "refresh_token") {
-			service.oauth.model.getRefreshToken(req.soajs.inputmaskData.refresh_token, (error, record) => {
+			service.oauth.model.getRefreshToken(req.soajs.inputmaskData.refresh_token, (error) => {//, record) => {
 				if (error) {
 					res.json(req.soajs.buildResponse({ "code": 413, "msg": config.errors[413] }, null));
 				} else {
