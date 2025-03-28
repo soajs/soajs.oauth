@@ -29,8 +29,8 @@
     "grunt-mocha-test": "0.13.3",
     "mocha": "11.1.0",
     "nock": "14.0.1",
-    "soajs.controller": "4.2.31",
-    "sinon": "19.0.2"
+    "sinon": "19.0.2",
+    "soajs.controller": "4.2.32"
   },
   "dependencies": {
     "activedirectory": "0.7.2",
@@ -48,6 +48,7 @@
     "request": "2.88.2",
     "soajs": "4.1.13",
     "soajs.urac.driver": "3.2.10",
+    "talisman": "^1.1.4",
     "twilio": "5.4.5"
   }
 }

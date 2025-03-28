@@ -38,16 +38,20 @@ const checkRefreshTokenAgent = function () {
 				if (error) {
 					res.json(req.soajs.buildResponse({ "code": 413, "msg": config.errors[413] }, null));
 				} else {
-					if (record.user.agent && record.user.agent !== req.get('user-agent')) {
-						res.json(req.soajs.buildResponse({ "code": 413, "msg": config.errors[413] }, null));
-						bl.oauth_token.deleteRefreshToken(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
-							if (data) {
-								service.log.debug("Refresh token deleted possible tampering [agent: " + req.get('user-agent') + "]");
-							}
-						});
-					} else {
-						next();
-					}
+					next();
+					//NOTE: until we fix mobile user-agent we cannot check for agent.
+					//		mobile is sending the build number (ie: "democav/142 CFNetwork/3826.400.120 Darwin/24.3.0")
+					//
+					// if (record.user.agent && record.user.agent !== req.get('user-agent')) {
+					// 	res.json(req.soajs.buildResponse({ "code": 413, "msg": config.errors[413] }, null));
+					// 	bl.oauth_token.deleteRefreshToken(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
+					// 		if (data) {
+					// 			service.log.debug("Refresh token deleted possible tampering [agent: " + req.get('user-agent') + "]");
+					// 		}
+					// 	});
+					// } else {
+					// 	next();
+					// }
 				}
 			});
 		} else {
