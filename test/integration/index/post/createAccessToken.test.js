@@ -24,6 +24,9 @@ describe("Testing create access token API", () => {
 				"username": 'owner',
 				"password": 'password',
 				"grant_type": 'password'
+			},
+			"headers": {
+				"device-id": "1111111111"
 			}
 		};
 		requester('/token', 'post', params, (error, body) => {

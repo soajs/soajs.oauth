@@ -81,6 +81,7 @@ let bl = {
 				"type": inputmaskData.type,
 				"phone": inputmaskData.phone,
 				"agent": inputmaskData.agent,
+				"deviceId": inputmaskData.deviceId,
 				"geo": inputmaskData.geo || null,
 				"tokenExpiryTTL": 2 * 24 * 3600000,
 				"service": "loginPhone"

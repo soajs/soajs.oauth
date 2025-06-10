@@ -1,7 +1,7 @@
 {
   "name": "soajs.oauth",
   "description": "soajs oauth service",
-  "version": "3.1.17",
+  "version": "3.1.18",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"
@@ -30,7 +30,7 @@
     "mocha": "11.5.0",
     "nock": "14.0.5",
     "sinon": "20.0.0",
-    "soajs.controller": "4.2.36"
+    "soajs.controller": "4.2.37"
   },
   "dependencies": {
     "activedirectory": "0.7.2",
@@ -46,7 +46,7 @@
     "passport-linkedin-oauth2": "2.0.0",
     "passport-twitter": "1.0.4",
     "request": "2.88.2",
-    "soajs": "4.1.14",
+    "soajs": "4.1.15",
     "soajs.urac.driver": "3.2.12",
     "talisman": "1.1.4",
     "twilio": "5.7.0"
