@@ -152,6 +152,7 @@ let bl = {
 						record.loginMode = loginMode;
 						record.id = record._id.toString();
 						record.agent = options.agent || null;
+						record.deviceId = options.deviceId || null;
 					}
 					return cb(null, record);
 				});
@@ -211,6 +212,7 @@ let bl = {
 					}
 					if (record) {
 						record.agent = options.agent || null;
+						record.deviceId = options.deviceId || null;
 					}
 					return pinCheck(record, soajs, cb);
 				});
@@ -230,6 +232,7 @@ let bl = {
 						record.loginMode = loginMode;
 						record.id = record._id.toString();
 						record.agent = options.agent || null;
+						record.deviceId = options.deviceId || null;
 					}
 					return pinCheck(record, soajs, cb);
 				});
@@ -263,6 +266,7 @@ let bl = {
 					record.loginMode = loginMode;
 					record.id = record._id.toString();
 					record.agent = req.get('user-agent');
+					record.deviceId = req.get('device-id');
 				}
 
 				if (inputmaskData.unique) {
@@ -394,6 +398,7 @@ function thirdpartySaveAndGrantAccess(req, input, options, cb) {
 				user.loginMode = loginMode;
 				user.id = user._id.toString();
 				user.agent = req.get('user-agent');
+				user.deviceId = req.get('device-id');
 			}
 			pinCheck(user, req.soajs, (error, user) => {
 				if (error) {

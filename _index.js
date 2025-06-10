@@ -82,7 +82,7 @@ const tokenFn = (req, res, next) => {
 	req.headers['content-type'] = 'application/x-www-form-urlencoded';
 
 	service.oauth.model.getUser = (username, password, callback) => {
-		bl.getUserRecord(req.soajs, req.soajs.inputmaskData, { "provision": provision, agent: req.get('user-agent') }, (error, record) => {
+		bl.getUserRecord(req.soajs, req.soajs.inputmaskData, { "provision": provision, agent: req.get('user-agent'), deviceId: req.get('device-id') }, (error, record) => {
 			return callback(error, record);
 		});
 	};
@@ -253,6 +253,7 @@ function run(serviceStartCb) {
 
 			service.post('/token/phone', (req, res) => {
 				req.soajs.inputmaskData.agent = req.get('user-agent');
+				req.soajs.inputmaskData.deviceId = req.get('device-id');
 				bl.oauth_phone.login(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
 					return res.json(req.soajs.buildResponse(error, data));
 				});
@@ -307,7 +308,7 @@ function run(serviceStartCb) {
 					delete req.query.access_token;
 				}
 				service.oauth.model.getUser = (username, password, callback) => {
-					bl.getUserRecordByPin(req.soajs, req.soajs.inputmaskData, { "provision": provision, agent: req.get('user-agent') }, (error, record) => {
+					bl.getUserRecordByPin(req.soajs, req.soajs.inputmaskData, { "provision": provision, agent: req.get('user-agent'), deviceId: req.get('device-id') }, (error, record) => {
 						return callback(error, record);
 					});
 				};
