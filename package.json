@@ -27,10 +27,10 @@
     "grunt-istanbul": "0.8.0",
     "grunt-jsdoc": "2.4.1",
     "grunt-mocha-test": "0.13.3",
-    "mocha": "11.5.0",
-    "nock": "14.0.5",
-    "sinon": "20.0.0",
-    "soajs.controller": "4.2.37"
+    "mocha": "11.7.2",
+    "nock": "14.0.10",
+    "sinon": "21.0.0",
+    "soajs.controller": "4.2.40"
   },
   "dependencies": {
     "activedirectory": "0.7.2",
@@ -46,9 +46,9 @@
     "passport-linkedin-oauth2": "2.0.0",
     "passport-twitter": "1.0.4",
     "request": "2.88.2",
-    "soajs": "4.1.15",
-    "soajs.urac.driver": "3.2.12",
+    "soajs": "4.1.16",
+    "soajs.urac.driver": "3.2.13",
     "talisman": "1.1.4",
-    "twilio": "5.7.0"
+    "twilio": "5.10.1"
   }
 }
