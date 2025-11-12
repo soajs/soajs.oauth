@@ -46,7 +46,7 @@
     "passport-linkedin-oauth2": "2.0.0",
     "passport-twitter": "1.0.4",
     "request": "2.88.2",
-    "soajs": "4.1.18",
+    "soajs": "4.1.19",
     "soajs.urac.driver": "3.2.14",
     "talisman": "1.1.4",
     "twilio": "5.10.5"
