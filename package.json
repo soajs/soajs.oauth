@@ -28,14 +28,14 @@
     "grunt-jsdoc": "2.4.1",
     "grunt-mocha-test": "0.13.3",
     "mocha": "11.7.5",
-    "nock": "14.0.10",
-    "sinon": "21.0.0",
-    "soajs.controller": "4.2.41"
+    "nock": "14.0.11",
+    "sinon": "21.0.1",
+    "soajs.controller": "4.3.0"
   },
   "dependencies": {
     "activedirectory": "0.7.2",
     "handlebars": "4.7.8",
-    "jsonwebtoken": "9.0.2",
+    "jsonwebtoken": "9.0.3",
     "oauth2-server": "2.4.1",
     "passport": "0.7.0",
     "passport-azure-ad": "4.3.5",
@@ -46,9 +46,9 @@
     "passport-linkedin-oauth2": "2.0.0",
     "passport-twitter": "1.0.4",
     "request": "2.88.2",
-    "soajs": "4.1.19",
-    "soajs.urac.driver": "3.2.14",
+    "soajs": "4.1.21",
+    "soajs.urac.driver": "3.2.15",
     "talisman": "1.1.4",
-    "twilio": "5.10.5"
+    "twilio": "5.12.2"
   }
 }
