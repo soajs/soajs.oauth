@@ -229,4 +229,55 @@ describe("Unit test for: BL - oauth", () => {
 			});
 		});
 	});
+
+	it("deleteAllUserDeviceTokens", (done) => {
+		function MODEL() {
+			console.log("oauth model");
+		}
+
+		MODEL.prototype.closeConnection = () => {
+		};
+		MODEL.prototype.delete = (data, cb) => {
+			if (data && data.userId && data.userId === 'error') {
+				let error = new Error("OAuth: deleteAllUserDeviceTokens - mongo error.");
+				return cb(error, null);
+			} else {
+				return cb(null, 1);
+			}
+		};
+		BL.model = MODEL;
+
+		let options = {
+			"provision": {
+				"getTenantOauth": (input, cb) => {
+					return cb(null, {
+						"secret": "this is a secret",
+						"pin": {
+							"DSBRD": {
+								"enabled": false
+							}
+						},
+						"disabled": 0,
+						"type": 2,
+						"loginMode": "urac"
+					});
+				}
+			}
+		};
+
+		BL.deleteAllUserDeviceTokens(soajs, null, options, (error) => {
+			assert.ok(error);
+			assert.deepEqual(error, {code: 400, msg: 'Business logic required data are missing.'});
+
+			let data = {
+				userId: 'userId',
+				deviceId: 'device-id'
+			};
+
+			BL.deleteAllUserDeviceTokens(soajs, data, options, (error, record) => {
+				assert.deepEqual(record, 0);
+				done();
+			});
+		});
+	});
 });
