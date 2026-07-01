@@ -428,6 +428,26 @@ module.exports = {
 					}
 				}
 			},
+			"/tokens/user/:userId/device/:deviceId": {
+				"_apiInfo": {
+					"l": "Delete all tokens for a given user on a specific device",
+					"group": "User Tokenization"
+				},
+				"userId": {
+					"source": ['params.userId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"deviceId": {
+					"source": ['params.deviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
 			"/tokens/tenant/:clientId": {
 				"_apiInfo": {
 					"l": "Delete all tokens for this client (tenant)",

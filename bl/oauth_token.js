@@ -108,7 +108,37 @@ let bl = {
 			});
 		});
 	},
-	
+
+	"deleteAllUserDeviceTokens": (soajs, inputmaskData, options, cb) => {
+		if (!inputmaskData) {
+			return cb(bl.handleError(soajs, 400, null));
+		}
+		options.provision.getTenantOauth(soajs.tenant.id, (err, tenantOauth) => {
+			soajs.tenantOauth = tenantOauth;
+
+			let loginMode = bl.localConfig.loginMode;
+			if (soajs && soajs.tenantOauth && soajs.tenantOauth.loginMode) {
+				loginMode = soajs.tenantOauth.loginMode;
+			}
+
+			let data = {
+				"user": {
+					"loginMode": loginMode,
+					"id": inputmaskData.userId,
+					"deviceId": inputmaskData.deviceId
+				}
+			};
+			let modelObj = bl.mp.getModel(soajs, options);
+			modelObj.delete(data, (err, count) => {
+				bl.mp.closeModel(soajs, modelObj);
+				if (err) {
+					return cb(bl.handleError(soajs, 602, err));
+				}
+				return cb(null, count);
+			});
+		});
+	},
+
 	"deleteAllClientTokens": (soajs, inputmaskData, options, cb) => {
 		if (!inputmaskData) {
 			return cb(bl.handleError(soajs, 400, null));
