@@ -166,6 +166,11 @@ let bl = {
 								if (record) {
 									record.loginMode = loginMode;
 									record.id = record._id.toString();
+									//NOTE: there is no code record on the demo account flow, the deviceId
+									//		comes from the header. it has to be on the user for the refresh
+									//		token deviceId check to work.
+									record.agent = req.get('user-agent');
+									record.deviceId = req.get('device-id') || null;
 								}
 								if (inputmaskData.unique) {
 									let data = {
@@ -232,6 +237,9 @@ let bl = {
 					if (codeRecord.user) {
 						codeRecord.user.loginMode = loginMode;
 						codeRecord.user.id = codeRecord.user._id.toString();
+						//NOTE: deviceId is stored on the code record, it has to be on the user
+						//		for the refresh token deviceId check to work.
+						codeRecord.user.deviceId = codeRecord.deviceId || null;
 					}
 					if (inputmaskData.unique) {
 						let data = {
