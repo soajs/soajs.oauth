@@ -201,7 +201,8 @@ describe("Testing create access token API", () => {
 				}]);
 
 				//NOTE: the refresh token was deleted, the right deviceId cannot use it anymore.
-				//		the delete happens after the response is sent, hence the wait.
+				//		the token is gone so oauth rejects it as invalid before we get to check
+				//		the deviceId. the delete happens after the response is sent, hence the wait.
 				setTimeout(() => {
 					let params = {
 						"noaccesstoken": true,
@@ -217,8 +218,8 @@ describe("Testing create access token API", () => {
 						assert.ok(body);
 						assert.ok(body.errors);
 						assert.deepEqual(body.errors.details, [{
-							code: 413,
-							message: 'Unable to log in. Credential error or mismatch'
+							code: 400,
+							message: 'Invalid refresh token'
 						}]);
 						done();
 					});
