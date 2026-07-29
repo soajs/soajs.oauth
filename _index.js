@@ -31,27 +31,28 @@ const deleteRefreshToken = function () {
 		}
 	};
 };
-const checkRefreshTokenAgent = function () {
+const checkRefreshTokenDevice = function () {
 	return function (req, res, next) {
 		if (req.body.grant_type === "refresh_token") {
-			service.oauth.model.getRefreshToken(req.soajs.inputmaskData.refresh_token, (error) => {//, record) => {
+			service.oauth.model.getRefreshToken(req.soajs.inputmaskData.refresh_token, (error, record) => {
 				if (error) {
 					res.json(req.soajs.buildResponse({ "code": 413, "msg": config.errors[413] }, null));
 				} else {
-					next();
-					//NOTE: until we fix mobile user-agent we cannot check for agent.
-					//		mobile is sending the build number (ie: "democav/142 CFNetwork/3826.400.120 Darwin/24.3.0")
-					//
-					// if (record.user.agent && record.user.agent !== req.get('user-agent')) {
-					// 	res.json(req.soajs.buildResponse({ "code": 413, "msg": config.errors[413] }, null));
-					// 	bl.oauth_token.deleteRefreshToken(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
-					// 		if (data) {
-					// 			service.log.debug("Refresh token deleted possible tampering [agent: " + req.get('user-agent') + "]");
-					// 		}
-					// 	});
-					// } else {
-					// 	next();
-					// }
+					//NOTE: we cannot check for agent, mobile is sending the build number
+					//		(ie: "democav/142 CFNetwork/3826.400.120 Darwin/24.3.0") which changes on every build.
+					//		we check deviceId instead. tokens with no deviceId (created before deviceId was
+					//		introduced) are not checked, they get checked once the client logs in again.
+					let deviceId = req.get('device-id');
+					if (record && record.user && record.user.deviceId && record.user.deviceId !== deviceId) {
+						res.json(req.soajs.buildResponse({ "code": 413, "msg": config.errors[413] }, null));
+						bl.oauth_token.deleteRefreshToken(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
+							if (data) {
+								service.log.debug("Refresh token deleted possible tampering [deviceId: " + deviceId + "]");
+							}
+						});
+					} else {
+						next();
+					}
 				}
 			});
 		} else {
@@ -278,7 +279,7 @@ function run(serviceStartCb) {
 				req.body = req.body || {};
 				req.body.grant_type = req.soajs.inputmaskData.grant_type;
 				tokenFn(req, res, next);
-			}, checkRefreshTokenAgent(), service.oauth.grant(), deleteRefreshToken());
+			}, checkRefreshTokenDevice(), service.oauth.grant(), deleteRefreshToken());
 
 			service.post("/token/email", (req, res, next) => {
 				req.body = req.body || {};
@@ -290,7 +291,7 @@ function run(serviceStartCb) {
 				req.body = req.body || {};
 				req.body.grant_type = "refresh_token";
 				tokenFn(req, res, next);
-			}, checkRefreshTokenAgent(), service.oauth.grant(), deleteRefreshToken());
+			}, checkRefreshTokenDevice(), service.oauth.grant(), deleteRefreshToken());
 
 			service.post("/pin", (req, res, next) => {
 				//rewrite headers content-type so that oauth.grant works
