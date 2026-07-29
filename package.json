@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "activedirectory": "0.7.2",
-    "handlebars": "4.7.8",
+    "handlebars": "4.7.9",
     "jsonwebtoken": "9.0.3",
     "oauth2-server": "2.4.1",
     "passport": "0.7.0",
