@@ -300,6 +300,76 @@ let bl = {
 				}
 			});
 		});
+	},
+
+	/**
+	 * Mints a restricted access token for a user, with no refresh token.
+	 *
+	 * NOTE: same shape as autoLogin, our backend sends the user id as :id. the differences are
+	 *		all deliberate, see oauth/restricted-token-plan.md:
+	 *		- deviceId and agent come from the body. on this call the headers belong to the
+	 *		  calling microservice, which has no relation to the browser the token is for
+	 *		- loginMode is forced to oauth so the gateway takes the user straight off the token,
+	 *		  the web app is a different tenant and a urac lookup there would not find the user
+	 *		- no refresh token, the token is short lived and the user re-authorizes instead
+	 *		- no unique branch, its delete keys on user.id and clientId only and would take the
+	 *		  user's ordinary mobile session with it
+	 *
+	 * @param req {Object}
+	 * @param inputmaskData {Object}
+	 * @param options {Object}
+	 * @param cb {Function}
+	 */
+	"restrictedAutoLogin": (req, inputmaskData, options, cb) => {
+		if (!inputmaskData) {
+			return cb(bl.oauth_urac.handleError(req.soajs, 400, null));
+		}
+
+		//NOTE: a no-op when our backend calls with its own key, there is no urac user on the
+		//		calling token. it only bites if this ever gets reached with a user's own token,
+		//		where nothing else would stop that user minting for somebody else.
+		let callerId = null;
+		if (req.oauth && req.oauth.bearerToken && req.oauth.bearerToken.user) {
+			callerId = req.oauth.bearerToken.user.id;
+		}
+		if (callerId && callerId !== inputmaskData.id) {
+			return cb(bl.oauth_urac.handleError(req.soajs, 415, null));
+		}
+
+		let data = {
+			'id': inputmaskData.id
+		};
+		uracDriver.getRecord(req.soajs, data, function (error, record) {
+			if (error || !record) {
+				error = new Error(error ? error.msg : "user not found");
+				return cb(bl.oauth_urac.handleError(req.soajs, 413, error));
+			}
+
+			record.loginMode = "oauth";
+			record.id = record._id.toString();
+			record.agent = inputmaskData.agent || null;
+			record.deviceId = inputmaskData.deviceId || null;
+			record.restrictedTo = inputmaskData.restrictedTo;
+
+			//NOTE: with loginMode oauth the gateway uses this record verbatim as the urac record,
+			//		so whatever is missing here is missing for the life of the token. tenant in
+			//		particular is read unguarded downstream and a record without it 500s the first
+			//		request, fail the mint instead of handing back a token that cannot be used.
+			let missing = ["id", "_id", "username", "tenant", "loginMode"].filter((field) => {
+				return !record[field];
+			});
+			if (missing.length > 0 || !record.tenant.id) {
+				req.soajs.log.error("Unable to mint a restricted token, the user record is missing: " + (missing.join(", ") || "tenant.id"));
+				return cb(bl.oauth_urac.handleError(req.soajs, 416, null));
+			}
+
+			options.provision.generateSaveAccessToken(record, req, inputmaskData.ttl, (err, accessData) => {
+				if (err) {
+					return cb(bl.oauth_urac.handleError(req.soajs, 600, err));
+				}
+				return cb(null, accessData);
+			});
+		});
 	}
 };
 
