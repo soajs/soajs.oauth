@@ -77,6 +77,7 @@ module.exports = {
 		414: "Local login is not allowed",
 		415: "You are not allowed to mint a token for another user",
 		416: "The minted user record is missing a required field",
+		417: "A reserved field was supplied in claims",
 
 		420: "Missing service key configuration for third party integration",
 		421: "Service key configuration for third party integration is not complete",
@@ -291,6 +292,79 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string"
+					}
+				},
+				"restrictedTo": {
+					"source": ['body.restrictedTo'],
+					"required": true,
+					"validation": {
+						"type": "object",
+						"additionalProperties": false,
+						"required": ["tenant"],
+						"properties": {
+							"tenant": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+							"product": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+							"package": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+							"key": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+							"env": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+							"agent": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] }
+						}
+					}
+				},
+				"deviceId": {
+					"source": ['body.deviceId'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"agent": {
+					"source": ['body.agent'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"ttl": {
+					"source": ['body.ttl'],
+					"required": false,
+					"validation": {
+						"type": "integer",
+						"minimum": 60
+					}
+				}
+			},
+
+			"/restricted/token/guest": {
+				"_apiInfo": {
+					"l": "Create a restricted access token for a guest, no refresh token",
+					"group": "Internal"
+				},
+				"username": {
+					"source": ['body.username'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"tenant": {
+					"source": ['body.tenant'],
+					"required": true,
+					"validation": {
+						"type": "object",
+						"required": ["id"],
+						"properties": {
+							"id": { "type": "string" },
+							"code": { "type": "string" }
+						}
+					}
+				},
+				"claims": {
+					"source": ['body.claims'],
+					"required": false,
+					"validation": {
+						"type": "object",
+						"additionalProperties": true
 					}
 				},
 				"restrictedTo": {

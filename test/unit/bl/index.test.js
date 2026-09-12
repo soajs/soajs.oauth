@@ -15,6 +15,7 @@ const coreModules = require("soajs.core.modules");
 const core = coreModules.core;
 const uracDriver = require("soajs.urac.driver");
 const sinon = require('sinon');
+const async = require('async');
 
 let user = {
 	_id: "5c8d0c505653de3985aa0ffd",
@@ -394,6 +395,228 @@ describe("Unit test for: BL - oauth", () => {
 		
 	});
 	
+	it("restrictedGuestLogin - mints a token for a guest", (done) => {
+		let stored = null;
+		let options = {
+			"provision": {
+				"generateSaveAccessToken": (record, req, ttl, cb) => {
+					stored = record;
+					return cb(null, {
+						"token_type": "bearer",
+						"access_token": "a token",
+						"expires_in": ttl || 7200
+					});
+				}
+			}
+		};
+		let inputmaskData = {
+			"username": "guest@localhost.com",
+			"tenant": {
+				"id": "5c0e74ba9acc3c5a84a51259",
+				"code": "DBTN"
+			},
+			"claims": {
+				"displayName": "A Guest",
+				"meetingId": "meeting-1"
+			},
+			"deviceId": "web-device-1",
+			"agent": "a browser user agent",
+			"ttl": 900,
+			"restrictedTo": {
+				"tenant": "5c0e74ba9acc3c5a84a51260",
+				"product": "PRODWEB"
+			}
+		};
+
+		BL.restrictedGuestLogin({ "soajs": soajs }, inputmaskData, options, (err, data) => {
+			assert.ifError(err);
+			assert.ok(data);
+			assert.deepEqual(data.access_token, "a token");
+			assert.deepEqual(data.expires_in, 900);
+			assert.ok(!data.refresh_token);
+
+			assert.ok(stored);
+			assert.deepEqual(stored.username, "guest@localhost.com");
+			assert.deepEqual(stored.tenant.id, "5c0e74ba9acc3c5a84a51259");
+			assert.deepEqual(stored.loginMode, "oauth");
+			assert.deepEqual(stored.guest, true);
+			assert.deepEqual(stored.displayName, "A Guest");
+			assert.deepEqual(stored.meetingId, "meeting-1");
+			assert.deepEqual(stored.deviceId, "web-device-1");
+			assert.deepEqual(stored.agent, "a browser user agent");
+			assert.deepEqual(stored.id, stored._id.toString());
+			done();
+		});
+	});
+
+	it("restrictedGuestLogin - the restriction round trips onto the record", (done) => {
+		let stored = null;
+		let options = {
+			"provision": {
+				"generateSaveAccessToken": (record, req, ttl, cb) => {
+					stored = record;
+					return cb(null, { "access_token": "a token" });
+				}
+			}
+		};
+		let restrictedTo = {
+			"tenant": ["5c0e74ba9acc3c5a84a51260", "5c0e74ba9acc3c5a84a51261"],
+			"product": "PRODWEB",
+			"env": "dev"
+		};
+		let inputmaskData = {
+			"username": "guest@localhost.com",
+			"tenant": { "id": "5c0e74ba9acc3c5a84a51259" },
+			"restrictedTo": restrictedTo
+		};
+
+		BL.restrictedGuestLogin({ "soajs": soajs }, inputmaskData, options, (err) => {
+			assert.ifError(err);
+			assert.deepEqual(stored.restrictedTo, restrictedTo);
+			done();
+		});
+	});
+
+	it("restrictedGuestLogin - the _id is generated and not caller controllable", (done) => {
+		let ids = [];
+		let options = {
+			"provision": {
+				"generateSaveAccessToken": (record, req, ttl, cb) => {
+					ids.push(record._id.toString());
+					return cb(null, { "access_token": "a token" });
+				}
+			}
+		};
+		let inputmaskData = {
+			"username": "guest@localhost.com",
+			"tenant": { "id": "5c0e74ba9acc3c5a84a51259" },
+			"restrictedTo": { "tenant": "5c0e74ba9acc3c5a84a51260" }
+		};
+
+		BL.restrictedGuestLogin({ "soajs": soajs }, inputmaskData, options, (err) => {
+			assert.ifError(err);
+			BL.restrictedGuestLogin({ "soajs": soajs }, inputmaskData, options, (err) => {
+				assert.ifError(err);
+				assert.deepEqual(ids.length, 2);
+				assert.ok(ids[0] !== ids[1]);
+				assert.ok(/^[0-9a-f]{24}$/.test(ids[0]));
+				done();
+			});
+		});
+	});
+
+	it("Fails - restrictedGuestLogin - a reserved field in claims", (done) => {
+		let minted = false;
+		let options = {
+			"provision": {
+				"generateSaveAccessToken": (record, req, ttl, cb) => {
+					minted = true;
+					return cb(null, { "access_token": "a token" });
+				}
+			}
+		};
+		let reserved = ["_id", "id", "username", "tenant", "loginMode", "guest", "restrictedTo", "deviceId", "agent"];
+
+		async.eachSeries(reserved, (field, next) => {
+			let claims = {};
+			claims[field] = "whatever the caller wants";
+			let inputmaskData = {
+				"username": "guest@localhost.com",
+				"tenant": { "id": "5c0e74ba9acc3c5a84a51259" },
+				"claims": claims,
+				"restrictedTo": { "tenant": "5c0e74ba9acc3c5a84a51260" }
+			};
+
+			BL.restrictedGuestLogin({ "soajs": soajs }, inputmaskData, options, (err) => {
+				assert.ok(err);
+				assert.deepEqual(err.code, 417, "expected 417 for claims." + field);
+				return next();
+			});
+		}, () => {
+			assert.deepEqual(minted, false);
+			done();
+		});
+	});
+
+	it("Fails - restrictedGuestLogin - claims cannot override guest", (done) => {
+		let stored = null;
+		let options = {
+			"provision": {
+				"generateSaveAccessToken": (record, req, ttl, cb) => {
+					stored = record;
+					return cb(null, { "access_token": "a token" });
+				}
+			}
+		};
+		let inputmaskData = {
+			"username": "guest@localhost.com",
+			"tenant": { "id": "5c0e74ba9acc3c5a84a51259" },
+			"claims": { "guest": false, "loginMode": "urac" },
+			"restrictedTo": { "tenant": "5c0e74ba9acc3c5a84a51260" }
+		};
+
+		BL.restrictedGuestLogin({ "soajs": soajs }, inputmaskData, options, (err) => {
+			assert.ok(err);
+			assert.deepEqual(err.code, 417);
+			assert.deepEqual(stored, null);
+
+			//NOTE: the mint sets guest itself, on a record built from claims it did accept.
+			//		nothing a caller sends can turn it off, either by being rejected above or by
+			//		being merged before the fields the mint sets.
+			inputmaskData.claims = { "displayName": "A Guest" };
+			BL.restrictedGuestLogin({ "soajs": soajs }, inputmaskData, options, (err) => {
+				assert.ifError(err);
+				assert.deepEqual(stored.guest, true);
+				assert.deepEqual(stored.loginMode, "oauth");
+				assert.deepEqual(stored.displayName, "A Guest");
+				done();
+			});
+		});
+	});
+
+	it("Fails - restrictedGuestLogin - no inputmaskData", (done) => {
+		BL.restrictedGuestLogin({ "soajs": soajs }, null, {}, (err) => {
+			assert.ok(err);
+			assert.deepEqual(err.code, 400);
+			done();
+		});
+	});
+
+	it("Fails - restrictedGuestLogin - a tenant with no id", (done) => {
+		let minted = false;
+		let options = {
+			"provision": {
+				"generateSaveAccessToken": (record, req, ttl, cb) => {
+					minted = true;
+					return cb(null, { "access_token": "a token" });
+				}
+			}
+		};
+		let inputmaskData = {
+			"username": "guest@localhost.com",
+			"tenant": { "code": "DBTN" },
+			"restrictedTo": { "tenant": "5c0e74ba9acc3c5a84a51260" }
+		};
+
+		BL.restrictedGuestLogin({ "soajs": soajs }, inputmaskData, options, (err) => {
+			assert.ok(err);
+			assert.deepEqual(err.code, 416);
+			assert.deepEqual(minted, false);
+
+			//NOTE: username is asserted the same way, a record without it falls to the generic
+			//		branch of getProfile and the service receives the whole record under profile.
+			delete inputmaskData.username;
+			inputmaskData.tenant = { "id": "5c0e74ba9acc3c5a84a51259" };
+
+			BL.restrictedGuestLogin({ "soajs": soajs }, inputmaskData, options, (err) => {
+				assert.ok(err);
+				assert.deepEqual(err.code, 416);
+				assert.deepEqual(minted, false);
+				done();
+			});
+		});
+	});
+
 	it("Fails - getUserRecordByPin", (done) => {
 		let options = {
 			"provision": {
