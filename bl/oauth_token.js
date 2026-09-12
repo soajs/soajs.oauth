@@ -139,6 +139,37 @@ let bl = {
 		});
 	},
 
+	/**
+	 * Deletes every restricted token of a user, leaving their ordinary sessions alone.
+	 *
+	 * NOTE: no getTenantOauth here, unlike deleteAllUserTokens. the predicate is the presence
+	 *		of user.restrictedTo, not the tenant's login mode.
+	 *
+	 * @param soajs {Object}
+	 * @param inputmaskData {Object}
+	 * @param options {Object}
+	 * @param cb {Function}
+	 */
+	"deleteAllUserRestrictedTokens": (soajs, inputmaskData, options, cb) => {
+		if (!inputmaskData) {
+			return cb(bl.handleError(soajs, 400, null));
+		}
+		let data = {
+			"restricted": true,
+			"user": {
+				"id": inputmaskData.userId
+			}
+		};
+		let modelObj = bl.mp.getModel(soajs, options);
+		modelObj.delete(data, (err, count) => {
+			bl.mp.closeModel(soajs, modelObj);
+			if (err) {
+				return cb(bl.handleError(soajs, 602, err));
+			}
+			return cb(null, count);
+		});
+	},
+	
 	"deleteAllClientTokens": (soajs, inputmaskData, options, cb) => {
 		if (!inputmaskData) {
 			return cb(bl.handleError(soajs, 400, null));
