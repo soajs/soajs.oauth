@@ -46,6 +46,12 @@ function Oauth(service, options, mongoCore) {
 				service.log.debug("Index: " + index + " created with error: " + err);
 			});
 
+			//NOTE: user.id is not a prefix of the user.loginMode index above, so the restricted
+			//		revoke would scan the collection without this one.
+			__self.mongoCore.createIndex(colName, { 'user.id': 1, 'user.restrictedTo': 1 }, {}, (err, index) => {
+				service.log.debug("Index: " + index + " created with error: " + err);
+			});
+
 			service.log.debug("Oauth: Indexes for " + index + " Updated!");
 		}
 	}
@@ -54,14 +60,23 @@ function Oauth(service, options, mongoCore) {
 Oauth.prototype.delete = function (data, cb) {
 	let __self = this;
 
-	if (!data || !((data.token && data.type) || data.clientId || (data.user || (data.user && data.user.id && data.user.loginMode)))) {
+	if (!data || !((data.token && data.type) || data.clientId || (data.restricted && data.user && data.user.id) || (data.user || (data.user && data.user.id && data.user.loginMode)))) {
 		let error = new Error("(token and type) or clientId or user[id, loginMode] is required.");
 		return cb(error, null);
 	}
 
 	let condition = {};
 
-	if (data.user) {
+	//NOTE: restricted tokens carry loginMode oauth, which is also the service default login
+	//		mode, so matching on it would take ordinary sessions with them. the presence of
+	//		user.restrictedTo is the exact predicate.
+	if (data.restricted) {
+		condition["user.id"] = data.user.id;
+		condition["user.restrictedTo"] = {"$exists": true};
+		if (data.clientId) {
+			condition.clientId = data.clientId;
+		}
+	} else if (data.user) {
 		condition["user.loginMode"] = data.user.loginMode;
 		condition["user.id"] = data.user.id;
 		if (data.user.deviceId) {

@@ -269,6 +269,11 @@ function run(serviceStartCb) {
 					return res.json(req.soajs.buildResponse(error, data));
 				});
 			});
+			service.post('/restricted/token/auto/:id', (req, res) => {
+				bl.restrictedAutoLogin(req, req.soajs.inputmaskData, { "provision": provision }, (error, data) => {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
 			service.get("/authorization", (req, res) => {
 				bl.authorization(req.soajs, req.soajs.inputmaskData, { "provision": provision }, (error, data) => {
 					return res.json(req.soajs.buildResponse(error, data));
@@ -344,6 +349,12 @@ function run(serviceStartCb) {
 
 			service.delete("/tokens/user/:userId/device/:deviceId", (req, res) => {
 				bl.oauth_token.deleteAllUserDeviceTokens(req.soajs, req.soajs.inputmaskData, { "provision": provision }, (error, data) => {
+					return res.json(req.soajs.buildResponse(error, data));
+				});
+			});
+
+			service.delete("/restricted/tokens/user/:userId", (req, res) => {
+				bl.oauth_token.deleteAllUserRestrictedTokens(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
 					return res.json(req.soajs.buildResponse(error, data));
 				});
 			});

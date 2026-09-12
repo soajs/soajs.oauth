@@ -50,6 +50,9 @@ describe("Unit test for: BL - oauth", () => {
 		}
 	};
 	before((done) => {
+		//NOTE: handleError reads bl.localConfig.errors, which bl.init sets at service boot.
+		//		these tests never boot the service, so wire it the same way init does.
+		BL.localConfig = helper.requireModule('config.js');
 		done();
 	});
 	
@@ -73,6 +76,9 @@ describe("Unit test for: BL - oauth", () => {
 			}
 		};
 		BL.model = MODEL;
+		//NOTE: mp.getModel returns bl.modelObj unless the tenant is a client tenant,
+		//		so the stub has to be the instance, not just the constructor.
+		BL.modelObj = new MODEL();
 		
 		BL.deleteAccessToken(soajs, null, null, (error) => {
 			assert.ok(error);
@@ -114,6 +120,9 @@ describe("Unit test for: BL - oauth", () => {
 			}
 		};
 		BL.model = MODEL;
+		//NOTE: mp.getModel returns bl.modelObj unless the tenant is a client tenant,
+		//		so the stub has to be the instance, not just the constructor.
+		BL.modelObj = new MODEL();
 		
 		BL.deleteRefreshToken(soajs, null, null, (error) => {
 			assert.ok(error);
@@ -139,6 +148,45 @@ describe("Unit test for: BL - oauth", () => {
 		});
 	});
 	
+	it("deleteAllUserRestrictedTokens", (done) => {
+		let captured = null;
+		function MODEL() {
+		}
+		MODEL.prototype.closeConnection = () => {
+		};
+		MODEL.prototype.delete = (data, cb) => {
+			captured = data;
+			if (data && data.user && data.user.id === "mongoError") {
+				return cb(new Error("OAuth: deleteAllUserRestrictedTokens - mongo error."), null);
+			}
+			return cb(null, 2);
+		};
+		BL.model = MODEL;
+		//NOTE: mp.getModel returns bl.modelObj unless the tenant is a client tenant,
+		//		so the stub has to be the instance, not just the constructor.
+		BL.modelObj = new MODEL();
+
+		BL.deleteAllUserRestrictedTokens(soajs, null, null, (error) => {
+			assert.ok(error);
+			assert.deepEqual(error, {code: 400, msg: 'Business logic required data are missing.'});
+
+			BL.deleteAllUserRestrictedTokens(soajs, {userId: "mongoError"}, null, (error) => {
+				assert.ok(error);
+				assert.deepEqual(error.code, 602);
+
+				BL.deleteAllUserRestrictedTokens(soajs, {userId: "5db2c7414e261a23f8ec2bee"}, null, (error, count) => {
+					assert.ifError(error);
+					assert.deepEqual(count, 2);
+					// the predicate must be restrictedTo, never the tenant login mode
+					assert.deepEqual(captured.restricted, true);
+					assert.deepEqual(captured.user.id, "5db2c7414e261a23f8ec2bee");
+					assert.ok(!Object.hasOwnProperty.call(captured.user, "loginMode"));
+					done();
+				});
+			});
+		});
+	});
+
 	it("deleteAllClientTokens", (done) => {
 		function MODEL() {
 			console.log("oauth model");
@@ -155,6 +203,9 @@ describe("Unit test for: BL - oauth", () => {
 			}
 		};
 		BL.model = MODEL;
+		//NOTE: mp.getModel returns bl.modelObj unless the tenant is a client tenant,
+		//		so the stub has to be the instance, not just the constructor.
+		BL.modelObj = new MODEL();
 		
 		BL.deleteAllClientTokens(soajs, null, null, (error) => {
 			assert.ok(error);
@@ -196,6 +247,9 @@ describe("Unit test for: BL - oauth", () => {
 			}
 		};
 		BL.model = MODEL;
+		//NOTE: mp.getModel returns bl.modelObj unless the tenant is a client tenant,
+		//		so the stub has to be the instance, not just the constructor.
+		BL.modelObj = new MODEL();
 		
 		let options = {
 			"provision": {
@@ -246,6 +300,9 @@ describe("Unit test for: BL - oauth", () => {
 			}
 		};
 		BL.model = MODEL;
+		//NOTE: mp.getModel returns bl.modelObj unless the tenant is a client tenant,
+		//		so the stub has to be the instance, not just the constructor.
+		BL.modelObj = new MODEL();
 
 		let options = {
 			"provision": {

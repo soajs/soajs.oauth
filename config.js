@@ -75,6 +75,8 @@ module.exports = {
 
 		413: "Unable to log in. Credential error or mismatch",
 		414: "Local login is not allowed",
+		415: "You are not allowed to mint a token for another user",
+		416: "The minted user record is missing a required field",
 
 		420: "Missing service key configuration for third party integration",
 		421: "Service key configuration for third party integration is not complete",
@@ -279,6 +281,59 @@ module.exports = {
 				}
 			},
 
+			"/restricted/token/auto/:id": {
+				"_apiInfo": {
+					"l": "Create a restricted access token, no refresh token",
+					"group": "Internal"
+				},
+				"id": {
+					"source": ['params.id'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"restrictedTo": {
+					"source": ['body.restrictedTo'],
+					"required": true,
+					"validation": {
+						"type": "object",
+						"additionalProperties": false,
+						"required": ["tenant"],
+						"properties": {
+							"tenant": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+							"product": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+							"package": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+							"key": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+							"env": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
+							"agent": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] }
+						}
+					}
+				},
+				"deviceId": {
+					"source": ['body.deviceId'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"agent": {
+					"source": ['body.agent'],
+					"required": false,
+					"validation": {
+						"type": "string"
+					}
+				},
+				"ttl": {
+					"source": ['body.ttl'],
+					"required": false,
+					"validation": {
+						"type": "integer",
+						"minimum": 60
+					}
+				}
+			},
+
 			"/token": {
 				"_apiInfo": {
 					"l": "Create an access token",
@@ -442,6 +497,19 @@ module.exports = {
 				},
 				"deviceId": {
 					"source": ['params.deviceId'],
+					"required": true,
+					"validation": {
+						"type": "string"
+					}
+				}
+			},
+			"/restricted/tokens/user/:userId": {
+				"_apiInfo": {
+					"l": "Delete all restricted tokens for a given user",
+					"group": "User Tokenization"
+				},
+				"userId": {
+					"source": ['params.userId'],
 					"required": true,
 					"validation": {
 						"type": "string"
