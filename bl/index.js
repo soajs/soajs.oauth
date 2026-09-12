@@ -20,6 +20,15 @@ const openam = require('./integration/openam.js');
 
 const uracDriver = require("soajs.urac.driver");
 
+//NOTE: no dbConfig, so this never connects. the driver exposes ObjectId as an instance
+//		method and the model layer reaches it the same way, this is only here to mint the
+//		_id of a guest record, which has no urac document behind it.
+const idFactory = new soajsCoreModules.mongo();
+
+//NOTE: claims is merged onto a record the gateway uses verbatim as req.soajs.urac. these are
+//		the fields the mint sets itself and a caller must not be able to supply them at all.
+const GUEST_RESERVED_CLAIMS = ["_id", "id", "username", "tenant", "loginMode", "guest", "restrictedTo", "deviceId", "agent"];
+
 let SSOT = {};
 let model = process.env.SOAJS_SERVICE_MODEL || "mongo";
 
@@ -369,6 +378,77 @@ let bl = {
 				}
 				return cb(null, accessData);
 			});
+		});
+	},
+
+	/**
+	 * Mints a restricted access token for a guest, an identity with no urac record behind it.
+	 *
+	 * NOTE: same as restrictedAutoLogin with the urac lookup replaced by a record built from the
+	 *		input, so 413 and 415 cannot happen here and are not wired in. everything below the
+	 *		record build is identical, generateSaveAccessToken stores the record opaquely and
+	 *		never inspects it.
+	 *
+	 * NOTE: this mints a token for an arbitrary identity, anything that can reach it can claim
+	 *		to be anyone. it is group Internal and must never be granted in a package ACL, it is
+	 *		reachable over interConnect only.
+	 *
+	 * @param req {Object}
+	 * @param inputmaskData {Object}
+	 * @param options {Object}
+	 * @param cb {Function}
+	 */
+	"restrictedGuestLogin": (req, inputmaskData, options, cb) => {
+		if (!inputmaskData) {
+			return cb(bl.oauth_urac.handleError(req.soajs, 400, null));
+		}
+
+		//NOTE: rejected rather than dropped. merging claims first already keeps them from
+		//		overriding anything, but a caller that sends one is asking for something it will
+		//		not get, and silently minting a token that does not say what it asked for is worse
+		//		than refusing.
+		let claims = inputmaskData.claims || {};
+		let reserved = GUEST_RESERVED_CLAIMS.filter((field) => {
+			return Object.prototype.hasOwnProperty.call(claims, field);
+		});
+		if (reserved.length > 0) {
+			req.soajs.log.error("Unable to mint a guest token, claims carries reserved fields: " + reserved.join(", "));
+			return cb(bl.oauth_urac.handleError(req.soajs, 417, null));
+		}
+
+		//NOTE: the _id is generated here and is never taken from the body, a caller must not be
+		//		able to choose the id services will key this identity on. claims is merged first
+		//		so no key order in it can reach a field the mint sets.
+		let _id = idFactory.ObjectId();
+		let record = Object.assign({}, claims, {
+			"_id": _id,
+			"id": _id.toString(),
+			"username": inputmaskData.username,
+			"tenant": inputmaskData.tenant,
+			"loginMode": "oauth",
+			"guest": true,
+			"agent": inputmaskData.agent || null,
+			"deviceId": inputmaskData.deviceId || null,
+			"restrictedTo": inputmaskData.restrictedTo
+		});
+
+		//NOTE: with loginMode oauth the gateway uses this record verbatim as the urac record,
+		//		so whatever is missing here is missing for the life of the token. tenant in
+		//		particular is read unguarded downstream and a record without it 500s the first
+		//		request, fail the mint instead of handing back a token that cannot be used.
+		let missing = ["id", "_id", "username", "tenant", "loginMode"].filter((field) => {
+			return !record[field];
+		});
+		if (missing.length > 0 || !record.tenant.id) {
+			req.soajs.log.error("Unable to mint a guest token, the record is missing: " + (missing.join(", ") || "tenant.id"));
+			return cb(bl.oauth_urac.handleError(req.soajs, 416, null));
+		}
+
+		options.provision.generateSaveAccessToken(record, req, inputmaskData.ttl, (err, accessData) => {
+			if (err) {
+				return cb(bl.oauth_urac.handleError(req.soajs, 600, err));
+			}
+			return cb(null, accessData);
 		});
 	}
 };
