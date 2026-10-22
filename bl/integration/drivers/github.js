@@ -48,6 +48,8 @@ let lib = {
 			firstName: soajsResponse.profile.username,
 			lastName: '',
 			email: soajsResponse.profile.username + '@github.com',
+			//NOTE: made from the github username, not an address github verified, an existing account is never matched by it, see soajs.urac.driver
+			emailVerified: false,
 			username: soajsResponse.profile.username + '_' + soajsResponse.profile.id,
 			id: soajsResponse.profile.id,
 			originalProfile: soajsResponse.profile,

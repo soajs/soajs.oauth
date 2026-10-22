@@ -52,6 +52,8 @@ let lib = {
 			firstName: soajsResponse.profile.displayName,
 			lastName: '',
 			email: email,
+			//NOTE: made from the twitter username or returned without a verified flag, an existing account is never matched by it, see soajs.urac.driver
+			emailVerified: false,
 			username: soajsResponse.profile.username + '_' + soajsResponse.profile.id,
 			id: soajsResponse.profile.id,
 			originalProfile: soajsResponse.profile,
