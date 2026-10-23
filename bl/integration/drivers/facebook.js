@@ -54,6 +54,8 @@ let lib = {
 			firstName: soajsResponse.profile._json.first_name,
 			lastName: soajsResponse.profile._json.last_name,
 			email: soajsResponse.profile._json.email,
+			//NOTE: facebook does not say whether it verified the address, an existing account is never matched by it, see soajs.urac.driver
+			emailVerified: false,
 			username: soajsResponse.profile.id,
 			id: soajsResponse.profile.id,
 			originalProfile: soajsResponse.profile._json,

@@ -45,13 +45,18 @@ let lib = {
 	
 	"mapProfile": (soajsResponse, cb) => {
 		let email = '';
+		let emailVerified = false;
 		if (soajsResponse.profile.emails && soajsResponse.profile.emails.length !== 0) {
 			email = soajsResponse.profile.emails[0].value;
+			//NOTE: google says whether it verified the address, only then may it match an existing account
+			let verified = soajsResponse.profile.emails[0].verified;
+			emailVerified = (verified === true || verified === "true");
 		}
 		let profile = {
 			firstName: soajsResponse.profile.name.givenName,
 			lastName: soajsResponse.profile.name.familyName,
 			email: email,
+			emailVerified: emailVerified,
 			username: soajsResponse.profile.id,
 			id: soajsResponse.profile.id,
 			originalProfile: soajsResponse.profile,

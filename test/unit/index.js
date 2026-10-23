@@ -43,6 +43,7 @@ describe("Starting OAUTH Unit test", () => {
 		require('./bl/integration/drivers/github.js');
 		require('./bl/integration/drivers/google.js');
 		require('./bl/integration/drivers/twitter.js');
+		require('./bl/integration/drivers/emailVerified.js');
 		done();
 	});
 	

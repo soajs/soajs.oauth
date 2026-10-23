@@ -64,6 +64,8 @@ let lib = {
 			firstName: soajsResponse.profile.given_name || null,
 			lastName: soajsResponse.profile.family_name || null,
 			email: soajsResponse.profile.email || soajsResponse.profile.upn,
+			//NOTE: the email claim is set by whoever runs the user's Azure tenant and is not verified, an existing account is never matched by it, see soajs.urac.driver
+			emailVerified: false,
 			username: soajsResponse.profile.oid,
 			id: soajsResponse.profile.oid,
 			originalProfile: soajsResponse.profile,
