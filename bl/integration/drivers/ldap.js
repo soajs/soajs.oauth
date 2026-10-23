@@ -20,6 +20,8 @@ let lib = {
 			firstName: record.cn || "",
 			lastName: record.sn || "",
 			email: record.mail,
+			//NOTE: the directory is the deployment's own, its address is trusted
+			emailVerified: true,
 			password: '',
 			username: record.dn,
 			groups: [],

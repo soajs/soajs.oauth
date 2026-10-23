@@ -36,6 +36,8 @@ let lib = {
 				profile[param.mapTo] = '';
 			}
 		});
+		//NOTE: openam is the deployment's own identity provider, its address is trusted
+		profile.emailVerified = true;
 		
 		return cb(null, profile);
 	}
