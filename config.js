@@ -112,28 +112,28 @@ module.exports = {
 		"get": {
 			"/roaming": {
 				"_apiInfo": {
-					"l": "Cross environment roaming, but requires IP whitelisting",
+					"l": "Cross-env roaming: echo the gateway context header; requires IP whitelisting",
 					"group": "Tokenization user"
 				}
 			},
 
 			"/available/login": {
 				"_apiInfo": {
-					"l": "Get information about what third party login is available",
+					"l": "List the tenant's enabled login methods: local login and third-party providers",
 					"group": "Guest"
 				}
 			},
 
 			"/authorization": {
 				"_apiInfo": {
-					"l": "Get the authorization token",
+					"l": "Get the Basic auth header (tenant id + tenant oauth secret) for the token APIs",
 					"group": "Guest"
 				}
 			},
 
 			"/passport/login/:strategy": {
 				"_apiInfo": {
-					"l": "Passport login",
+					"l": "Start third-party login: redirect to the provider's sign-in page",
 					"group": "Third party login"
 				},
 				"strategy": {
@@ -141,14 +141,15 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["facebook", "google", "twitter", "github", "azure", "linkedin"]
+						"enum": ["facebook", "google", "twitter", "github", "azure", "linkedin"],
+						"description": "Third-party provider to sign in with; must be configured for the tenant (see /available/login)"
 					}
 				}
 			},
 
 			"/passport/validate/:strategy": {
 				"_apiInfo": {
-					"l": "Passport login validation",
+					"l": "Third-party login callback: verify with provider, save user, return tokens",
 					"group": "Third party login"
 				},
 				"strategy": {
@@ -156,21 +157,24 @@ module.exports = {
 					"required": true,
 					"validation": {
 						"type": "string",
-						"enum": ["facebook", "google", "twitter", "github", "azure", "linkedin"]
+						"enum": ["facebook", "google", "twitter", "github", "azure", "linkedin"],
+						"description": "Provider returning to this callback; same value used on /passport/login"
 					}
 				},
 				"oauth_token": {
 					"source": ['query.oauth_token'],
 					"required": false,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "OAuth 1.0a request token sent back by Twitter on the callback; other providers ignore it"
 					}
 				},
 				"oauth_verifier": {
 					"source": ['query.oauth_verifier'],
 					"required": false,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "OAuth 1.0a verifier sent back by Twitter on the callback; other providers ignore it"
 					}
 				}
 			}
@@ -180,27 +184,29 @@ module.exports = {
 		"post": {
 			"/openam/login": {
 				"_apiInfo": {
-					"l": "OpenAM login",
+					"l": "Log in with an OpenAM SSO token: verify it, save the user, return tokens",
 					"group": "Third party login"
 				},
 				"token": {
 					"source": ['body.token'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "OpenAM SSO token (subjectid), checked against the tenant's OpenAM attributes URL"
 					}
 				}
 			},
 			"/ldap/login": {
 				"_apiInfo": {
-					"l": "Ldap login",
+					"l": "Log in with LDAP credentials: bind, save the user, return tokens",
 					"group": "Third party login"
 				},
 				"username": {
 					"source": ['body.username'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "LDAP uid of the user"
 					}
 				},
 				"password": {
@@ -214,14 +220,15 @@ module.exports = {
 
 			"/token/phone": {
 				"_apiInfo": {
-					"l": "Create a verification code for that phone",
+					"l": "Send a 6-digit login code by SMS or WhatsApp to the user with this phone",
 					"group": "Guest"
 				},
 				"phone": {
 					"source": ['body.phone'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Phone number on the user's urac record; the code is sent here"
 					}
 				},
 				"type": {
@@ -229,69 +236,76 @@ module.exports = {
 					"default": "sms",
 					"validation": {
 						"type": "string",
-						"enum": ["sms", "whatsapp"]
+						"enum": ["sms", "whatsapp"],
+						"description": "Delivery channel for the code: sms or whatsapp (Twilio)"
 					}
 				}
 			},
 			"/token/phone/code": {
 				"_apiInfo": {
-					"l": "Create an access token for that phone",
+					"l": "Exchange a phone login code for access and refresh tokens",
 					"group": "Guest"
 				},
 				"code": {
 					"source": ['body.code'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "6-digit code received after POST /token/phone"
 					}
 				},
 				"phone": {
 					"source": ['body.phone'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Same phone number used to request the code"
 					}
 				},
 				"unique": {
 					"source": ['body.unique'],
 					"default": false,
 					"validation": {
-						"type": "boolean"
+						"type": "boolean",
+						"description": "If true, revoke the user's existing tokens before issuing new ones"
 					}
 				}
 			},
 
 			"/token/auto/:id": {
 				"_apiInfo": {
-					"l": "Create an access token",
+					"l": "Issue access and refresh tokens for a user id, no password (internal)",
 					"group": "Internal"
 				},
 				"id": {
 					"source": ['params.id'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "urac user _id to issue tokens for"
 					}
 				},
 				"unique": {
 					"source": ['body.unique'],
 					"default": false,
 					"validation": {
-						"type": "boolean"
+						"type": "boolean",
+						"description": "If true, revoke the user's existing tokens before issuing new ones"
 					}
 				}
 			},
 
 			"/restricted/token/auto/:id": {
 				"_apiInfo": {
-					"l": "Create a restricted access token, no refresh token",
+					"l": "Mint a restricted access token for a user id; no refresh token (internal)",
 					"group": "Internal"
 				},
 				"id": {
 					"source": ['params.id'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "urac user _id to mint the token for; must match the caller when called with a user token"
 					}
 				},
 				"restrictedTo": {
@@ -308,21 +322,24 @@ module.exports = {
 							"key": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
 							"env": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
 							"agent": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] }
-						}
+						},
+						"description": "Where the token may be used, enforced by the gateway: tenant (required), product, package, key, env, agent; each a string or list"
 					}
 				},
 				"deviceId": {
 					"source": ['body.deviceId'],
 					"required": false,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Binds the token to this device-id header; calls with another device-id are refused"
 					}
 				},
 				"agent": {
 					"source": ['body.agent'],
 					"required": false,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "User-Agent recorded on the token for reference; not enforced (use restrictedTo.agent)"
 					}
 				},
 				"ttl": {
@@ -330,21 +347,23 @@ module.exports = {
 					"required": false,
 					"validation": {
 						"type": "integer",
-						"minimum": 60
+						"minimum": 60,
+						"description": "Token lifetime in seconds (min 60); defaults to the registry access token lifetime"
 					}
 				}
 			},
 
 			"/restricted/token/guest": {
 				"_apiInfo": {
-					"l": "Create a restricted access token for a guest, no refresh token",
+					"l": "Mint a restricted access token for a guest with no user record; no refresh",
 					"group": "Internal"
 				},
 				"username": {
 					"source": ['body.username'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Name the guest is known by; stored as the token user's username, no account lookup"
 					}
 				},
 				"tenant": {
@@ -356,7 +375,8 @@ module.exports = {
 						"properties": {
 							"id": { "type": "string" },
 							"code": { "type": "string" }
-						}
+						},
+						"description": "Tenant of the guest, {id, code}; becomes the token user's tenant"
 					}
 				},
 				"claims": {
@@ -364,7 +384,8 @@ module.exports = {
 					"required": false,
 					"validation": {
 						"type": "object",
-						"additionalProperties": true
+						"additionalProperties": true,
+						"description": "Extra fields merged onto the token's user record; reserved fields (_id, id, username, tenant, loginMode, guest, restrictedTo, deviceId, agent) are rejected"
 					}
 				},
 				"restrictedTo": {
@@ -381,21 +402,24 @@ module.exports = {
 							"key": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
 							"env": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] },
 							"agent": { "oneOf": [{ "type": "string" }, { "type": "array", "items": { "type": "string" } }] }
-						}
+						},
+						"description": "Where the token may be used, enforced by the gateway: tenant (required), product, package, key, env, agent; each a string or list"
 					}
 				},
 				"deviceId": {
 					"source": ['body.deviceId'],
 					"required": false,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Binds the token to this device-id header; calls with another device-id are refused"
 					}
 				},
 				"agent": {
 					"source": ['body.agent'],
 					"required": false,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "User-Agent recorded on the token for reference; not enforced (use restrictedTo.agent)"
 					}
 				},
 				"ttl": {
@@ -403,28 +427,31 @@ module.exports = {
 					"required": false,
 					"validation": {
 						"type": "integer",
-						"minimum": 60
+						"minimum": 60,
+						"description": "Token lifetime in seconds (min 60); defaults to the registry access token lifetime"
 					}
 				}
 			},
 
 			"/token": {
 				"_apiInfo": {
-					"l": "Create an access token",
+					"l": "Log in (username/email + password) or refresh; returns access+refresh tokens",
 					"group": "Guest"
 				},
 				"username": {
 					"source": ['body.username'],
 					"required": false,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Username or email; required when grant_type is password"
 					}
 				},
 				"password": {
 					"source": ['body.password'],
 					"required": false,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Required when grant_type is password"
 					}
 				},
 				"grant_type": {
@@ -433,27 +460,30 @@ module.exports = {
 					"default": "password",
 					"validation": {
 						"type": "string",
-						"enum": ["refresh_token", "password"]
+						"enum": ["refresh_token", "password"],
+						"description": "password to log in with username/password; refresh_token to exchange a refresh token"
 					}
 				},
 				"refresh_token": {
 					"source": ['body.refresh_token'],
 					"required": false,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Refresh token from an earlier login; required when grant_type is refresh_token"
 					}
 				}
 			},
 			"/token/email": {
 				"_apiInfo": {
-					"l": "Create an access token by email or username",
+					"l": "Log in with email or username and password; returns access+refresh tokens",
 					"group": "Guest"
 				},
 				"username": {
 					"source": ['body.username'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Username or email address"
 					}
 				},
 				"password": {
@@ -469,33 +499,36 @@ module.exports = {
 					"default": "password",
 					"validation": {
 						"type": "string",
-						"enum": ["password"]
+						"enum": ["password"],
+						"description": "Only password is accepted"
 					}
 				}
 			},
 			"/refresh/token": {
 				"_apiInfo": {
-					"l": "Refresh an access token",
+					"l": "Exchange a refresh token for new access and refresh tokens; old one deleted",
 					"group": "Guest"
 				},
 				"refresh_token": {
 					"source": ['body.refresh_token'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Refresh token from an earlier login; it is deleted once used"
 					}
 				}
 			},
 			"/pin": {
 				"_apiInfo": {
-					"l": "Create an access token with pin",
+					"l": "Log in with a PIN; returns access and refresh tokens (urac login mode only)",
 					"group": "Tokenization"
 				},
 				"pin": {
 					"source": ['body.pin'],
 					"required": false,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "The user's PIN; matched against users of the current tenant"
 					}
 				},
 				"grant_type": {
@@ -504,14 +537,16 @@ module.exports = {
 					"default": "password",
 					"validation": {
 						"type": "string",
-						"enum": ["refresh_token", "password"]
+						"enum": ["refresh_token", "password"],
+						"description": "password to log in with the PIN; refresh_token to exchange a refresh token"
 					}
 				},
 				"refresh_token": {
 					"source": ['body.refresh_token'],
 					"required": false,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Refresh token from an earlier login; required when grant_type is refresh_token"
 					}
 				}
 			}
@@ -520,86 +555,93 @@ module.exports = {
 		"delete": {
 			"/accessToken/:token": {
 				"_apiInfo": {
-					"l": "Delete access token",
+					"l": "Revoke one access token by its value",
 					"group": "Tokenization"
 				},
 				"token": {
 					"source": ['params.token'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Access token value to revoke"
 					}
 				}
 			},
 			"/refreshToken/:token": {
 				"_apiInfo": {
-					"l": "Delete refresh token",
+					"l": "Revoke one refresh token by its value",
 					"group": "Tokenization"
 				},
 				"token": {
 					"source": ['params.token'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Refresh token value to revoke"
 					}
 				}
 			},
 			"/tokens/user/:userId": {
 				"_apiInfo": {
-					"l": "Delete all tokens for a given user",
+					"l": "Revoke all of a user's access and refresh tokens, for every client",
 					"group": "User Tokenization"
 				},
 				"userId": {
 					"source": ['params.userId'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "urac user id (token user.id) whose tokens are revoked"
 					}
 				}
 			},
 			"/tokens/user/:userId/device/:deviceId": {
 				"_apiInfo": {
-					"l": "Delete all tokens for a given user on a specific device",
+					"l": "Revoke all of a user's access and refresh tokens on one device, every client",
 					"group": "User Tokenization"
 				},
 				"userId": {
 					"source": ['params.userId'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "urac user id (token user.id) whose tokens are revoked"
 					}
 				},
 				"deviceId": {
 					"source": ['params.deviceId'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "device-id header value recorded on the tokens at login"
 					}
 				}
 			},
 			"/restricted/tokens/user/:userId": {
 				"_apiInfo": {
-					"l": "Delete all restricted tokens for a given user",
+					"l": "Revoke all restricted tokens of a user; ordinary sessions are kept",
 					"group": "User Tokenization"
 				},
 				"userId": {
 					"source": ['params.userId'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "urac user id whose restricted tokens are revoked"
 					}
 				}
 			},
 			"/tokens/tenant/:clientId": {
 				"_apiInfo": {
-					"l": "Delete all tokens for this client (tenant)",
+					"l": "Revoke all access and refresh tokens issued to a tenant (OAuth client id)",
 					"group": "Cient Tokenization"
 				},
 				"clientId": {
 					"source": ['params.clientId'],
 					"required": true,
 					"validation": {
-						"type": "string"
+						"type": "string",
+						"description": "Tenant id the tokens were issued to (OAuth client id)"
 					}
 				}
 			}

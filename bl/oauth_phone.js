@@ -56,7 +56,7 @@ let bl = {
 		};
 		uracDriver.getRecord(soajs, data, function (error, record) {
 			if (error || !record) {
-				error = new Error(error.msg);
+				error = new Error(error ? error.msg : "user not found");
 				return cb(bl.handleError(soajs, 413, error));
 			}
 			if (
@@ -152,7 +152,7 @@ let bl = {
 						};
 						uracDriver.getRecord(req.soajs, data, function (error, record) {
 							if (error || !record) {
-								error = new Error(error.msg);
+								error = new Error(error ? error.msg : "user not found");
 								return cb(bl.handleError(req.soajs, 413, error));
 							}
 							options.provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {

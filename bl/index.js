@@ -261,7 +261,7 @@ let bl = {
 		};
 		uracDriver.getRecord(req.soajs, data, function (error, record) {
 			if (error || !record) {
-				error = new Error(error.msg);
+				error = new Error(error ? error.msg : "user not found");
 				return cb(bl.oauth_urac.handleError(req.soajs, 413, error));
 			}
 			options.provision.getTenantOauth(req.soajs.tenant.id, (err, tenantOauth) => {
@@ -288,7 +288,7 @@ let bl = {
 					};
 					bl.oauth_phone.modelObj_token.delete(data, (err, deleteResponse) => {
 						if (err) {
-							return cb(bl.handleError(req.soajs, 600, err));
+							return cb(bl.oauth_urac.handleError(req.soajs, 600, err));
 						}
 
 						req.soajs.log.debug("Number of logged in session deleted", deleteResponse);

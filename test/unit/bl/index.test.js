@@ -649,4 +649,49 @@ describe("Unit test for: BL - oauth", () => {
 		
 	});
 	
+	it("Fails - autoLogin - user not found", (done) => {
+		sinon.stub(uracDriver, 'getRecord').yields(null, null);
+		let req = {"soajs": soajs};
+		BL.autoLogin(req, {"id": user._id}, {}, (err) => {
+			assert.equal(err.code, 413);
+			done();
+		});
+	});
+	
+	it("Fails - autoLogin - unique, removing the old tokens fails", (done) => {
+		sinon.stub(uracDriver, 'getRecord').yields(null, Object.assign({}, user));
+		let modelObj_token = BL.oauth_phone.modelObj_token;
+		BL.oauth_phone.modelObj_token = {
+			"delete": (data, cb) => {
+				return cb(new Error("mongo error"));
+			}
+		};
+		let req = {
+			"soajs": soajs,
+			"get": () => {
+				return null;
+			}
+		};
+		let options = {
+			"provision": {
+				"getTenantOauth": (input, cb) => {
+					return cb(null, {"loginMode": "urac"});
+				}
+			}
+		};
+		BL.autoLogin(req, {"id": user._id, "unique": true}, options, (err) => {
+			BL.oauth_phone.modelObj_token = modelObj_token;
+			assert.equal(err.code, 600);
+			done();
+		});
+	});
+	
+	it("Fails - oauth_phone login - user not found", (done) => {
+		sinon.stub(uracDriver, 'getRecord').yields(null, null);
+		BL.oauth_phone.login(soajs, {"phone": "+15551234567"}, {}, (err) => {
+			assert.equal(err.code, 413);
+			done();
+		});
+	});
+	
 });
