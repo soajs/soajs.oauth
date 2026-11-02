@@ -83,7 +83,7 @@ let main = {
 						return cb({"code": 720, "msg": driverConfig.errors[720]});
 					}
 					if (!soajsResponse) {
-						cb({"code": 403, "msg": driverConfig.errors[403]});
+						return cb({"code": 403, "msg": driverConfig.errors[403]});
 					}
 					driver.mapProfile(soajsResponse, (err, profile) => {
 						if (err) {
