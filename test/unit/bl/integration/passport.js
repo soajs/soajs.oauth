@@ -154,4 +154,23 @@ describe("Unit test for: lib - passport", () => {
 			done();
 		});
 	});
+	it("test - validate - no response from the provider", (done) => {
+		req.soajs.inputmaskData.strategy = "facebook";
+		let passport = {
+			"authenticate": (authentication, config, cb) => {
+				return () => {
+					cb(null, null);
+				};
+			}
+		};
+		let calls = [];
+		driver.validate(req, res, passport, (error) => {
+			calls.push(error);
+		});
+		setTimeout(() => {
+			assert.equal(calls.length, 1);
+			assert.equal(calls[0].code, 403);
+			done();
+		}, 50);
+	});
 });
