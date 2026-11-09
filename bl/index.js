@@ -318,8 +318,11 @@ let bl = {
 	 *		all deliberate, see oauth/restricted-token-plan.md:
 	 *		- deviceId and agent come from the body. on this call the headers belong to the
 	 *		  calling microservice, which has no relation to the browser the token is for
-	 *		- loginMode is forced to oauth so the gateway takes the user straight off the token,
-	 *		  the web app is a different tenant and a urac lookup there would not find the user
+	 *		- loginMode defaults to oauth so the gateway takes the user straight off the token,
+	 *		  the web app is a different tenant and a urac lookup there would not find the user.
+	 *		  loginMode urac makes the gateway reload the user on every call, so an inactive user
+	 *		  or new groups apply at once, only usable where the token is used under a tenant the
+	 *		  user belongs to
 	 *		- no refresh token, the token is short lived and the user re-authorizes instead
 	 *		- no unique branch, its delete keys on user.id and clientId only and would take the
 	 *		  user's ordinary mobile session with it
@@ -354,7 +357,7 @@ let bl = {
 				return cb(bl.oauth_urac.handleError(req.soajs, 413, error));
 			}
 
-			record.loginMode = "oauth";
+			record.loginMode = inputmaskData.loginMode || "oauth";
 			record.id = record._id.toString();
 			record.agent = inputmaskData.agent || null;
 			record.deviceId = inputmaskData.deviceId || null;

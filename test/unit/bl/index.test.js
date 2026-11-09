@@ -395,6 +395,52 @@ describe("Unit test for: BL - oauth", () => {
 		
 	});
 	
+	let restrictedMint = (inputmaskData, cb) => {
+		let stored = null;
+		let options = {
+			"provision": {
+				"generateSaveAccessToken": (record, req, ttl, cb) => {
+					stored = record;
+					return cb(null, { "access_token": "a token", "expires_in": ttl || 7200 });
+				}
+			}
+		};
+		sinon.stub(uracDriver, 'getRecord').yields(null, JSON.parse(JSON.stringify(user)));
+		BL.restrictedAutoLogin({ "soajs": soajs }, inputmaskData, options, (err, data) => {
+			return cb(err, data, stored);
+		});
+	};
+
+	it("restrictedAutoLogin - loginMode defaults to oauth", (done) => {
+		restrictedMint({ "id": user._id, "restrictedTo": { "tenant": "5c0e74ba9acc3c5a84a51260" } }, (err, data, stored) => {
+			assert.ifError(err);
+			assert.deepEqual(data.access_token, "a token");
+			assert.deepEqual(stored.loginMode, "oauth");
+			assert.deepEqual(stored.id, user._id);
+			assert.deepEqual(stored.restrictedTo, { "tenant": "5c0e74ba9acc3c5a84a51260" });
+			done();
+		});
+	});
+
+	it("restrictedAutoLogin - loginMode urac is kept on the token", (done) => {
+		let restrictedTo = { "tenant": user.tenant.id, "product": "AGENTS", "key": "a key" };
+		restrictedMint({ "id": user._id, "loginMode": "urac", "ttl": 900, "restrictedTo": restrictedTo }, (err, data, stored) => {
+			assert.ifError(err);
+			assert.deepEqual(data.expires_in, 900);
+			assert.deepEqual(stored.loginMode, "urac");
+			assert.deepEqual(stored.restrictedTo, restrictedTo);
+			done();
+		});
+	});
+
+	it("Fails - restrictedAutoLogin - user not found", (done) => {
+		sinon.stub(uracDriver, 'getRecord').yields(null, null);
+		BL.restrictedAutoLogin({ "soajs": soajs }, { "id": user._id, "loginMode": "urac" }, {}, (err) => {
+			assert.equal(err.code, 413);
+			done();
+		});
+	});
+
 	it("restrictedGuestLogin - mints a token for a guest", (done) => {
 		let stored = null;
 		let options = {
