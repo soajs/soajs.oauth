@@ -357,7 +357,7 @@ module.exports = {
 					"validation": {
 						"type": "string",
 						"enum": ["oauth", "urac"],
-						"description": "oauth (default): the gateway uses the user stored on the token. urac: the gateway reloads the user on every call, so status and groups apply at once; the token must be used under a tenant the user belongs to"
+						"description": "oauth (default): the gateway uses the user stored on the token. urac: the gateway reloads the user on every call, so status and groups apply at once; the user is found under restrictedTo.tenant when it names one tenant, and must be at home or invited there"
 					}
 				}
 			},
