@@ -1,7 +1,7 @@
 {
   "name": "soajs.oauth",
   "description": "soajs oauth service",
-  "version": "3.1.31",
+  "version": "3.1.32",
   "author": {
     "name": "soajs team",
     "email": "team@soajs.org"

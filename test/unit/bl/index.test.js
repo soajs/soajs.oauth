@@ -433,6 +433,95 @@ describe("Unit test for: BL - oauth", () => {
 		});
 	});
 
+	let enterpriseUser = (allowedTenants) => {
+		return Object.assign(JSON.parse(JSON.stringify(user)), {
+			"tenant": { "id": "ENTERPRISE", "code": "ENTR" },
+			"config": { "allowedTenants": allowedTenants || [] }
+		});
+	};
+	let mintUnder = (record, restrictedTo, reqSoajs, cb) => {
+		let lookup = null;
+		let stored = null;
+		sinon.stub(uracDriver, 'getRecord').callsFake((lookupSoajs, data, cb) => {
+			lookup = lookupSoajs;
+			return cb(null, record);
+		});
+		let options = {
+			"provision": {
+				"generateSaveAccessToken": (record, req, ttl, cb) => {
+					stored = record;
+					return cb(null, { "access_token": "a token" });
+				}
+			}
+		};
+		let loginMode = (restrictedTo && restrictedTo.loginMode) || "urac";
+		restrictedTo = Object.assign({}, restrictedTo);
+		delete restrictedTo.loginMode;
+		BL.restrictedAutoLogin({ "soajs": reqSoajs || soajs }, { "id": user._id, "loginMode": loginMode, "restrictedTo": restrictedTo }, options, (err) => {
+			return cb(err, lookup, stored);
+		});
+	};
+
+	it("restrictedAutoLogin - a user of another tenant, looked up under restrictedTo.tenant", (done) => {
+		let reqSoajs = Object.assign({}, soajs, {
+			"tenant": Object.assign({}, soajs.tenant, { "roaming": { "id": "x" } }),
+			"registry": Object.assign({}, soajs.registry, {
+				"custom": { "urac": { "value": { "masterCode": "MAIN", "autoRoaming": { "ENTERPRISE": {} } } } }
+			})
+		});
+		mintUnder(enterpriseUser(), { "tenant": ["ENTERPRISE"], "product": "AGENTS" }, reqSoajs, (err, lookup, stored) => {
+			assert.ifError(err);
+			assert.deepEqual(lookup.tenant.id, "ENTERPRISE");
+			assert.deepEqual(lookup.tenant.code, "DBTN");
+			assert.ok(!lookup.tenant.roaming);
+			assert.deepEqual(lookup.registry.custom.urac.value, { "masterCode": "MAIN" });
+			assert.ok(reqSoajs.registry.custom.urac.value.autoRoaming);
+			assert.deepEqual(reqSoajs.tenant.id, soajs.tenant.id);
+			assert.deepEqual(stored.tenant.id, "ENTERPRISE");
+			assert.deepEqual(stored.loginMode, "urac");
+			done();
+		});
+	});
+
+	it("restrictedAutoLogin - a user invited to restrictedTo.tenant", (done) => {
+		let record = enterpriseUser([{ "tenant": { "id": "CLIENT", "code": "CLNT" }, "groups": ["agents"] }]);
+		mintUnder(record, { "tenant": "CLIENT" }, null, (err) => {
+			assert.ifError(err);
+			done();
+		});
+	});
+
+	it("restrictedAutoLogin - the request tenant is used when restrictedTo names it or several", (done) => {
+		mintUnder(JSON.parse(JSON.stringify(user)), { "tenant": soajs.tenant.id }, null, (err, lookup) => {
+			assert.ifError(err);
+			assert.ok(lookup === soajs);
+			sinon.restore();
+			mintUnder(JSON.parse(JSON.stringify(user)), { "tenant": ["ENTERPRISE", "OTHER"] }, null, (err, lookup) => {
+				assert.ifError(err);
+				assert.ok(lookup === soajs);
+				done();
+			});
+		});
+	});
+
+	it("restrictedAutoLogin - loginMode oauth keeps the calling tenant, the pairing flow", (done) => {
+		mintUnder(JSON.parse(JSON.stringify(user)), { "tenant": "WEBAPP", "loginMode": "oauth" }, null, (err, lookup, stored) => {
+			assert.ifError(err);
+			assert.ok(lookup === soajs);
+			assert.deepEqual(stored.loginMode, "oauth");
+			assert.deepEqual(stored.restrictedTo, { "tenant": "WEBAPP" });
+			done();
+		});
+	});
+
+	it("Fails - restrictedAutoLogin - the user does not belong to restrictedTo.tenant", (done) => {
+		mintUnder(enterpriseUser(), { "tenant": "OTHER" }, null, (err, lookup, stored) => {
+			assert.equal(err.code, 413);
+			assert.ok(!stored);
+			done();
+		});
+	});
+
 	it("Fails - restrictedAutoLogin - user not found", (done) => {
 		sinon.stub(uracDriver, 'getRecord').yields(null, null);
 		BL.restrictedAutoLogin({ "soajs": soajs }, { "id": user._id, "loginMode": "urac" }, {}, (err) => {

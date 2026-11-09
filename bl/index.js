@@ -29,6 +29,49 @@ const idFactory = new soajsCoreModules.mongo();
 //		the fields the mint sets itself and a caller must not be able to supply them at all.
 const GUEST_RESERVED_CLAIMS = ["_id", "id", "username", "tenant", "loginMode", "guest", "restrictedTo", "deviceId", "agent"];
 
+/**
+ * The one tenant a restriction names: restrictedTo.tenant as a string or a one-element list.
+ */
+function singleTenant(restrictedTo) {
+	let tenant = restrictedTo ? restrictedTo.tenant : null;
+	if (Array.isArray(tenant) && tenant.length === 1) {
+		tenant = tenant[0];
+	}
+	return (typeof tenant === "string" && tenant !== "") ? tenant : null;
+}
+
+/**
+ * The user's home tenant or a tenant the user is invited to.
+ */
+function belongsToTenant(record, tenantId) {
+	if (record.tenant && record.tenant.id === tenantId) {
+		return true;
+	}
+	let allowedTenants = (record.config && Array.isArray(record.config.allowedTenants)) ? record.config.allowedTenants : [];
+	return allowedTenants.some((item) => {
+		return item && item.tenant && item.tenant.id === tenantId;
+	});
+}
+
+/**
+ * req.soajs with the tenant id replaced, for the urac tenant check only. code and main stay, so
+ * the user is read from the same database as before. no roaming, and no autoRoaming, which would
+ * answer with the borrowed tenant code.
+ */
+function soajsForTenant(soajs, tenantId) {
+	let tenant = Object.assign({}, soajs.tenant, {"id": tenantId});
+	delete tenant.roaming;
+	let registry = soajs.registry;
+	let urac = registry && registry.custom && registry.custom.urac;
+	if (urac && urac.value && urac.value.autoRoaming) {
+		let value = Object.assign({}, urac.value);
+		delete value.autoRoaming;
+		let custom = Object.assign({}, registry.custom, {"urac": Object.assign({}, urac, {"value": value})});
+		registry = Object.assign({}, registry, {"custom": custom});
+	}
+	return Object.assign({}, soajs, {"tenant": tenant, "registry": registry});
+}
+
 let SSOT = {};
 let model = process.env.SOAJS_SERVICE_MODEL || "mongo";
 
@@ -323,6 +366,9 @@ let bl = {
 	 *		  loginMode urac makes the gateway reload the user on every call, so an inactive user
 	 *		  or new groups apply at once, only usable where the token is used under a tenant the
 	 *		  user belongs to
+	 *		- with loginMode urac the user is looked up under restrictedTo.tenant when it names one
+	 *		  tenant, the only tenant the token can be used in, and must be at home or invited there. a caller can
+	 *		  mint for a user of another tenant than its own, the route is Internal for that
 	 *		- no refresh token, the token is short lived and the user re-authorizes instead
 	 *		- no unique branch, its delete keys on user.id and clientId only and would take the
 	 *		  user's ordinary mobile session with it
@@ -351,7 +397,18 @@ let bl = {
 		let data = {
 			'id': inputmaskData.id
 		};
-		uracDriver.getRecord(req.soajs, data, function (error, record) {
+		let tenantId = singleTenant(inputmaskData.restrictedTo);
+		let lookupSoajs = req.soajs;
+		//NOTE: urac only. with oauth the token is used where the user does not belong, the pairing
+		//		flow's web app, and the user is found in the calling tenant as before
+		if (inputmaskData.loginMode === "urac" && tenantId && req.soajs.tenant && req.soajs.tenant.id !== tenantId) {
+			lookupSoajs = soajsForTenant(req.soajs, tenantId);
+		}
+		uracDriver.getRecord(lookupSoajs, data, function (error, record) {
+			if (!error && record && lookupSoajs !== req.soajs && !belongsToTenant(record, tenantId)) {
+				error = {"msg": "user has no access to tenant " + tenantId};
+				record = null;
+			}
 			if (error || !record) {
 				error = new Error(error ? error.msg : "user not found");
 				return cb(bl.oauth_urac.handleError(req.soajs, 413, error));
