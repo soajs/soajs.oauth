@@ -350,6 +350,15 @@ module.exports = {
 						"minimum": 60,
 						"description": "Token lifetime in seconds (min 60); defaults to the registry access token lifetime"
 					}
+				},
+				"loginMode": {
+					"source": ['body.loginMode'],
+					"required": false,
+					"validation": {
+						"type": "string",
+						"enum": ["oauth", "urac"],
+						"description": "oauth (default): the gateway uses the user stored on the token. urac: the gateway reloads the user on every call, so status and groups apply at once; the token must be used under a tenant the user belongs to"
+					}
 				}
 			},
 
