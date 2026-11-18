@@ -12,13 +12,14 @@
 const KEY = '3d90163cf9d6b3076ad26aa5ed58556348069258e5c6c941ee0f18448b570ad1c5c790e2d2a1989680c55f4904e2005ff5f8e71606e4aa641e67882f4210ebbc5460ff305dcb36e6ec2a2299cf0448ef60b9e38f41950ec251c1cf41f05f3ce9';
 const KEY2 = 'aa39b5490c4a4ed0e56d7ec1232a428f7ad78ebb7347db3fc9875cb10c2bce39bbf8aabacf9e00420afb580b15698c04ce10d659d1972ebc53e76b6bbae0c113bee1e23062800bc830e4c329ca913fefebd1f1222295cf2eb5486224044b4d0c';
 const OWNER_ACCESS = "44a5399dcce96325fadfab908e614bf00e6fe967";
-const EXPIRED_ACCESS = "7425a8ae4048d194f6390b64f45eb9525523a014";
 // refresh tokens inserted by record.js for the contract (test values)
 const EXPIRED_REFRESH = "c0ffee00000000000000000000000000000000e1";
 const OTHER_CLIENT_REFRESH = "c0ffee00000000000000000000000000000000e2";
 const NULL_EXPIRES_REFRESH = "c0ffee00000000000000000000000000000000e3";
 const STRING_EXPIRES_REFRESH = "c0ffee00000000000000000000000000000000e4";
 const NO_EXPIRES_REFRESH = "c0ffee00000000000000000000000000000000e5";
+// an access token with a past date, written just before its case (test value)
+const EXPIRED_ACCESS = "c0ffee00000000000000000000000000000000e6";
 const OWNER = "5c8d0c505653de3985aa0ffd";
 
 const basic = (id, secret) => "Basic " + Buffer.from(id + ":" + secret).toString("base64");
@@ -72,7 +73,7 @@ const cases = [
 	{"name": "pin no access token", "path": "/oauth/pin", "headers": {"key": KEY}, "json": {"pin": "1235", "grant_type": "password"}},
 	{"name": "pin", "path": "/oauth/pin", "headers": {"key": KEY, "access_token": OWNER_ACCESS}, "json": {"pin": "1235", "grant_type": "password"}},
 	{"name": "pin wrong pin", "path": "/oauth/pin", "headers": {"key": KEY, "access_token": OWNER_ACCESS}, "json": {"pin": "9999", "grant_type": "password"}},
-	{"name": "pin expired access token", "path": "/oauth/pin", "headers": {"key": KEY, "access_token": EXPIRED_ACCESS}, "json": {"pin": "1235", "grant_type": "password"}},
+	{"name": "pin expired access token", "before": EXPIRED_ACCESS, "path": "/oauth/pin", "headers": {"key": KEY, "access_token": EXPIRED_ACCESS}, "json": {"pin": "1235", "grant_type": "password"}},
 	{"name": "pin invalid access token", "path": "/oauth/pin", "headers": {"key": KEY, "access_token": "0000000000000000000000000000000000000002"}, "json": {"pin": "1235", "grant_type": "password"}},
 
 	// the internal routes services call (they share the model and the token storage); last, as they
@@ -93,4 +94,4 @@ const cases = [
 	{"name": "auto token unique", "path": "/oauth/token/auto/" + OWNER, "headers": {"key": KEY}, "json": {"unique": true}}
 ];
 
-module.exports = {cases, EXPIRED_REFRESH, OTHER_CLIENT_REFRESH, NULL_EXPIRES_REFRESH, STRING_EXPIRES_REFRESH, NO_EXPIRES_REFRESH, TENANT};
+module.exports = {cases, EXPIRED_REFRESH, OTHER_CLIENT_REFRESH, NULL_EXPIRES_REFRESH, STRING_EXPIRES_REFRESH, NO_EXPIRES_REFRESH, EXPIRED_ACCESS, TENANT};
