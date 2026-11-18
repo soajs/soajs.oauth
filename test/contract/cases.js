@@ -54,6 +54,9 @@ const cases = [
 	{"name": "refresh other client token", "path": "/oauth/refresh/token", "headers": {"key": KEY}, "json": {"refresh_token": OTHER_CLIENT_REFRESH}},
 	{"name": "refresh other device", "path": "/oauth/refresh/token", "headers": {"key": KEY, "device-id": "2222222222"}, "json": (s) => ({"refresh_token": s.owner.refresh_token})},
 	{"name": "refresh same device", "path": "/oauth/refresh/token", "headers": {"key": KEY, "device-id": "1111111111"}, "json": (s) => ({"refresh_token": s.owner.refresh_token})},
+	// two refreshes with the same refresh token at the same time
+	{"name": "token email for concurrent refresh", "path": "/oauth/token/email", "headers": {"key": KEY2}, "json": {"username": "user2", "password": "password"}, "save": "concurrent"},
+	{"name": "refresh concurrent", "parallel": 2, "path": "/oauth/refresh/token", "headers": {"key": KEY2}, "json": (s) => ({"refresh_token": s.concurrent.refresh_token})},
 	{"name": "token grant refresh_token", "path": "/oauth/token", "headers": {"key": KEY2}, "json": {"grant_type": "refresh_token", "refresh_token": "0000000000000000000000000000000000000001"}},
 
 	// POST /oauth/pin

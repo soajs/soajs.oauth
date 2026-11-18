@@ -68,6 +68,24 @@ function run(cases, cb) {
 			return cb(null, results);
 		}
 		const c = cases[i++];
+		if (c.parallel) {
+			// the same request several times at once: the answers, ordered by status then body
+			let answers = [];
+			for (let n = 0; n < c.parallel; n++) {
+				send(c, state, (error, out) => {
+					if (error) {
+						return cb(error);
+					}
+					answers.push(out);
+					if (answers.length === c.parallel) {
+						answers.sort((x, y) => (x.status - y.status) || (x.body < y.body ? -1 : 1));
+						results[c.name] = answers;
+						next();
+					}
+				});
+			}
+			return;
+		}
 		send(c, state, (error, out) => {
 			if (error) {
 				return cb(error);
