@@ -178,44 +178,6 @@ let bl = {
 		});
 	},
 
-	"getUserRecordByPin": (soajs, inputmaskData, options, cb) => {
-		if (!inputmaskData) {
-			return cb(bl.oauth_urac.handleError(soajs, 400, null));
-		}
-		options.provision.getTenantOauth(soajs.tenant.id, (err, tenantOauth) => {
-			soajs.tenantOauth = tenantOauth;
-			let loginMode = bl.oauth_urac.localConfig.loginMode;
-			if (soajs && soajs.tenantOauth && soajs.tenantOauth.loginMode) {
-				loginMode = soajs.tenantOauth.loginMode;
-			}
-
-			if (loginMode === 'urac') {
-
-				let data = {
-					'pin': inputmaskData.pin
-				};
-				uracDriver.loginByPin(soajs, data, (error, record) => {
-					if (error) {
-						error = new Error(error.msg);
-						return cb(error);
-					}
-					if (record) {
-						record.pinLogin = true;
-						record.loginMode = loginMode;
-						record.id = record._id.toString();
-						record.agent = options.agent || null;
-						record.deviceId = options.deviceId || null;
-					}
-					return cb(null, record);
-				});
-			} else {
-				let error = bl.oauth_urac.handleError(soajs, 451, null);
-				error = new Error(error.msg);
-				return cb(error);
-			}
-		});
-	},
-
 	"getUserRecord": (soajs, inputmaskData, options, cb) => {
 		if (!inputmaskData) {
 			return cb(bl.oauth_urac.handleError(soajs, 400, null));
@@ -227,30 +189,6 @@ let bl = {
 			if (soajs && soajs.tenantOauth && soajs.tenantOauth.loginMode) {
 				loginMode = soajs.tenantOauth.loginMode;
 			}
-			/*
-			let pinCheck = (record) => {
-				let product = null;
-				if (soajs.tenant && soajs.tenant.application) {
-					product = soajs.tenant.application.product;
-				}
-				
-				if (product && record.loginMode === 'urac' && soajs.tenantOauth.pin && soajs.tenantOauth.pin[product] && soajs.tenantOauth.pin[product].enabled) {
-					record.pinLocked = true;
-					let userTenant = checkUserTenantAccessPin(record, soajs.tenant);
-					if (userTenant && userTenant.pin && userTenant.pin.allowed) {
-						return cb(false, record);
-					}
-					else {
-						let error = bl.oauth_urac.handleError(soajs, 450, null);
-						error = new Error(error.msg);
-						return cb(error);
-					}
-				}
-				else {
-					return cb(null, record);
-				}
-			};
-			*/
 			let getLocal = () => {
 				let data = {
 					'username': inputmaskData.username,
@@ -266,7 +204,7 @@ let bl = {
 						record.agent = options.agent || null;
 						record.deviceId = options.deviceId || null;
 					}
-					return pinCheck(record, soajs, cb);
+					return withKey(record, soajs, cb);
 				});
 			};
 
@@ -286,7 +224,7 @@ let bl = {
 						record.agent = options.agent || null;
 						record.deviceId = options.deviceId || null;
 					}
-					return pinCheck(record, soajs, cb);
+					return withKey(record, soajs, cb);
 				});
 			} else {
 				getLocal();
@@ -546,39 +484,15 @@ function init(service, localConfig, cb) {
 	});
 }
 
-function checkUserTenantAccessPin(record, tenantObj) {
-	if (record && record.tenant && tenantObj && tenantObj.id) {
-		if (record.tenant.id === tenantObj.id) {
-			return record.tenant;
-		}
-	}
-	return null;
-}
-
-function pinCheck(record, soajs, cb) {
-	let product = null;
-	if (soajs.tenant && soajs.tenant.application) {
-		product = soajs.tenant.application.product;
-	}
+// the tenant's key, in the token's user record
+function withKey(record, soajs, cb) {
 	if (soajs.tenant && soajs.tenant.key) {
 		record.key = {
 			"iKey": soajs.tenant.key.iKey,
 			"eKey": soajs.tenant.key.eKey
 		};
 	}
-	if (product && record.loginMode === 'urac' && soajs.tenantOauth.pin && soajs.tenantOauth.pin[product] && soajs.tenantOauth.pin[product].enabled) {
-		record.pinLocked = true;
-		let userTenant = checkUserTenantAccessPin(record, soajs.tenant);
-		if (userTenant && userTenant.pin && userTenant.pin.allowed) {
-			return cb(null, record);
-		} else {
-			let error = bl.oauth_urac.handleError(soajs, 450, null);
-			error = new Error(error.msg);
-			return cb(error);
-		}
-	} else {
-		return cb(null, record);
-	}
+	return cb(null, record);
 }
 
 function thirdpartySaveAndGrantAccess(req, input, options, cb) {
@@ -610,7 +524,7 @@ function thirdpartySaveAndGrantAccess(req, input, options, cb) {
 				user.agent = req.get('user-agent');
 				user.deviceId = req.get('device-id');
 			}
-			pinCheck(user, req.soajs, (error, user) => {
+			withKey(user, req.soajs, (error, user) => {
 				if (error) {
 					return cb(error);
 				}

@@ -44,7 +44,7 @@ describe("Testing create access token API", () => {
 		});
 	});
 
-	it("Fails - will not create authorization token - user has pin allowed false", (done) => {
+	it("Success - will create authorization token - user with pin data", (done) => {
 		let params = {
 			"noaccesstoken": true,
 			"body": {
@@ -54,11 +54,11 @@ describe("Testing create access token API", () => {
 			}
 		};
 		requester('/token', 'post', params, (error, body) => {
-			assert.ok(body.errors);
-			assert.deepEqual(body.errors.details, [{
-				code: 503,
-				message: 'You do not have privileges to enable pin login'
-			}]);
+			assert.ok(body);
+			assert.ok(body.access_token);
+			let check = validator.validate(body, createTokenSchema);
+			assert.deepEqual(check.valid, true);
+			assert.deepEqual(check.errors, []);
 			done();
 		});
 	});

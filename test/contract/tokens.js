@@ -2,14 +2,12 @@
 
 /**
  * Refresh tokens the contract needs besides the integration data: an expired one, one issued to
- * another client, and three whose expires is null, a string or missing; and an expired access
- * token. Written to the local test database before the cases run; the expired ones just before
- * their case.
+ * another client, and three whose expires is null, a string or missing. Written to the local test
+ * database before the cases run; the expired one just before its case.
  */
 
 const contract = require("./cases.js");
 const owner = require("../data/integration/oauth/token/owner-refresh.js");
-const ownerAccess = require("../data/integration/oauth/token/owner-access.js");
 
 function docs() {
 	const expired = JSON.parse(JSON.stringify(owner));
@@ -32,11 +30,7 @@ function docs() {
 		}
 		return d;
 	};
-	const expiredAccess = JSON.parse(JSON.stringify(ownerAccess));
-	delete expiredAccess._id;
-	expiredAccess.token = contract.EXPIRED_ACCESS;
-	expiredAccess.expires = new Date(Date.UTC(2020, 0, 1));
-	return [expired, other, expiredAccess,
+	return [expired, other,
 		withExpires(contract.NULL_EXPIRES_REFRESH, null),
 		withExpires(contract.STRING_EXPIRES_REFRESH, "2099-01-01T00:00:00.000Z"),
 		withExpires(contract.NO_EXPIRES_REFRESH, undefined)];

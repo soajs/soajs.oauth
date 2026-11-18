@@ -293,37 +293,6 @@ function run(serviceStartCb) {
 				tokenFn(req, res, next);
 			}, checkRefreshTokenDevice(), service.oauth.grant());
 
-			service.post("/pin", (req, res, next) => {
-				//rewrite headers content-type so that oauth.grant works
-				req.headers['content-type'] = 'application/x-www-form-urlencoded';
-
-				// we should set password and username for oauth to work
-				// we should also remove access_token since the request passed the gateway
-				// we should add authorization to be able to generate a new access token
-				//      or set req.body.client_id, req.body.client_secret instead
-				req.body = req.body || {};
-				req.body.grant_type = req.soajs.inputmaskData.grant_type;
-				req.body.username = "NA";
-				req.body.password = "NA";
-				if (req.query.access_token) {
-					delete req.query.access_token;
-				}
-				req.oauth2GetUser = (username, password, callback) => {
-					bl.getUserRecordByPin(req.soajs, req.soajs.inputmaskData, { "provision": provision, agent: req.get('user-agent'), deviceId: req.get('device-id') }, (error, record) => {
-						return callback(error, record);
-					});
-				};
-
-				bl.authorization(req.soajs, req.soajs.inputmaskData, { "provision": provision }, (error, data) => {
-					if (error) {
-						return res.json(req.soajs.buildResponse(error, data));
-					} else {
-						req.headers.authorization = data;
-						next();
-					}
-				});
-			}, service.oauth.grant());
-
 			service.delete("/accessToken/:token", (req, res) => {
 				bl.oauth_token.deleteAccessToken(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
 					return res.json(req.soajs.buildResponse(error, data));
