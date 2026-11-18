@@ -51,7 +51,12 @@ describe("starting OAUTH integration tests", () => {
 					console.log("CONTRACT DIFF " + name + "\n  recorded " + JSON.stringify(recorded[name]) + "\n  now      " + JSON.stringify(results[name]));
 				}
 				console.log("CONTRACT " + Object.keys(recorded).length + " answers, " + diffs.length + " different");
-				done(diffs.length ? new Error("the OAuth contract changed: " + diffs.join(", ")) : undefined);
+				require("../contract/tokens.js").restore((error) => {
+					if (error) {
+						return done(error);
+					}
+					done(diffs.length ? new Error("the OAuth contract changed: " + diffs.join(", ")) : undefined);
+				});
 			});
 		});
 	});

@@ -42,7 +42,7 @@ function write(list, cb) {
 	// the import changes the shared profile's name; the tokens live in core_provision
 	profile.name = "core_provision";
 	const mongo = new Mongo(profile);
-	let pending = list.slice();
+	let pending = (typeof list === "function" ? list(mongo) : list).slice();
 	const next = (error) => {
 		if (error || pending.length === 0) {
 			mongo.closeDb();
@@ -64,8 +64,23 @@ function before(token, cb) {
 	write(docs().filter((d) => d.token === token), cb);
 }
 
+// the integration data's tokens, written again after the cases: they issue and revoke tokens
+// ("auto token unique" removes the owner's), and the integration tests that follow use them
+function restore(cb) {
+	const fs = require("fs");
+	const dir = __dirname + "/../data/integration/oauth/token/";
+	write((mongo) => fs.readdirSync(dir).map((file) => {
+		const d = Object.assign({}, require(dir + file));
+		d._id = mongo.ObjectId(String(d._id));
+		if (d.user && d.user._id) {
+			d.user = Object.assign({}, d.user, {"_id": mongo.ObjectId(String(d.user._id))});
+		}
+		return d;
+	}), cb);
+}
+
 function expiredByDate(d) {
 	return d.expires instanceof Date && d.expires.getTime() < Date.now();
 }
 
-module.exports = {insert, before};
+module.exports = {insert, before, restore};
