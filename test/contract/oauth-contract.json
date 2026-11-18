@@ -493,6 +493,57 @@
 		},
 		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Invalid refresh token\"}]}}"
 	},
+	"refresh expires null": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"cache-control": "no-store",
+			"content-length": "158",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"pragma": "no-cache",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
+	},
+	"refresh expires string": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"cache-control": "no-store",
+			"content-length": "158",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"pragma": "no-cache",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
+	},
+	"refresh without expires": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"cache-control": "no-store",
+			"content-length": "158",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"pragma": "no-cache",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
+	},
 	"pin no access token": {
 		"status": 400,
 		"headers": {
@@ -561,5 +612,197 @@
 			"content-type": "application/json"
 		},
 		"body": "{\"result\":false,\"errors\":{\"codes\":[401],\"details\":[{\"code\":401,\"message\":\"The access token provided is invalid.\"}]}}"
+	},
+	"auto token": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "181",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"vary": "X-HTTP-Method-Override",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":true,\"data\":{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}}"
+	},
+	"auto token unknown user": {
+		"status": 500,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "125",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"7d-eVIqSoKEJ00eEff2uOA6rZF2J90\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[413],\"details\":[{\"code\":413,\"message\":\"Unable to log in. Credential error or mismatch\"}]}}"
+	},
+	"auto token bad id": {
+		"status": 500,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "125",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"7d-eVIqSoKEJ00eEff2uOA6rZF2J90\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[413],\"details\":[{\"code\":413,\"message\":\"Unable to log in. Credential error or mismatch\"}]}}"
+	},
+	"restricted token": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "122",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"vary": "X-HTTP-Method-Override",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":true,\"data\":{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200}}"
+	},
+	"restricted token unknown user": {
+		"status": 500,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "125",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"7d-eVIqSoKEJ00eEff2uOA6rZF2J90\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[413],\"details\":[{\"code\":413,\"message\":\"Unable to log in. Credential error or mismatch\"}]}}"
+	},
+	"restricted token bad id": {
+		"status": 500,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "125",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"7d-eVIqSoKEJ00eEff2uOA6rZF2J90\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[413],\"details\":[{\"code\":413,\"message\":\"Unable to log in. Credential error or mismatch\"}]}}"
+	},
+	"restricted token missing restrictedTo": {
+		"status": 500,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "115",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"73-/x3dhHZIRsFV9LhSdBgBRHntE4g\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[172],\"details\":[{\"code\":172,\"message\":\"Missing required field: restrictedTo\"}]}}"
+	},
+	"revoke restricted tokens of a user": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "24",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"18-PTPB4MDkG5DxgZVHTdKgfyaGaUQ\"",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":true,\"data\":1}"
+	},
+	"revoke restricted tokens unknown user": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "24",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"18-660V1pfgzqjQHZcETDO7x9pAl5E\"",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":true,\"data\":0}"
+	},
+	"revoke access token": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "24",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"18-PTPB4MDkG5DxgZVHTdKgfyaGaUQ\"",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":true,\"data\":1}"
+	},
+	"revoke access token again": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "24",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"18-660V1pfgzqjQHZcETDO7x9pAl5E\"",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":true,\"data\":0}"
+	},
+	"revoke access token unknown": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "24",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"18-660V1pfgzqjQHZcETDO7x9pAl5E\"",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":true,\"data\":0}"
+	},
+	"revoke access token missing": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "127",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"7f-g/SDiShADta3qbSg2qqmIqlycwQ\"",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[151],\"details\":[{\"code\":151,\"message\":\"You are trying to reach an unknown rest service!\"}]}}"
+	},
+	"auto token unique": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "181",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"vary": "X-HTTP-Method-Override",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":true,\"data\":{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}}"
 	}
 }

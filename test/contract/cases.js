@@ -16,6 +16,10 @@ const EXPIRED_ACCESS = "7425a8ae4048d194f6390b64f45eb9525523a014";
 // refresh tokens inserted by record.js for the contract (test values)
 const EXPIRED_REFRESH = "c0ffee00000000000000000000000000000000e1";
 const OTHER_CLIENT_REFRESH = "c0ffee00000000000000000000000000000000e2";
+const NULL_EXPIRES_REFRESH = "c0ffee00000000000000000000000000000000e3";
+const STRING_EXPIRES_REFRESH = "c0ffee00000000000000000000000000000000e4";
+const NO_EXPIRES_REFRESH = "c0ffee00000000000000000000000000000000e5";
+const OWNER = "5c8d0c505653de3985aa0ffd";
 
 const basic = (id, secret) => "Basic " + Buffer.from(id + ":" + secret).toString("base64");
 const TENANT = "5c0e74ba9acc3c5a84a51259";
@@ -50,7 +54,7 @@ const cases = [
 	{"name": "refresh the new token", "path": "/oauth/refresh/token", "headers": {"key": KEY2}, "json": (s) => ({"refresh_token": s.refreshed.refresh_token})},
 	{"name": "refresh missing token", "path": "/oauth/refresh/token", "headers": {"key": KEY2}, "json": {}},
 	{"name": "refresh unknown token", "path": "/oauth/refresh/token", "headers": {"key": KEY2}, "json": {"refresh_token": "0000000000000000000000000000000000000000"}},
-	{"name": "refresh expired token", "path": "/oauth/refresh/token", "headers": {"key": KEY}, "json": {"refresh_token": EXPIRED_REFRESH}},
+	{"name": "refresh expired token", "before": EXPIRED_REFRESH, "path": "/oauth/refresh/token", "headers": {"key": KEY}, "json": {"refresh_token": EXPIRED_REFRESH}},
 	{"name": "refresh other client token", "path": "/oauth/refresh/token", "headers": {"key": KEY}, "json": {"refresh_token": OTHER_CLIENT_REFRESH}},
 	{"name": "refresh other device", "path": "/oauth/refresh/token", "headers": {"key": KEY, "device-id": "2222222222"}, "json": (s) => ({"refresh_token": s.owner.refresh_token})},
 	{"name": "refresh same device", "path": "/oauth/refresh/token", "headers": {"key": KEY, "device-id": "1111111111"}, "json": (s) => ({"refresh_token": s.owner.refresh_token})},
@@ -59,12 +63,34 @@ const cases = [
 	{"name": "refresh concurrent", "parallel": 2, "path": "/oauth/refresh/token", "headers": {"key": KEY2}, "json": (s) => ({"refresh_token": s.concurrent.refresh_token})},
 	{"name": "token grant refresh_token", "path": "/oauth/token", "headers": {"key": KEY2}, "json": {"grant_type": "refresh_token", "refresh_token": "0000000000000000000000000000000000000001"}},
 
+	// refresh tokens whose expires cannot be read
+	{"name": "refresh expires null", "path": "/oauth/refresh/token", "headers": {"key": KEY}, "json": {"refresh_token": NULL_EXPIRES_REFRESH}},
+	{"name": "refresh expires string", "path": "/oauth/refresh/token", "headers": {"key": KEY}, "json": {"refresh_token": STRING_EXPIRES_REFRESH}},
+	{"name": "refresh without expires", "path": "/oauth/refresh/token", "headers": {"key": KEY}, "json": {"refresh_token": NO_EXPIRES_REFRESH}},
+
 	// POST /oauth/pin
 	{"name": "pin no access token", "path": "/oauth/pin", "headers": {"key": KEY}, "json": {"pin": "1235", "grant_type": "password"}},
 	{"name": "pin", "path": "/oauth/pin", "headers": {"key": KEY, "access_token": OWNER_ACCESS}, "json": {"pin": "1235", "grant_type": "password"}},
 	{"name": "pin wrong pin", "path": "/oauth/pin", "headers": {"key": KEY, "access_token": OWNER_ACCESS}, "json": {"pin": "9999", "grant_type": "password"}},
 	{"name": "pin expired access token", "path": "/oauth/pin", "headers": {"key": KEY, "access_token": EXPIRED_ACCESS}, "json": {"pin": "1235", "grant_type": "password"}},
-	{"name": "pin invalid access token", "path": "/oauth/pin", "headers": {"key": KEY, "access_token": "0000000000000000000000000000000000000002"}, "json": {"pin": "1235", "grant_type": "password"}}
+	{"name": "pin invalid access token", "path": "/oauth/pin", "headers": {"key": KEY, "access_token": "0000000000000000000000000000000000000002"}, "json": {"pin": "1235", "grant_type": "password"}},
+
+	// the internal routes services call (they share the model and the token storage); last, as they
+	// issue and revoke tokens
+	{"name": "auto token", "path": "/oauth/token/auto/" + OWNER, "headers": {"key": KEY}, "json": {"unique": false}, "save": "auto"},
+	{"name": "auto token unknown user", "path": "/oauth/token/auto/5c8d0c505653de3985aa0000", "headers": {"key": KEY}, "json": {}},
+	{"name": "auto token bad id", "path": "/oauth/token/auto/nope", "headers": {"key": KEY}, "json": {}},
+	{"name": "restricted token", "path": "/oauth/restricted/token/auto/" + OWNER, "headers": {"key": KEY, "access_token": OWNER_ACCESS}, "json": {"restrictedTo": {"tenant": TENANT}}},
+	{"name": "restricted token unknown user", "path": "/oauth/restricted/token/auto/5c8d0c505653de3985aa0000", "headers": {"key": KEY, "access_token": OWNER_ACCESS}, "json": {"restrictedTo": {"tenant": TENANT}}},
+	{"name": "restricted token bad id", "path": "/oauth/restricted/token/auto/nope", "headers": {"key": KEY, "access_token": OWNER_ACCESS}, "json": {"restrictedTo": {"tenant": TENANT}}},
+	{"name": "restricted token missing restrictedTo", "path": "/oauth/restricted/token/auto/" + OWNER, "headers": {"key": KEY, "access_token": OWNER_ACCESS}, "json": {}},
+	{"name": "revoke restricted tokens of a user", "method": "DELETE", "path": "/oauth/restricted/tokens/user/" + OWNER, "headers": {"key": KEY, "access_token": OWNER_ACCESS}},
+	{"name": "revoke restricted tokens unknown user", "method": "DELETE", "path": "/oauth/restricted/tokens/user/5c8d0c505653de3985aa0000", "headers": {"key": KEY, "access_token": OWNER_ACCESS}},
+	{"name": "revoke access token", "method": "DELETE", "path": (s) => "/oauth/accessToken/" + s.auto.data.access_token, "headers": {"key": KEY, "access_token": OWNER_ACCESS}},
+	{"name": "revoke access token again", "method": "DELETE", "path": (s) => "/oauth/accessToken/" + s.auto.data.access_token, "headers": {"key": KEY, "access_token": OWNER_ACCESS}},
+	{"name": "revoke access token unknown", "method": "DELETE", "path": "/oauth/accessToken/notFound", "headers": {"key": KEY, "access_token": OWNER_ACCESS}},
+	{"name": "revoke access token missing", "method": "DELETE", "path": "/oauth/accessToken/", "headers": {"key": KEY, "access_token": OWNER_ACCESS}},
+	{"name": "auto token unique", "path": "/oauth/token/auto/" + OWNER, "headers": {"key": KEY}, "json": {"unique": true}}
 ];
 
-module.exports = {cases, EXPIRED_REFRESH, OTHER_CLIENT_REFRESH, TENANT};
+module.exports = {cases, EXPIRED_REFRESH, OTHER_CLIENT_REFRESH, NULL_EXPIRES_REFRESH, STRING_EXPIRES_REFRESH, NO_EXPIRES_REFRESH, TENANT};
