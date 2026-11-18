@@ -463,21 +463,19 @@
 			"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
 		},
 		{
-			"status": 200,
+			"status": 400,
 			"headers": {
 				"access-control-allow-credentials": "true",
 				"access-control-allow-origin": "*",
 				"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
-				"cache-control": "no-store",
-				"content-length": "158",
+				"content-length": "100",
 				"content-type": "application/json; charset=utf-8",
-				"etag": "<etag>",
-				"pragma": "no-cache",
+				"etag": "W/\"64-33fLaUKm0pKbXBFYGbdlElcN3sU\"",
 				"vary": "X-HTTP-Method-Override",
 				"x-content-type-options": "nosniff",
 				"x-powered-by": "Express"
 			},
-			"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
+			"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Invalid refresh token\"}]}}"
 		}
 	],
 	"token grant refresh_token": {

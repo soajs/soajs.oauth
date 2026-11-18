@@ -18,19 +18,9 @@ const bl = require("./bl/index.js");
 const service = new soajs.server.service(config);
 
 const provision = require("soajs").provision;
-const oauthserver = require('oauth2-server');
-
-const deleteRefreshToken = function () {
-	return function (req) {
-		if (req.body.grant_type === "refresh_token") {
-			bl.oauth_token.deleteRefreshToken(req.soajs, req.soajs.inputmaskData, null, (error, data) => {
-				if (data) {
-					service.log.debug("Refresh token deleted successfully after refreshing");
-				}
-			});
-		}
-	};
-};
+// node-oauth2-server 2.4.1, ported to soajs.core.modules (soajs.oauth2): the same answers; the
+// refresh grant revokes the used refresh token itself, before issuing new ones
+const oauthserver = require("soajs").oauth2;
 const checkRefreshTokenDevice = function () {
 	return function (req, res, next) {
 		if (req.body.grant_type === "refresh_token") {
@@ -82,7 +72,8 @@ const tokenFn = (req, res, next) => {
 	//rewrite headers content-type so that oauth.grant works
 	req.headers['content-type'] = 'application/x-www-form-urlencoded';
 
-	service.oauth.model.getUser = (username, password, callback) => {
+	// this request's user lookup: the shared model is never changed
+	req.oauth2GetUser = (username, password, callback) => {
 		bl.getUserRecord(req.soajs, req.soajs.inputmaskData, { "provision": provision, agent: req.get('user-agent'), deviceId: req.get('device-id') }, (error, record) => {
 			return callback(error, record);
 		});
@@ -112,8 +103,7 @@ function run(serviceStartCb) {
 			if (!service.oauth) {
 				let reg = service.registry.get();
 				let oauthOptions = {
-					"model": provision.oauthModel,
-					"continueAfterResponse": true
+					"model": provision.oauthModel
 				};
 
 				//grants check
@@ -289,7 +279,7 @@ function run(serviceStartCb) {
 				req.body = req.body || {};
 				req.body.grant_type = req.soajs.inputmaskData.grant_type;
 				tokenFn(req, res, next);
-			}, checkRefreshTokenDevice(), service.oauth.grant(), deleteRefreshToken());
+			}, checkRefreshTokenDevice(), service.oauth.grant());
 
 			service.post("/token/email", (req, res, next) => {
 				req.body = req.body || {};
@@ -301,7 +291,7 @@ function run(serviceStartCb) {
 				req.body = req.body || {};
 				req.body.grant_type = "refresh_token";
 				tokenFn(req, res, next);
-			}, checkRefreshTokenDevice(), service.oauth.grant(), deleteRefreshToken());
+			}, checkRefreshTokenDevice(), service.oauth.grant());
 
 			service.post("/pin", (req, res, next) => {
 				//rewrite headers content-type so that oauth.grant works
@@ -318,7 +308,7 @@ function run(serviceStartCb) {
 				if (req.query.access_token) {
 					delete req.query.access_token;
 				}
-				service.oauth.model.getUser = (username, password, callback) => {
+				req.oauth2GetUser = (username, password, callback) => {
 					bl.getUserRecordByPin(req.soajs, req.soajs.inputmaskData, { "provision": provision, agent: req.get('user-agent'), deviceId: req.get('device-id') }, (error, record) => {
 						return callback(error, record);
 					});
