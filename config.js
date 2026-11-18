@@ -84,9 +84,6 @@ module.exports = {
 		422: "Unable to get driver: ",
 		423: "Error getting driver configuration",
 
-		450: "You do not have privileges to enable pin login",
-		451: "Pin login is not available for this account",
-
 		599: "Token has expired.",
 
 		600: "Error in generating oAUth Token.",
@@ -524,38 +521,6 @@ module.exports = {
 					"validation": {
 						"type": "string",
 						"description": "Refresh token from an earlier login; it is deleted once used"
-					}
-				}
-			},
-			"/pin": {
-				"_apiInfo": {
-					"l": "Log in with a PIN; returns access and refresh tokens (urac login mode only)",
-					"group": "Tokenization"
-				},
-				"pin": {
-					"source": ['body.pin'],
-					"required": false,
-					"validation": {
-						"type": "string",
-						"description": "The user's PIN; matched against users of the current tenant"
-					}
-				},
-				"grant_type": {
-					"source": ['body.grant_type'],
-					"required": false,
-					"default": "password",
-					"validation": {
-						"type": "string",
-						"enum": ["refresh_token", "password"],
-						"description": "password to log in with the PIN; refresh_token to exchange a refresh token"
-					}
-				},
-				"refresh_token": {
-					"source": ['body.refresh_token'],
-					"required": false,
-					"validation": {
-						"type": "string",
-						"description": "Refresh token from an earlier login; required when grant_type is refresh_token"
 					}
 				}
 			}

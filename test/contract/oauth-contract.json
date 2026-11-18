@@ -80,20 +80,22 @@
 		},
 		"body": "{\"result\":false,\"errors\":{\"codes\":[503],\"details\":[{\"code\":503,\"message\":\"Unable to log in. Credential error or mismatch\"}]}}"
 	},
-	"token pin login not allowed": {
-		"status": 503,
+	"token user with pin data": {
+		"status": 200,
 		"headers": {
 			"access-control-allow-credentials": "true",
 			"access-control-allow-origin": "*",
 			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
-			"content-length": "125",
+			"cache-control": "no-store",
+			"content-length": "158",
 			"content-type": "application/json; charset=utf-8",
-			"etag": "W/\"7d-IejqYTmNNY8b0znqLE7EVXVN6Ow\"",
+			"etag": "<etag>",
+			"pragma": "no-cache",
 			"vary": "X-HTTP-Method-Override",
 			"x-content-type-options": "nosniff",
 			"x-powered-by": "Express"
 		},
-		"body": "{\"result\":false,\"errors\":{\"codes\":[503],\"details\":[{\"code\":503,\"message\":\"You do not have privileges to enable pin login\"}]}}"
+		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
 	},
 	"token missing password": {
 		"status": 400,
@@ -538,67 +540,20 @@
 		},
 		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Refresh token has expired\"}]}}"
 	},
-	"pin no access token": {
+	"pin route removed": {
 		"status": 400,
 		"headers": {
 			"access-control-allow-credentials": "true",
 			"access-control-allow-origin": "*",
 			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
-			"content-type": "application/json"
-		},
-		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"The access token was not found\"}]}}"
-	},
-	"pin": {
-		"status": 200,
-		"headers": {
-			"access-control-allow-credentials": "true",
-			"access-control-allow-origin": "*",
-			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
-			"cache-control": "no-store",
-			"content-length": "158",
+			"content-length": "127",
 			"content-type": "application/json; charset=utf-8",
-			"etag": "<etag>",
-			"pragma": "no-cache",
+			"etag": "W/\"7f-g/SDiShADta3qbSg2qqmIqlycwQ\"",
 			"vary": "X-HTTP-Method-Override",
 			"x-content-type-options": "nosniff",
 			"x-powered-by": "Express"
 		},
-		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
-	},
-	"pin wrong pin": {
-		"status": 503,
-		"headers": {
-			"access-control-allow-credentials": "true",
-			"access-control-allow-origin": "*",
-			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
-			"content-length": "125",
-			"content-type": "application/json; charset=utf-8",
-			"etag": "W/\"7d-njx2RTWWMopNi+XyKGHNb85o4l0\"",
-			"vary": "X-HTTP-Method-Override",
-			"x-content-type-options": "nosniff",
-			"x-powered-by": "Express"
-		},
-		"body": "{\"result\":false,\"errors\":{\"codes\":[503],\"details\":[{\"code\":503,\"message\":\"Unable to log in. Credential error or mismatch\"}]}}"
-	},
-	"pin expired access token": {
-		"status": 401,
-		"headers": {
-			"access-control-allow-credentials": "true",
-			"access-control-allow-origin": "*",
-			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
-			"content-type": "application/json"
-		},
-		"body": "{\"result\":false,\"errors\":{\"codes\":[401],\"details\":[{\"code\":401,\"message\":\"The access token provided has expired.\"}]}}"
-	},
-	"pin invalid access token": {
-		"status": 401,
-		"headers": {
-			"access-control-allow-credentials": "true",
-			"access-control-allow-origin": "*",
-			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
-			"content-type": "application/json"
-		},
-		"body": "{\"result\":false,\"errors\":{\"codes\":[401],\"details\":[{\"code\":401,\"message\":\"The access token provided is invalid.\"}]}}"
+		"body": "{\"result\":false,\"errors\":{\"codes\":[151],\"details\":[{\"code\":151,\"message\":\"You are trying to reach an unknown rest service!\"}]}}"
 	},
 	"auto token": {
 		"status": 200,

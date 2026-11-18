@@ -18,7 +18,6 @@ describe("starting index integration tests", () => {
 		
 		//POST
 		require("./post/createAccessToken.test.js");
-		require("./post/createAccessTokenPin.test.js");
 		
 		//PUT
 

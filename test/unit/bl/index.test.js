@@ -38,11 +38,7 @@ let user = {
 	},
 	tenant: {
 		id: "5c0e74ba9acc3c5a84a51259",
-		code: "DBTN",
-		pin: {
-			code: "1235",
-			allowed: true
-		}
+		code: "DBTN"
 	}
 };
 let user2 = {
@@ -112,8 +108,6 @@ describe("Unit test for: BL - oauth", () => {
 				
 				413: "Problem with the provided password.",
 				
-				450: "You do not have privileges to enable pin login",
-				451: "Pin login is not available for this account",
 				
 				600: "Error in generating oAUth Token.",
 				601: "Model not found.",
@@ -164,11 +158,6 @@ describe("Unit test for: BL - oauth", () => {
 				"getTenantOauth": (input, cb) => {
 					return cb(null, {
 						"secret": "this is a secret",
-						"pin": {
-							"DSBRD": {
-								"enabled": false
-							}
-						},
 						"disabled": 0,
 						"type": 2,
 						"loginMode": "urac"
@@ -181,11 +170,6 @@ describe("Unit test for: BL - oauth", () => {
 			"provision": {
 				"getTenantOauth": (input, cb) => {
 					return cb(null, {
-						"pin": {
-							"DSBRD": {
-								"enabled": false
-							}
-						},
 						"disabled": 0,
 						"type": 2,
 						"loginMode": "urac"
@@ -204,77 +188,12 @@ describe("Unit test for: BL - oauth", () => {
 		});
 	});
 	
-	it("getUserRecordByPin", (done) => {
-		let options = {
-			"provision": {
-				"getTenantOauth": (input, cb) => {
-					return cb(null, {
-						"secret": "this is a secret",
-						"pin": {
-							"DSBRD": {
-								"enabled": false
-							}
-						},
-						"disabled": 0,
-						"type": 2,
-						"loginMode": "urac"
-					});
-				}
-			}
-		};
-		let notValidOptions = {
-			"provision": {
-				"getTenantOauth": (input, cb) => {
-					return cb(null, {
-						"pin": {
-							"DSBRD": {
-								"enabled": false
-							}
-						},
-						"disabled": 0,
-						"type": 2,
-					});
-				}
-			}
-		};
-		
-		stubDriver = sinon.stub(uracDriver, 'loginByPin').yields(null, user);
-		
-		BL.getUserRecordByPin(soajs, null, options, (err) => {
-			assert.ok(err);
-			assert.deepEqual(err.code, 400);
-			
-			let data = {
-				"pin": "1235"
-			};
-			
-			BL.getUserRecordByPin(soajs, data, notValidOptions, (err) => {
-				assert.ok(err);
-				
-				let data = {
-					"pin": "1235"
-				};
-				
-				BL.getUserRecordByPin(soajs, data, options, (err, record) => {
-					assert.ok(record);
-					assert.deepEqual(record.id, '5c8d0c505653de3985aa0ffd');
-					done();
-				});
-			});
-		});
-	});
-	
 	it("getUserRecord", (done) => {
 		let options = {
 			"provision": {
 				"getTenantOauth": (input, cb) => {
 					return cb(null, {
 						"secret": "this is a secret",
-						"pin": {
-							"DSBRD": {
-								"enabled": true
-							}
-						},
 						"disabled": 0,
 						"type": 2,
 						"loginMode": "urac"
@@ -287,11 +206,6 @@ describe("Unit test for: BL - oauth", () => {
 				"getTenantOauth": (input, cb) => {
 					return cb(null, {
 						"secret": "this is a secret",
-						"pin": {
-							"DSBRD": {
-								"enabled": true
-							}
-						},
 						"disabled": 0,
 						"type": 2,
 						"loginMode": "oauth"
@@ -303,11 +217,6 @@ describe("Unit test for: BL - oauth", () => {
 			"provision": {
 				"getTenantOauth": (input, cb) => {
 					return cb(null, {
-						"pin": {
-							"DSBRD": {
-								"enabled": false
-							}
-						},
 						"disabled": 0,
 						"type": 2,
 					});
@@ -369,11 +278,6 @@ describe("Unit test for: BL - oauth", () => {
 				"getTenantOauth": (input, cb) => {
 					return cb(null, {
 						"secret": "this is a secret",
-						"pin": {
-							"DSBRD": {
-								"enabled": true
-							}
-						},
 						"disabled": 0,
 						"type": 2,
 						"loginMode": "urac"
@@ -752,38 +656,6 @@ describe("Unit test for: BL - oauth", () => {
 		});
 	});
 
-	it("Fails - getUserRecordByPin", (done) => {
-		let options = {
-			"provision": {
-				"getTenantOauth": (input, cb) => {
-					return cb(null, {
-						"secret": "this is a secret",
-						"pin": {
-							"DSBRD": {
-								"enabled": true
-							}
-						},
-						"disabled": 0,
-						"type": 2,
-						"loginMode": "urac"
-					});
-				}
-			}
-		};
-		stubDriverError = sinon.stub(uracDriver, 'loginByPin').yields(true, null);
-		
-		let data = {
-			"username": "owner",
-			"password": "password"
-		};
-		
-		BL.getUserRecordByPin(soajs, data, options, (err) => {
-			assert.ok(err);
-			done();
-		});
-		
-	});
-	
 	it("Fails - autoLogin - user not found", (done) => {
 		sinon.stub(uracDriver, 'getRecord').yields(null, null);
 		let req = {"soajs": soajs};

@@ -25,8 +25,6 @@ describe("Unit test for: BL - oauth", () => {
 				
 				413: "Problem with the provided password.",
 				
-				450: "You do not have privileges to enable pin login",
-				451: "Pin login is not available for this account",
 				
 				600: "Error in generating oAUth Token.",
 				601: "Model not found.",
@@ -246,11 +244,6 @@ describe("Unit test for: BL - oauth", () => {
 				"getTenantOauth": (input, cb) => {
 					return cb(null, {
 						"secret": "this is a secret",
-						"pin": {
-							"DSBRD": {
-								"enabled": false
-							}
-						},
 						"disabled": 0,
 						"type": 2,
 						"loginMode": "urac"
@@ -296,11 +289,6 @@ describe("Unit test for: BL - oauth", () => {
 				"getTenantOauth": (input, cb) => {
 					return cb(null, {
 						"secret": "this is a secret",
-						"pin": {
-							"DSBRD": {
-								"enabled": false
-							}
-						},
 						"disabled": 0,
 						"type": 2,
 						"loginMode": "urac"

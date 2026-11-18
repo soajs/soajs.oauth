@@ -18,8 +18,6 @@ const OTHER_CLIENT_REFRESH = "c0ffee00000000000000000000000000000000e2";
 const NULL_EXPIRES_REFRESH = "c0ffee00000000000000000000000000000000e3";
 const STRING_EXPIRES_REFRESH = "c0ffee00000000000000000000000000000000e4";
 const NO_EXPIRES_REFRESH = "c0ffee00000000000000000000000000000000e5";
-// an access token with a past date, written just before its case (test value)
-const EXPIRED_ACCESS = "c0ffee00000000000000000000000000000000e6";
 const OWNER = "5c8d0c505653de3985aa0ffd";
 
 const basic = (id, secret) => "Basic " + Buffer.from(id + ":" + secret).toString("base64");
@@ -32,7 +30,7 @@ const cases = [
 	{"name": "token default grant_type", "path": "/oauth/token", "headers": {"key": KEY}, "json": {"username": "owner", "password": "password"}},
 	{"name": "token wrong password", "path": "/oauth/token", "headers": {"key": KEY}, "json": {"username": "owner", "password": "wrong", "grant_type": "password"}},
 	{"name": "token unknown user", "path": "/oauth/token", "headers": {"key": KEY}, "json": {"username": "nobody", "password": "password", "grant_type": "password"}},
-	{"name": "token pin login not allowed", "path": "/oauth/token", "headers": {"key": KEY}, "json": {"username": "owner2", "password": "password", "grant_type": "password"}},
+	{"name": "token user with pin data", "path": "/oauth/token", "headers": {"key": KEY}, "json": {"username": "owner2", "password": "password", "grant_type": "password"}},
 	{"name": "token missing password", "path": "/oauth/token", "headers": {"key": KEY}, "json": {"username": "owner", "grant_type": "password"}},
 	{"name": "token missing username", "path": "/oauth/token", "headers": {"key": KEY}, "json": {"password": "password", "grant_type": "password"}},
 	{"name": "token grant client_credentials", "path": "/oauth/token", "headers": {"key": KEY}, "json": {"username": "owner", "password": "password", "grant_type": "client_credentials"}},
@@ -69,12 +67,8 @@ const cases = [
 	{"name": "refresh expires string", "path": "/oauth/refresh/token", "headers": {"key": KEY}, "json": {"refresh_token": STRING_EXPIRES_REFRESH}},
 	{"name": "refresh without expires", "path": "/oauth/refresh/token", "headers": {"key": KEY}, "json": {"refresh_token": NO_EXPIRES_REFRESH}},
 
-	// POST /oauth/pin
-	{"name": "pin no access token", "path": "/oauth/pin", "headers": {"key": KEY}, "json": {"pin": "1235", "grant_type": "password"}},
-	{"name": "pin", "path": "/oauth/pin", "headers": {"key": KEY, "access_token": OWNER_ACCESS}, "json": {"pin": "1235", "grant_type": "password"}},
-	{"name": "pin wrong pin", "path": "/oauth/pin", "headers": {"key": KEY, "access_token": OWNER_ACCESS}, "json": {"pin": "9999", "grant_type": "password"}},
-	{"name": "pin expired access token", "before": EXPIRED_ACCESS, "path": "/oauth/pin", "headers": {"key": KEY, "access_token": EXPIRED_ACCESS}, "json": {"pin": "1235", "grant_type": "password"}},
-	{"name": "pin invalid access token", "path": "/oauth/pin", "headers": {"key": KEY, "access_token": "0000000000000000000000000000000000000002"}, "json": {"pin": "1235", "grant_type": "password"}},
+	// POST /oauth/pin no longer exists (PIN login removed)
+	{"name": "pin route removed", "path": "/oauth/pin", "headers": {"key": KEY, "access_token": OWNER_ACCESS}, "json": {"pin": "1235", "grant_type": "password"}},
 
 	// the internal routes services call (they share the model and the token storage); last, as they
 	// issue and revoke tokens
@@ -94,4 +88,4 @@ const cases = [
 	{"name": "auto token unique", "path": "/oauth/token/auto/" + OWNER, "headers": {"key": KEY}, "json": {"unique": true}}
 ];
 
-module.exports = {cases, EXPIRED_REFRESH, OTHER_CLIENT_REFRESH, NULL_EXPIRES_REFRESH, STRING_EXPIRES_REFRESH, NO_EXPIRES_REFRESH, EXPIRED_ACCESS, TENANT};
+module.exports = {cases, EXPIRED_REFRESH, OTHER_CLIENT_REFRESH, NULL_EXPIRES_REFRESH, STRING_EXPIRES_REFRESH, NO_EXPIRES_REFRESH, TENANT};
