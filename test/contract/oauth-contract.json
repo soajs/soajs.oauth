@@ -1,0 +1,514 @@
+{
+	"token password json": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"cache-control": "no-store",
+			"content-length": "158",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"pragma": "no-cache",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
+	},
+	"token password form": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"cache-control": "no-store",
+			"content-length": "158",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"pragma": "no-cache",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
+	},
+	"token default grant_type": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"cache-control": "no-store",
+			"content-length": "158",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"pragma": "no-cache",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
+	},
+	"token wrong password": {
+		"status": 503,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "125",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"7d-njx2RTWWMopNi+XyKGHNb85o4l0\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[503],\"details\":[{\"code\":503,\"message\":\"Unable to log in. Credential error or mismatch\"}]}}"
+	},
+	"token unknown user": {
+		"status": 503,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "125",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"7d-njx2RTWWMopNi+XyKGHNb85o4l0\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[503],\"details\":[{\"code\":503,\"message\":\"Unable to log in. Credential error or mismatch\"}]}}"
+	},
+	"token pin login not allowed": {
+		"status": 503,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "125",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"7d-IejqYTmNNY8b0znqLE7EVXVN6Ow\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[503],\"details\":[{\"code\":503,\"message\":\"You do not have privileges to enable pin login\"}]}}"
+	},
+	"token missing password": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "141",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"8d-IHv6cg+Fnmybjy9ASL+UDG9e2XM\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Missing parameters. \\\"username\\\" and \\\"password\\\" are required\"}]}}"
+	},
+	"token missing username": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "141",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"8d-IHv6cg+Fnmybjy9ASL+UDG9e2XM\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Missing parameters. \\\"username\\\" and \\\"password\\\" are required\"}]}}"
+	},
+	"token grant client_credentials": {
+		"status": 500,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "222",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"de-Q34hh6MftDQJo1L4Ljjzf8+AOxM\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[173],\"details\":[{\"code\":173,\"message\":\"Validation failed for field: grant_type -> The parameter 'grant_type' failed due to: instance is not one of enum values: refresh_token,password\"}]}}"
+	},
+	"token grant PASSWORD": {
+		"status": 500,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "222",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"de-Q34hh6MftDQJo1L4Ljjzf8+AOxM\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[173],\"details\":[{\"code\":173,\"message\":\"Validation failed for field: grant_type -> The parameter 'grant_type' failed due to: instance is not one of enum values: refresh_token,password\"}]}}"
+	},
+	"token grant unknown": {
+		"status": 500,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "222",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"de-Q34hh6MftDQJo1L4Ljjzf8+AOxM\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[173],\"details\":[{\"code\":173,\"message\":\"Validation failed for field: grant_type -> The parameter 'grant_type' failed due to: instance is not one of enum values: refresh_token,password\"}]}}"
+	},
+	"token basic wrong secret": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "109",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"6d-RR/iMvGaeAshuHcMlb661+v4pHs\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Client credentials are invalid\"}]}}"
+	},
+	"token basic bad client id": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "117",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"75-Be6YjAOVoZUL8Okw5TTmTIAzxF8\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Invalid or missing client_id parameter\"}]}}"
+	},
+	"token basic no secret": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "117",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"75-Be6YjAOVoZUL8Okw5TTmTIAzxF8\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Invalid or missing client_id parameter\"}]}}"
+	},
+	"token basic unknown client": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "109",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"6d-RR/iMvGaeAshuHcMlb661+v4pHs\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Client credentials are invalid\"}]}}"
+	},
+	"token body credentials wrong secret": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"cache-control": "no-store",
+			"content-length": "158",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"pragma": "no-cache",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
+	},
+	"token no key": {
+		"status": 403,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-type": "application/json"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[132],\"details\":[{\"code\":132,\"message\":\"A valid key is needed to access any API.\"}]}}"
+	},
+	"token email": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"cache-control": "no-store",
+			"content-length": "158",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"pragma": "no-cache",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
+	},
+	"token email wrong password": {
+		"status": 503,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "125",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"7d-njx2RTWWMopNi+XyKGHNb85o4l0\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[503],\"details\":[{\"code\":503,\"message\":\"Unable to log in. Credential error or mismatch\"}]}}"
+	},
+	"refresh": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"cache-control": "no-store",
+			"content-length": "158",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"pragma": "no-cache",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
+	},
+	"refresh reused": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "100",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"64-33fLaUKm0pKbXBFYGbdlElcN3sU\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Invalid refresh token\"}]}}"
+	},
+	"refresh the new token": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"cache-control": "no-store",
+			"content-length": "158",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"pragma": "no-cache",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
+	},
+	"refresh missing token": {
+		"status": 500,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "116",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"74-D7DX3v1y+0wb1OFHvkUoC5HTaPs\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[172],\"details\":[{\"code\":172,\"message\":\"Missing required field: refresh_token\"}]}}"
+	},
+	"refresh unknown token": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "100",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"64-33fLaUKm0pKbXBFYGbdlElcN3sU\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Invalid refresh token\"}]}}"
+	},
+	"refresh expired token": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "104",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"68-qHLIznVJ5xfgMQdJPoPc3pUBWxc\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Refresh token has expired\"}]}}"
+	},
+	"refresh other client token": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "100",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"64-33fLaUKm0pKbXBFYGbdlElcN3sU\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Invalid refresh token\"}]}}"
+	},
+	"refresh other device": {
+		"status": 500,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "125",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"7d-eVIqSoKEJ00eEff2uOA6rZF2J90\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[413],\"details\":[{\"code\":413,\"message\":\"Unable to log in. Credential error or mismatch\"}]}}"
+	},
+	"refresh same device": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "100",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"64-33fLaUKm0pKbXBFYGbdlElcN3sU\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Invalid refresh token\"}]}}"
+	},
+	"token grant refresh_token": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "100",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"64-33fLaUKm0pKbXBFYGbdlElcN3sU\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"Invalid refresh token\"}]}}"
+	},
+	"pin no access token": {
+		"status": 400,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-type": "application/json"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[400],\"details\":[{\"code\":400,\"message\":\"The access token was not found\"}]}}"
+	},
+	"pin": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"cache-control": "no-store",
+			"content-length": "158",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"pragma": "no-cache",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
+	},
+	"pin wrong pin": {
+		"status": 503,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-length": "125",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "W/\"7d-njx2RTWWMopNi+XyKGHNb85o4l0\"",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[503],\"details\":[{\"code\":503,\"message\":\"Unable to log in. Credential error or mismatch\"}]}}"
+	},
+	"pin expired access token": {
+		"status": 200,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"cache-control": "no-store",
+			"content-length": "158",
+			"content-type": "application/json; charset=utf-8",
+			"etag": "<etag>",
+			"pragma": "no-cache",
+			"vary": "X-HTTP-Method-Override",
+			"x-content-type-options": "nosniff",
+			"x-powered-by": "Express"
+		},
+		"body": "{\"token_type\":\"bearer\",\"access_token\":\"<access_token>\",\"expires_in\":7200,\"refresh_token\":\"<refresh_token>\"}"
+	},
+	"pin invalid access token": {
+		"status": 401,
+		"headers": {
+			"access-control-allow-credentials": "true",
+			"access-control-allow-origin": "*",
+			"access-control-expose-headers": "__env,key,soajsauth,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization",
+			"content-type": "application/json"
+		},
+		"body": "{\"result\":false,\"errors\":{\"codes\":[401],\"details\":[{\"code\":401,\"message\":\"The access token provided is invalid.\"}]}}"
+	}
+}
